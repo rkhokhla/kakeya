@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+    container_name: flk-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - DEDUP_BACKEND=redis
+      - REDIS_ADDR=redis:6379
+      - TOKEN_RATE=100
+      - METRICS_USER=ops
+      - METRICS_PASS=${METRICS_PASS:-change-me}
+      - PCS_SIGN_ALG=hmac
+      - PCS_HMAC_KEY=${PCS_HMAC_KEY:-supersecret}
+      - WAL_DIR=/data/wal
+      - DEDUP_SNAPSHOT=/data/dedup.json
+    volumes:
+      - backend-data:/data
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    container_name: flk-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: flk-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=fractal_lba
+      - POSTGRES_USER=flk
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dbpassword}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ../../deployments/docker/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flk"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: flk-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../../observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: flk-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ../../observability/grafana/provisioning:/etc/grafana/provisioning
+      - ../../observability/grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  backend-data:
+  redis-data:
+  postgres-data:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  default:
+    name: fractal-lba-network

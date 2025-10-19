@@ -1,0 +1,14 @@
+{{- if .Values.backend.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "fractal-lba.fullname" . }}-backend
+  labels:
+    {{- include "fractal-lba.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.backend.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "fractal-lba.selectorLabels" . | nindent 6 }}
+      app: backend
+{{- end }}

@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fractal-lba.fullname" . }}-backend
+  labels:
+    {{- include "fractal-lba.labels" . | nindent 4 }}
+    app: backend
+spec:
+  {{- if not .Values.backend.autoscaling.enabled }}
+  replicas: {{ .Values.backend.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "fractal-lba.selectorLabels" . | nindent 6 }}
+      app: backend
+  template:
+    metadata:
+      labels:
+        {{- include "fractal-lba.selectorLabels" . | nindent 8 }}
+        app: backend
+    spec:
+      securityContext:
+        runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      containers:
+      - name: backend
+        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+        imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: PORT
+          value: "8080"
+        - name: DEDUP_BACKEND
+          value: {{ .Values.backend.env.dedupBackend | quote }}
+        - name: REDIS_ADDR
+          value: "{{ include "fractal-lba.fullname" . }}-redis-master:6379"
+        - name: POSTGRES_CONN
+          value: "host={{ include "fractal-lba.fullname" . }}-postgresql port=5432 user={{ .Values.postgresql.auth.username }} password={{ .Values.postgresql.auth.password }} dbname={{ .Values.postgresql.auth.database }} sslmode=require"
+        - name: TOKEN_RATE
+          value: {{ .Values.backend.env.tokenRate | quote }}
+        - name: WAL_DIR
+          value: {{ .Values.backend.env.walDir | quote }}
+        {{- if .Values.signing.enabled }}
+        - name: PCS_SIGN_ALG
+          value: {{ .Values.signing.alg | quote }}
+        {{- if eq .Values.signing.alg "hmac" }}
+        - name: PCS_HMAC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "fractal-lba.fullname" . }}-signing
+              key: hmacKey
+        {{- else if eq .Values.signing.alg "ed25519" }}
+        - name: PCS_ED25519_PUB_B64
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "fractal-lba.fullname" . }}-signing
+              key: ed25519PubB64
+        {{- end }}
+        {{- end }}
+        {{- if .Values.metricsBasicAuth.enabled }}
+        - name: METRICS_USER
+          value: {{ .Values.metricsBasicAuth.user | quote }}
+        - name: METRICS_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "fractal-lba.fullname" . }}-metrics
+              key: password
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          {{- toYaml .Values.backend.resources | nindent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        securityContext:
+          capabilities:
+            drop:
+            {{- toYaml .Values.securityContext.capabilities.drop | nindent 12 }}
+      volumes:
+      - name: data
+        emptyDir: {}
+      {{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml .Values.topologySpreadConstraints | nindent 6 }}
+      {{- end }}

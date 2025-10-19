@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'fractal-lba'
+    environment: 'dev'
+
+scrape_configs:
+  - job_name: 'backend'
+    metrics_path: '/metrics'
+    basic_auth:
+      username: 'ops'
+      password: 'change-me'
+    static_configs:
+      - targets: ['backend:8080']
+        labels:
+          service: 'flk-backend'
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']

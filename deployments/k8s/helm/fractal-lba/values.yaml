@@ -1,0 +1,137 @@
+# Fractal LBA + Kakeya FT Stack - Helm Values
+
+# Backend service configuration
+backend:
+  replicaCount: 2
+  image:
+    repository: fractal-lba/backend
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  service:
+    type: ClusterIP
+    port: 8080
+
+  # Horizontal Pod Autoscaler
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+
+  # Pod Disruption Budget
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+
+  env:
+    dedupBackend: "redis"
+    tokenRate: "100"
+    walDir: "/data/wal"
+
+# Signing configuration
+signing:
+  enabled: true
+  alg: "hmac"
+  # Set via --set-string at deploy time or external secret manager
+  hmacKey: ""
+  ed25519PubB64: ""
+
+# Metrics basic auth
+metricsBasicAuth:
+  enabled: true
+  user: "ops"
+  # Set via --set-string at deploy time
+  password: ""
+
+# Redis configuration
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      size: 8Gi
+
+# PostgreSQL configuration
+postgresql:
+  enabled: true
+  auth:
+    username: flk
+    password: dbpassword
+    database: fractal_lba
+  primary:
+    persistence:
+      enabled: true
+      size: 10Gi
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: api.fractal-lba.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: fractal-lba-tls
+      hosts:
+        - api.fractal-lba.example.com
+
+# mTLS configuration (for internal backend-to-backend)
+mtls:
+  enabled: false
+  certSecretName: backend-mtls-cert
+  caSecretName: backend-mtls-ca
+
+# Security context
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+  capabilities:
+    drop:
+      - ALL
+
+# Network policies
+networkPolicy:
+  enabled: true
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            name: ingress-nginx
+  egress:
+    - to:
+      - podSelector:
+          matchLabels:
+            app: redis
+    - to:
+      - podSelector:
+          matchLabels:
+            app: postgresql
+
+# Topology spread constraints
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels:
+        app: backend

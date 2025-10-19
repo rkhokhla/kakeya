@@ -1,0 +1,63 @@
+# Go
+backend/server
+backend/dist/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+
+# Python
+agent/__pycache__/
+agent/**/__pycache__/
+agent/**/*.pyc
+agent/**/*.pyo
+agent/**/*.pyd
+agent/.Python
+agent/env/
+agent/venv/
+agent/ENV/
+agent/**/.pytest_cache/
+agent/**/.coverage
+agent/**/*.egg-info/
+agent/dist/
+agent/build/
+
+# Data directories
+data/
+*.wal
+*.json
+*.jsonl
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+docker-compose.override.yml
+
+# Secrets
+*.key
+*.pem
+.env
+secrets/
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+coverage/
+*.cover
+htmlcov/
+
+# Build artifacts
+*.tar.gz
+*.zip
