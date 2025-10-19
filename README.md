@@ -1,6 +1,24 @@
 # Fractal LBA + Kakeya FT Stack
 
-A fault-tolerant system for computing and verifying **Proof-of-Computation Summaries (PCS)** with fractal dimension analysis, directional coherence, and compressibility metrics.
+> **Turn distributed event streams into verifiable, compact proofs—with mathematical rigor and battle-tested fault tolerance.**
+
+## Elevator Pitch
+
+Imagine you're analyzing massive, distributed event streams from IoT sensors, financial transactions, or network traffic. You need to **prove** your computation happened correctly, **compress** terabytes into kilobytes, and **never lose data**—even during crashes, network splits, or replay attacks.
+
+**Fractal LBA + Kakeya FT Stack** solves this by:
+
+1. **Computing cryptographic summaries (PCS)** that capture the "shape" of your data using fractal geometry (D̂), directional coherence (coh★), and compressibility (r)
+2. **Verifying summaries server-side** with robust statistical methods (Theil-Sen regression) to catch manipulated or corrupted data
+3. **Guaranteeing delivery** with write-ahead logs (WAL) on both agent and backend—your proofs survive crashes
+4. **Preventing duplicates** with idempotent deduplication across memory, Redis, or Postgres
+5. **Ensuring authenticity** with HMAC-SHA256 or Ed25519 signatures
+
+All wrapped in production-ready **Docker Compose** and **Kubernetes Helm charts** with observability (Prometheus + Grafana), auto-scaling (HPA), and security hardening (mTLS, NetworkPolicies).
+
+**Use cases:** Blockchain light clients, IoT data integrity, compliance audit trails, distributed system health monitoring, anti-fraud detection.
+
+---
 
 ## Overview
 
