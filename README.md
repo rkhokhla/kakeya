@@ -25,6 +25,124 @@ All wrapped in production-ready **Docker Compose** and **Kubernetes Helm charts*
 
 ---
 
+# Investor Pitch (for README.md)
+
+### One-liner
+
+**FLK/PCS** is a **fault-tolerant verification layer for AI** that measurably **reduces LLM hallucinations** and controls compute spend by turning model outputs into **Proof-of-Computation Summaries (PCS)**, verifying them server-side, and dynamically gating trust and budget.
+
+---
+
+## The problem
+
+LLMs are brilliant but **unreliable by default**. Hallucinations erode user trust, inflate support costs, and create compliance risk. Today’s mitigations (bigger models, more RAG, more prompts) mostly **add latency and cost** without strong guarantees.
+
+---
+
+## Our solution
+
+We add a **verifiable control plane** around generation:
+
+* **PCS (Proof-of-Computation Summary):** the agent computes compact signals from its own work (fractal slope **D̂**, directional coherence **coh★**, compressibility **r**), then **cryptographically signs** the summary.
+* **Server-side verification:** a Go backend **recomputes and checks** those signals with tolerances, enforces **idempotency** (no double effects), and decides **trust level + budget** per request.
+* **Fault tolerance by design:** dual **WAL** (write-ahead logs) on both agent and backend, **verify-before-dedup** ordering, retries with jitter, and clear escalation paths.
+* **Observability & policy:** metrics, dashboards, and a small policy DSL to bound risk (thresholds, budgets, escalation).
+
+**Result:** untrusted generations are **de-risked**—they get less budget, more retrieval or human review; trustworthy ones flow fast with lower cost.
+
+---
+
+## How it reduces hallucinations (concretely)
+
+1. **Detect structure vs noise:**
+
+    * **D̂** (Theil–Sen slope on multi-scale occupancy) flags diffuse vs structured evidence.
+    * **coh★** measures how concentrated evidence is along consistent directions.
+    * **r** (LZ compressibility) rewards internally consistent, non-random work.
+2. **Gate actions by trust:** a **budget function** (bounded [0,1]) combines the signals; low-trust outputs are **throttled**, forced into **retrieval/verification** or **human-in-the-loop**.
+3. **Cryptographic accountability:** agents **sign** the exact subset of fields; the server rejects drift and **never** applies effects for bad signatures.
+4. **Auditable trail:** each step is **WAL-recorded** and reconstructable, giving compliance and post-mortem clarity.
+5. **Production resilience:** failures land in **202-escalation** rather than silent errors, so **hallucinations don’t slip through** during incidents.
+
+---
+
+## What’s unique
+
+* **Model-agnostic, plug-in layer:** works with any LLM, RAG, or tool-use flow.
+* **Quantitative, verifiable signals:** not just heuristics—**recomputed** on the server with tolerances.
+* **Security first:** HMAC/Ed25519, TLS/mTLS, metrics auth; **no raw payloads** in logs.
+* **Designed for scale:** multi-tenant, sharded/tiered dedup, geo replication (active-active), async audits.
+
+---
+
+## Architecture snapshot
+
+* **Agent (Python):** computes PCS, signs it, writes **Outbox WAL**, posts to backend.
+* **Verifier (Go):** appends **Inbox WAL** → verify → **idempotent dedup** → budget/regime → metrics.
+* **Signals:** `D̂`, `coh★`, `r` → **regime** (`sticky/mixed/non_sticky`) → **budget** gate.
+* **Ops:** Prometheus + Grafana, runbooks, chaos & DR drills, Helm for prod, SOPS/age for secrets.
+* **Optionals:** VRF-seeded sampling (adversarial robustness), DP metrics, policy DSL & canary rollouts.
+
+---
+
+## Where it fits (initial customers)
+
+* **AI customer support / assistants:** reduce wrong answers & refunds with gating + human review on low-trust cases.
+* **Healthcare/Finance/Legal copilots:** enforce **verification before action** to meet compliance.
+* **Data extraction & agents:** throttle or enrich when signals show low structure, avoiding costly re-runs.
+
+---
+
+## Business model
+
+* **Enterprise license** + support (self-hosted or VPC).
+* **Usage tier** by verified requests / tenants / regions.
+* **Premium**: multi-region DR, lineage & anchoring, policy DSL, DP, advanced canary.
+
+---
+
+## Traction & roadmap (high level)
+
+* **Phase 1–2:** canonical signing, verifier ordering, unit/E2E tests, perf baselines, prod Helm, alerts.
+* **Phase 3–4:** multi-tenant & multi-region design, sharded/tiered storage, SDKs (Py/Go/TS), chaos & DR suites.
+* **Phase 5:** implement CRR shipper/reader, cold-tier drivers & demotion, async audit workers, geo divergence detection.
+
+---
+
+## KPIs we track
+
+* **Hallucination containment rate:** % low-trust generations caught before action.
+* **Cost per accepted task:** dollars per trusted completion vs baseline.
+* **p95 verify latency:** stays <200 ms under nominal load.
+* **Error-budget burn:** (escalations + non-2xx) / ingest; alert <2% over rolling window.
+* **DR readiness:** RTO/RPO met in drills; replication lag SLO.
+* **Adoption:** tenants enabled, % traffic under PCS policy, SDK parity across stacks.
+
+---
+
+## Why now
+
+The market is **shifting from prototypes to production**. Boards demand safety, governance, and cost control. Our layer **reduces hallucinations without retraining** or model lock-in—and makes audits and compliance practical.
+
+---
+
+## Risks & how we mitigate
+
+* **Signal drift across languages/runtimes** → canonical JSON & 9-dp rounding, **golden vectors** in CI.
+* **Latency under load** → verifier kept **pure & idempotent**, heavy work moved to **async audits**.
+* **Operational complexity** → Helm, runbooks, alerts, chaos drills, **verify-before-dedup** invariant.
+* **Adversarial inputs** → VRF seeding (optional), monotonicity guards, anomaly scoring & rate limits.
+
+---
+
+## The ask
+
+We’re raising to **productize the enterprise feature set** (multi-region DR, lineage/anchoring, policy registry, DP), expand SDKs, and fund early **design-partner deployments** in support, healthcare, and finance.
+**Use of funds:** security certifications, scale testing, GTM with reference customers.
+
+> **Bottom line:** FLK/PCS is a **practical, defensible path** to safer, cheaper AI—**cutting hallucinations** not by guessing, but by **verifying**.
+
+
 ## Overview
 
 This system implements a globally distributed architecture where:
