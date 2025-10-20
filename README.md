@@ -25,7 +25,7 @@ All wrapped in production-ready **Docker Compose** and **Kubernetes Helm charts*
 
 ---
 
-# Investor Pitch (for README.md)
+# Investor Pitch
 
 ### One-liner
 
