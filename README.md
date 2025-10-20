@@ -21,7 +21,7 @@ Imagine you're analyzing massive, distributed event streams from IoT sensors, fi
 
 All wrapped in production-ready **Docker Compose** and **Kubernetes Helm charts** with observability (Prometheus + Grafana), auto-scaling (HPA), security hardening (mTLS, NetworkPolicies), and comprehensive runbooks.
 
-**Use cases:** Blockchain light clients, IoT data integrity, compliance audit trails, distributed system health monitoring, anti-fraud detection, multi-tenant SaaS platforms.
+**Use cases:** Blockchain light clients, IoT data integrity, compliance audit trails, distributed system health monitoring, anti-fraud detection, multi-tenant SaaS platforms, LLMs hallucination mitigation.
 
 ---
 
