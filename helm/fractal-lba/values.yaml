@@ -1,0 +1,224 @@
+# Default values for fractal-lba Helm chart
+# This is a YAML-formatted file with production-ready defaults
+
+# Backend deployment configuration
+backend:
+  replicaCount: 3
+
+  image:
+    repository: fractal-lba/backend
+    pullPolicy: IfNotPresent
+    tag: "0.1.0"
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: ""
+
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+    prometheus.io/path: "/metrics"
+
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: false  # WAL needs write access
+
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+    annotations: {}
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/rate-limit: "100"
+      nginx.ingress.kubernetes.io/limit-rps: "50"
+    hosts:
+      - host: api.fractal-lba.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: fractal-lba-tls
+        hosts:
+          - api.fractal-lba.example.com
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 2
+
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: fractal-lba
+          app.kubernetes.io/component: backend
+
+  # Backend environment configuration
+  env:
+    # Signature verification
+    PCS_SIGN_ALG: "hmac"  # Options: hmac, ed25519, none
+    # PCS_HMAC_KEY: ""  # Set via Secret (see envFrom)
+    # PCS_ED25519_PUB_B64: ""  # Set via Secret/ConfigMap
+
+    # Deduplication backend
+    DEDUP_BACKEND: "memory"  # Options: memory, redis, postgres
+    # REDIS_ADDR: "redis-master:6379"
+    # POSTGRES_CONN: ""  # Set via Secret
+
+    # Rate limiting
+    TOKEN_RATE: "1000"
+
+    # WAL directory
+    WAL_DIR: "/data/wal"
+
+    # Metrics authentication (optional)
+    # METRICS_USER: ""  # Set via Secret
+    # METRICS_PASS: ""  # Set via Secret
+
+  # Environment variables from Secrets/ConfigMaps
+  envFrom: []
+  # - secretRef:
+  #     name: pcs-hmac-secret
+  # - secretRef:
+  #     name: metrics-auth-secret
+
+  # Persistent storage for WAL
+  persistence:
+    enabled: true
+    storageClass: ""  # Use default storage class
+    accessMode: ReadWriteOnce
+    size: 50Gi
+    annotations: {}
+
+  # Liveness and readiness probes
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    successThreshold: 1
+    failureThreshold: 3
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+# NetworkPolicy configuration
+networkPolicy:
+  enabled: true
+  policyTypes:
+    - Ingress
+  ingress:
+    # Allow traffic from ingress controller
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8080
+    # Allow traffic from Prometheus
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: monitoring
+        - podSelector:
+            matchLabels:
+              app: prometheus
+      ports:
+        - protocol: TCP
+          port: 8080
+
+# Redis subchart configuration (for dedup)
+redis:
+  enabled: false  # Enable in production
+  architecture: replication
+  auth:
+    enabled: true
+    password: "changeme"  # Override with external secret
+  master:
+    persistence:
+      enabled: true
+      size: 20Gi
+  replica:
+    replicaCount: 2
+    persistence:
+      enabled: true
+      size: 20Gi
+
+# PostgreSQL subchart configuration (for dedup)
+postgresql:
+  enabled: false
+  auth:
+    username: fractal
+    password: "changeme"  # Override with external secret
+    database: fractal_lba
+  primary:
+    persistence:
+      enabled: true
+      size: 20Gi
+
+# Prometheus monitoring
+prometheus:
+  enabled: false  # Assumes external Prometheus
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    scrapeTimeout: 10s
+
+# Grafana dashboards
+grafana:
+  enabled: false  # Assumes external Grafana
+  dashboards:
+    enabled: false

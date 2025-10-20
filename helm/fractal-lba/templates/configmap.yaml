@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fractal-lba.fullname" . }}
+  labels:
+    {{- include "fractal-lba.labels" . | nindent 4 }}
+data:
+  # Public configuration (non-sensitive)
+  {{- range $key, $value := .Values.backend.env }}
+  {{- if not (or (contains "KEY" $key) (contains "PASS" $key) (contains "SECRET" $key) (contains "TOKEN" $key)) }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}

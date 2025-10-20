@@ -1,0 +1,139 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Phase 1 unit tests (Python)
+  unit-tests-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install pytest numpy
+
+      - name: Run unit tests
+        run: |
+          python -m pytest tests/test_signals.py tests/test_signing.py -v
+
+  # Go backend build and test
+  build-go:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Build backend
+        working-directory: ./backend
+        run: go build ./...
+
+      - name: Run Go tests
+        working-directory: ./backend
+        run: go test ./... -v
+
+  # E2E integration tests (Phase 2)
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: [unit-tests-python, build-go]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: |
+          pip install pytest numpy requests
+
+      - name: Start backend with Docker Compose
+        run: |
+          docker-compose -f infra/compose-tests.yml up -d
+          sleep 10  # Wait for services to start
+
+      - name: Wait for backend health
+        run: |
+          for i in {1..30}; do
+            if curl -f http://localhost:8080/health; then
+              echo "Backend is healthy"
+              exit 0
+            fi
+            echo "Waiting for backend... ($i/30)"
+            sleep 2
+          done
+          echo "Backend failed to become healthy"
+          exit 1
+
+      - name: Run E2E tests
+        env:
+          BACKEND_URL: http://localhost:8080
+        run: |
+          python -m pytest tests/e2e/ -v
+
+      - name: Collect logs
+        if: always()
+        run: |
+          docker-compose -f infra/compose-tests.yml logs > e2e-logs.txt
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-logs
+          path: e2e-logs.txt
+
+      - name: Stop services
+        if: always()
+        run: |
+          docker-compose -f infra/compose-tests.yml down -v
+
+  # Helm lint and validation
+  helm-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: '3.14.0'
+
+      - name: Lint Helm chart
+        run: |
+          helm lint helm/fractal-lba || echo "Helm chart not yet created (Phase 2 WP4)"
+
+  # Security scanning
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run secret scanner
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+
+      - name: Check for plaintext secrets
+        run: |
+          if grep -r "PCS_HMAC_KEY.*=.*['\"].*['\"]" --exclude-dir=.git --exclude-dir=docs --exclude="*.md" .; then
+            echo "ERROR: Found plaintext HMAC keys in code"
+            exit 1
+          fi
+          echo "No plaintext secrets found"

@@ -1,0 +1,207 @@
+# Prometheus alert rules for Fractal LBA + Kakeya FT Stack (CLAUDE_PHASE2 WP5)
+#
+# These rules implement SLO-driven alerting with runbooks for each alert.
+
+groups:
+  - name: fractal-lba-slo
+    interval: 30s
+    rules:
+      # Error Budget Burn (SLO: <2% error rate)
+      - alert: FLKErrorBudgetBurn
+        expr: |
+          (
+            rate(flk_escalated[5m]) +
+            rate(http_requests_total{code=~"5.."}[5m])
+          ) / rate(flk_ingest_total[5m]) > 0.02
+        for: 10m
+        labels:
+          severity: page
+          component: backend
+        annotations:
+          summary: "Fractal LBA error budget burn >2% for 10m"
+          description: "Error rate is {{ $value | humanizePercentage }}, exceeding SLO of 2%"
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/error-budget-burn.md"
+          dashboard: "https://grafana.example.com/d/fractal-lba"
+
+      # High Latency (p95 > 200ms)
+      - alert: FLKHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(http_request_duration_seconds_bucket[5m])
+          ) > 0.2
+        for: 5m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "Fractal LBA p95 latency >200ms for 5m"
+          description: "p95 latency is {{ $value | humanizeDuration }}, target is 200ms"
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/latency-surge.md"
+
+      # Signature Verification Failures Spike
+      - alert: FLKSignatureFailuresSpike
+        expr: |
+          rate(flk_signature_err[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "Signature verification failures >10/s for 5m"
+          description: "Signature failures at {{ $value | humanize }}/s. Check key rotation, clock skew, or malicious activity."
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/signature-spike.md"
+
+      # Dedup Store Anomaly (hit ratio out of band)
+      - alert: FLKDedupAnomalyLow
+        expr: |
+          rate(flk_dedup_hits[10m]) / rate(flk_ingest_total[10m]) < 0.10
+        for: 15m
+        labels:
+          severity: info
+          component: backend
+        annotations:
+          summary: "Dedup hit ratio unusually low (<10%) for 15m"
+          description: "Dedup hit ratio is {{ $value | humanizePercentage }}. Expected >40% under typical load."
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/dedup-outage.md"
+
+      - alert: FLKDedupAnomalyHigh
+        expr: |
+          rate(flk_dedup_hits[10m]) / rate(flk_ingest_total[10m]) > 0.90
+        for: 15m
+        labels:
+          severity: info
+          component: backend
+        annotations:
+          summary: "Dedup hit ratio unusually high (>90%) for 15m"
+          description: "Dedup hit ratio is {{ $value | humanizePercentage }}. Possible duplicate flood or replay attack."
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/duplicate-flood.md"
+
+  - name: fractal-lba-availability
+    interval: 30s
+    rules:
+      # Backend Down
+      - alert: FLKBackendDown
+        expr: |
+          up{job="fractal-lba-backend"} == 0
+        for: 1m
+        labels:
+          severity: page
+          component: backend
+        annotations:
+          summary: "Fractal LBA backend is down"
+          description: "Backend instance {{ $labels.instance }} is not responding"
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/backend-down.md"
+
+      # Health Check Failures
+      - alert: FLKHealthCheckFailing
+        expr: |
+          probe_success{job="fractal-lba-health"} == 0
+        for: 3m
+        labels:
+          severity: critical
+          component: backend
+        annotations:
+          summary: "Fractal LBA health check failing for 3m"
+          description: "/health endpoint is not returning 200 OK"
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/health-check-failing.md"
+
+      # High HTTP 5xx Rate
+      - alert: FLKHighServerErrors
+        expr: |
+          rate(http_requests_total{code=~"5.."}[5m]) > 1
+        for: 5m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "High rate of 5xx errors (>1/s) for 5m"
+          description: "Server error rate: {{ $value | humanize }}/s"
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/server-errors.md"
+
+  - name: fractal-lba-resources
+    interval: 30s
+    rules:
+      # High CPU Usage
+      - alert: FLKHighCPU
+        expr: |
+          rate(container_cpu_usage_seconds_total{pod=~"fractal-lba.*"}[5m]) > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "Backend CPU usage >80% for 10m"
+          description: "CPU usage is {{ $value | humanizePercentage }} on {{ $labels.pod }}"
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/high-cpu.md"
+
+      # High Memory Usage
+      - alert: FLKHighMemory
+        expr: |
+          container_memory_working_set_bytes{pod=~"fractal-lba.*"} /
+          container_spec_memory_limit_bytes{pod=~"fractal-lba.*"} > 0.85
+        for: 10m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "Backend memory usage >85% for 10m"
+          description: "Memory usage is {{ $value | humanizePercentage }} on {{ $labels.pod }}"
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/high-memory.md"
+
+      # WAL Disk Pressure
+      - alert: FLKWALDiskPressure
+        expr: |
+          (1 - (node_filesystem_avail_bytes{mountpoint="/data"} /
+                node_filesystem_size_bytes{mountpoint="/data"})) > 0.85
+        for: 15m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "WAL disk usage >85% for 15m"
+          description: "Disk usage is {{ $value | humanizePercentage }}. WAL compaction may be needed."
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/wal-disk-pressure.md"
+
+  - name: fractal-lba-dedup-store
+    interval: 30s
+    rules:
+      # Redis Down (if using Redis)
+      - alert: FLKRedisDown
+        expr: |
+          up{job="redis"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: dedup-store
+        annotations:
+          summary: "Redis dedup store is down"
+          description: "Redis instance {{ $labels.instance }} is not responding. Dedup will fail."
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/dedup-outage.md"
+
+      # Postgres Down (if using Postgres)
+      - alert: FLKPostgresDown
+        expr: |
+          up{job="postgresql"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: dedup-store
+        annotations:
+          summary: "PostgreSQL dedup store is down"
+          description: "PostgreSQL instance {{ $labels.instance }} is not responding. Dedup will fail."
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/dedup-outage.md"
+
+      # Dedup Store High Latency
+      - alert: FLKDedupStoreSlowness
+        expr: |
+          histogram_quantile(0.95,
+            rate(dedup_operation_duration_seconds_bucket[5m])
+          ) > 0.1
+        for: 10m
+        labels:
+          severity: warning
+          component: dedup-store
+        annotations:
+          summary: "Dedup store p95 latency >100ms for 10m"
+          description: "Dedup operations are slow: {{ $value | humanizeDuration }}"
+          runbook_url: "https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/dedup-slowness.md"

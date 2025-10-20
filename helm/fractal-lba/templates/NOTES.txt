@@ -1,0 +1,60 @@
+Fractal LBA + Kakeya FT Stack has been deployed!
+
+Release: {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+
+To verify the deployment:
+
+  kubectl get pods -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "fractal-lba.name" . }}
+
+To check the backend health:
+
+  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "fractal-lba.fullname" . }} 8080:8080
+  curl http://localhost:8080/health
+
+{{- if .Values.backend.ingress.enabled }}
+
+Your application is accessible at:
+
+{{- range .Values.backend.ingress.hosts }}
+  https://{{ .host }}
+{{- end }}
+
+{{- else }}
+
+To access the backend externally:
+
+  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "fractal-lba.fullname" . }} 8080:8080
+  curl http://localhost:8080/v1/pcs/submit
+
+{{- end }}
+
+To view logs:
+
+  kubectl logs -n {{ .Release.Namespace }} -l app.kubernetes.io/name={{ include "fractal-lba.name" . }} -f
+
+To view metrics:
+
+  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "fractal-lba.fullname" . }} 8080:8080
+  curl http://localhost:8080/metrics
+
+{{- if .Values.backend.autoscaling.enabled }}
+
+Horizontal Pod Autoscaler is enabled:
+  Min replicas: {{ .Values.backend.autoscaling.minReplicas }}
+  Max replicas: {{ .Values.backend.autoscaling.maxReplicas }}
+
+  kubectl get hpa -n {{ .Release.Namespace }} {{ include "fractal-lba.fullname" . }}
+
+{{- end }}
+
+{{- if .Values.backend.podDisruptionBudget.enabled }}
+
+PodDisruptionBudget is enabled to ensure high availability during disruptions.
+
+{{- end }}
+
+For more information:
+  - Documentation: https://github.com/rkhokhla/kakeya/blob/main/README.md
+  - Runbooks: https://github.com/rkhokhla/kakeya/blob/main/docs/runbooks/
+  - Architecture: https://github.com/rkhokhla/kakeya/blob/main/docs/architecture/

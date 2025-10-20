@@ -1,0 +1,67 @@
+# Docker Compose for E2E Integration Tests
+#
+# Usage:
+#   docker-compose -f infra/compose-tests.yml up --abort-on-container-exit
+#
+# This minimal stack is optimized for CI/E2E testing:
+# - Backend with in-memory dedup (fast, disposable)
+# - Redis for testing external store scenarios
+# - No Prometheus/Grafana (keeps CI fast)
+
+version: '3.8'
+
+services:
+  # Backend under test
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      # Signature verification
+      PCS_SIGN_ALG: hmac
+      PCS_HMAC_KEY: testsecret
+
+      # Deduplication
+      DEDUP_BACKEND: memory
+      DEDUP_SNAPSHOT: /tmp/dedup.json
+
+      # WAL
+      WAL_DIR: /data/wal
+
+      # Metrics (no auth for tests)
+      METRICS_USER: ""
+      METRICS_PASS: ""
+
+      # Rate limiting (permissive for tests)
+      TOKEN_RATE: "1000"
+    volumes:
+      - backend-test-data:/data
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 2s
+      timeout: 1s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # Redis for external dedup tests
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 1s
+      retries: 5
+
+volumes:
+  backend-test-data:
+
+networks:
+  default:
+    name: fractal-lba-e2e
