@@ -113,17 +113,19 @@ kubectl logs -l app=backend
 
 ## Architecture
 
-### Phase 1-4 Implementation Stack
+### Phase 1-5 Implementation Stack
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│              Multi-Region Active-Active (Phase 4 WP1)            │
+│         Multi-Region Active-Active with WAL CRR (Phase 5 WP1)    │
 │  ┌────────────────────────┐      ┌────────────────────────┐     │
 │  │  Region: eu-west       │◄────►│  Region: us-east       │     │
 │  │  - Backend (3 replicas)│ CRR  │  - Backend (3 replicas)│     │
-│  │  - Sharded Dedup (3x)  │      │  - Sharded Dedup (3x)  │     │
-│  │  - Tiered Storage      │      │  - Tiered Storage      │     │
+│  │  - Sharded Dedup (3x)  │Ship/ │  - Sharded Dedup (3x)  │     │
+│  │  - Tiered Storage      │Replay│  - Tiered Storage      │     │
 │  │  - WORM Audit          │      │  - WORM Audit          │     │
+│  │  - WAL Shipper         │----->│  - WAL Reader          │     │
+│  │  - Divergence Detector │      │  - Batch Anchoring     │     │
 │  └────────────────────────┘      └────────────────────────┘     │
 └──────────────────────────────────────────────────────────────────┘
                               │
@@ -197,9 +199,14 @@ Located in `backend/`:
 - **Security** (`internal/security/`) - VRF verification, sanity checks, anomaly scoring
 
 **Phase 4 Scale:**
-- **Sharding** (`internal/sharding/`) - Consistent hashing for dedup shards
-- **Tiering** (`internal/tiering/`) - Hot/warm/cold storage management
-- **Replication** (planned) - Cross-region WAL/dedup replication
+- **Sharding** (`internal/sharding/`) - Consistent hashing for dedup shards, cross-shard query API
+- **Tiering** (`internal/tiering/`) - Hot/warm/cold storage management, background demotion
+
+**Phase 5 Global Production:**
+- **CRR** (`internal/crr/`) - WAL cross-region replication (shipper/reader), geo divergence detector
+- **Cold Tier** (`internal/tiering/colddriver.go`) - S3/GCS drivers with compression and lifecycle policies
+- **Async Audit** (`internal/audit/`) - Worker queue, batch anchoring, DLQ management
+- **Migration CLI** (`cmd/dedup-migrate/`) - Zero-downtime shard migration tool (plan→copy→verify→cutover→cleanup)
 
 #### Agents
 
