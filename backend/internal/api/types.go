@@ -3,10 +3,7 @@ package api
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
-	"sort"
-	"strings"
 	"time"
 )
 
@@ -88,48 +85,8 @@ func ComputePCSID(merkleRoot string, epoch int, shardID string) string {
 	return hex.EncodeToString(hash[:])
 }
 
-// SigningPayload returns the canonical JSON subset used for signing
-func (p *PCS) SigningPayload() ([]byte, error) {
-	payload := map[string]interface{}{
-		"pcs_id":      p.PCSID,
-		"merkle_root": p.MerkleRoot,
-		"epoch":       p.Epoch,
-		"shard_id":    p.ShardID,
-		"D_hat":       Round9(p.DHat),
-		"coh_star":    Round9(p.CohStar),
-		"r":           Round9(p.R),
-		"budget":      Round9(p.Budget),
-	}
-
-	// Serialize with sorted keys, no spaces
-	keys := make([]string, 0, len(payload))
-	for k := range payload {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	var sb strings.Builder
-	sb.WriteString("{")
-	for i, k := range keys {
-		if i > 0 {
-			sb.WriteString(",")
-		}
-		sb.WriteString(fmt.Sprintf("\"%s\":", k))
-
-		v := payload[k]
-		switch val := v.(type) {
-		case string:
-			sb.WriteString(fmt.Sprintf("\"%s\"", val))
-		case int:
-			sb.WriteString(fmt.Sprintf("%d", val))
-		case float64:
-			sb.WriteString(fmt.Sprintf("%.9f", val))
-		}
-	}
-	sb.WriteString("}")
-
-	return []byte(sb.String()), nil
-}
+// NOTE: SigningPayload has been moved to internal/signing/canonical.go
+// to centralize canonicalization logic per CLAUDE_PHASE1.md
 
 // Validate performs basic structural validation
 func (p *PCS) Validate() error {

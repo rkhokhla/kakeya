@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -38,9 +37,6 @@ type Server struct {
 }
 
 func main() {
-	// Load configuration from environment
-	cfg := loadConfig()
-
 	// Initialize components
 	verifyParams := api.DefaultVerifyParams()
 	verifier := verify.NewEngine(verifyParams)

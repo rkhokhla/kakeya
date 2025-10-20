@@ -3,9 +3,6 @@ Main agent module for PCS generation and submission.
 """
 
 import hashlib
-import hmac
-import base64
-import json
 import os
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Any
@@ -15,6 +12,7 @@ from . import signals
 from . import merkle
 from . import outbox
 from . import client
+from .utils import sign_hmac, sign_ed25519
 
 
 class PCSAgent:
@@ -181,42 +179,15 @@ class PCSAgent:
         if self.sign_alg == "none":
             return ""
 
-        # Build canonical signing payload
-        payload = {
-            "pcs_id": pcs["pcs_id"],
-            "merkle_root": pcs["merkle_root"],
-            "epoch": pcs["epoch"],
-            "shard_id": pcs["shard_id"],
-            "D_hat": signals.round_9(pcs["D_hat"]),
-            "coh_star": signals.round_9(pcs["coh_star"]),
-            "r": signals.round_9(pcs["r"]),
-            "budget": signals.round_9(pcs["budget"])
-        }
-
-        # Serialize with sorted keys, no spaces
-        payload_json = json.dumps(payload, sort_keys=True, separators=(',', ':'))
-
         if self.sign_alg == "hmac":
             if not self.hmac_key:
                 raise ValueError("HMAC key not configured")
-
-            mac = hmac.new(
-                self.hmac_key.encode('utf-8'),
-                payload_json.encode('utf-8'),
-                hashlib.sha256
-            ).digest()
-
-            return base64.b64encode(mac).decode('utf-8')
+            return sign_hmac(pcs, self.hmac_key.encode('utf-8'))
 
         elif self.sign_alg == "ed25519":
             if not self.ed25519_priv:
                 raise ValueError("Ed25519 private key not configured")
-
-            # Sign the SHA-256 digest
-            digest = hashlib.sha256(payload_json.encode('utf-8')).digest()
-            signature = self.ed25519_priv.sign(digest)
-
-            return base64.b64encode(signature).decode('utf-8')
+            return sign_ed25519(pcs, self.ed25519_priv)
 
         else:
             raise ValueError(f"Unknown sign algorithm: {self.sign_alg}")

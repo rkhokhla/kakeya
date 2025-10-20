@@ -14,6 +14,113 @@ These signals enable regime classification (sticky/mixed/non_sticky) and budget 
 
 ---
 
+## 0. Canonicalization & Signing
+
+### Signature Subset
+
+Per CLAUDE.md §2.1, PCS signatures cover **only** this subset of fields:
+
+```json
+{
+  "pcs_id": "...",
+  "merkle_root": "...",
+  "epoch": 123,
+  "shard_id": "shard-001",
+  "D_hat": 1.412345679,
+  "coh_star": 0.734567890,
+  "r": 0.871234567,
+  "budget": 0.421234567
+}
+```
+
+### Numeric Rounding
+
+All floating-point fields (`D_hat`, `coh_star`, `r`, `budget`) **must be rounded to 9 decimal places** before signing:
+
+```python
+def round9(x: float) -> float:
+    return float(Decimal(str(x)).quantize(Decimal("0.000000001"), rounding=ROUND_HALF_UP))
+```
+
+**Why 9 decimals?**
+- IEEE 754 double precision: ~15-17 significant decimal digits
+- 9 decimals provides stability across different runtimes/architectures
+- Prevents floating-point drift from breaking signatures
+
+### JSON Serialization
+
+Canonical JSON format for signing:
+- **Sorted keys** (alphabetical order)
+- **No whitespace** (`separators=(',', ':')`)
+- **UTF-8 encoding**
+
+**Python**:
+```python
+json.dumps(subset, sort_keys=True, separators=(',', ':')).encode('utf-8')
+```
+
+**Go**:
+```go
+// Use struct with alphabetically-ordered json tags
+type SignatureSubset struct {
+    Budget     float64 `json:"budget"`
+    CohStar    float64 `json:"coh_star"`
+    DHat       float64 `json:"D_hat"`
+    Epoch      int     `json:"epoch"`
+    MerkleRoot string  `json:"merkle_root"`
+    PCSID      string  `json:"pcs_id"`
+    R          float64 `json:"r"`
+    ShardID    string  `json:"shard_id"`
+}
+```
+
+### PCS ID Computation
+
+`pcs_id` is computed deterministically:
+
+```
+pcs_id = sha256(merkle_root + "|" + epoch + "|" + shard_id)
+```
+
+ASCII concatenation with pipe (`|`) separator.
+
+### Signing Process
+
+1. Extract signature subset from PCS
+2. Round numeric fields to 9 decimals
+3. Serialize to canonical JSON
+4. Compute SHA-256 digest of JSON bytes
+5. Sign digest with HMAC-SHA256 or Ed25519
+6. Base64-encode signature
+
+**HMAC-SHA256** (symmetric, recommended for agents):
+```python
+digest = hashlib.sha256(canonical_json).digest()
+signature = hmac.new(key, digest, hashlib.sha256).digest()
+sig_b64 = base64.b64encode(signature).decode()
+```
+
+**Ed25519** (asymmetric, recommended for gateways):
+```python
+digest = hashlib.sha256(canonical_json).digest()
+signature = private_key.sign(digest)
+sig_b64 = base64.b64encode(signature).decode()
+```
+
+### Verification Process
+
+Backend performs identical steps but **verifies** instead of signs:
+
+1. Extract signature subset from PCS
+2. Round numeric fields to 9 decimals
+3. Serialize to canonical JSON
+4. Compute SHA-256 digest
+5. Verify signature against digest
+
+**Critical**: Signature verification happens **before** dedup write or any stateful effects.
+
+---
+
 ## 1. Fractal Dimension (D̂)
 
 ### Intuition
@@ -44,15 +151,25 @@ This is a linear relationship where **slope = D̂**.
 
 Instead of least-squares (sensitive to outliers), we use **Theil-Sen**:
 
-1. Compute **all pairwise slopes**:
+1. Transform to log-log space:
    ```
-   m_ij = (log₂(N_j[i]) - log₂(N_j[j])) / (log₂(s[i]) - log₂(s[j]))
+   x_i = log₂(scale_i)
+   y_i = log₂(max(1, N_j[scale_i]))
    ```
 
-2. Take the **median** slope:
+   **Note**: `max(1, N_j)` prevents log of zero for empty scales.
+
+2. Compute **all pairwise slopes**:
+   ```
+   m_ij = (y_j - y_i) / (x_j - x_i)  for j > i
+   ```
+
+3. Take the **median** slope:
    ```
    D̂ = median(m_ij)
    ```
+
+4. Round to 9 decimals for stability.
 
 ### Example
 
@@ -181,23 +298,42 @@ Other bins:     10 points
 ```python
 import numpy as np
 
-def compute_coherence(points, num_directions=100, num_bins=20):
+def compute_coherence(points, num_directions=100, num_bins=20, seed=None):
+    """
+    Compute directional coherence with reproducibility.
+
+    Args:
+        points: Nx3 array of 3D points
+        num_directions: Number of random directions to sample (default: 100)
+        num_bins: Number of histogram bins (default: 20, CLAUDE_PHASE1: 64 recommended)
+        seed: Random seed for reproducibility (optional)
+    """
+    if seed is not None:
+        np.random.seed(seed)
+
     max_coherence = 0.0
     best_direction = np.array([1.0, 0.0, 0.0])
 
     for _ in range(num_directions):
-        # Random unit direction
+        # Random unit direction (uniform on sphere via normal distribution)
         v = np.random.randn(3)
         v = v / np.linalg.norm(v)
 
-        # Project points
+        # Project points onto direction
         projections = points @ v
 
-        # Histogram
-        hist, _ = np.histogram(projections, bins=num_bins)
+        # Handle zero-width case (all points project to same value)
+        pmin, pmax = projections.min(), projections.max()
+        if abs(pmax - pmin) < 1e-9:
+            # All points are identical or collinear with direction
+            # Use single bin behavior: all points in one bin
+            coh_v = 1.0
+        else:
+            # Create histogram with linear bins between min and max
+            hist, _ = np.histogram(projections, bins=num_bins, range=(pmin, pmax))
 
-        # Coherence
-        coh_v = hist.max() / len(points) if len(points) > 0 else 0.0
+            # Coherence = max fraction in any bin
+            coh_v = hist.max() / len(points) if len(points) > 0 else 0.0
 
         if coh_v > max_coherence:
             max_coherence = coh_v
@@ -205,6 +341,13 @@ def compute_coherence(points, num_directions=100, num_bins=20):
 
     return round(max_coherence, 9), best_direction
 ```
+
+**Key Implementation Details** (per CLAUDE_PHASE1.md):
+
+1. **Direction Sampling**: Use `np.random.randn(3)` normalized to get uniform distribution on sphere
+2. **Binning**: Linear bins between `[pmin, pmax]` with `bins_per_level=64` recommended (vs. default 20)
+3. **Zero-Width Handling**: If `pmax == pmin`, use width=1.0 to avoid division by zero → single-bin behavior (coh = 1.0)
+4. **Reproducibility**: Use fixed `seed` for deterministic results in tests
 
 ### Tuning
 
@@ -237,12 +380,24 @@ For event streams, low r suggests **regularity** (e.g., periodic events), while 
 
 ### Algorithm
 
-1. **Serialize** event data to bytes
-2. **Compress** with zlib (DEFLATE, level=9)
-3. **Ratio**:
+1. **Build canonical rows** from event data:
+   ```
+   "timestamp,key,value\n"
+   ```
+   - Use `.` as decimal separator
+   - Join rows with `\n` (newline)
+   - Encode as UTF-8
+
+2. **Compress** with zlib:
+   ```python
+   compressed = zlib.compress(raw, level=6)  # Level 6 per CLAUDE_PHASE1
+   ```
+
+3. **Compute ratio**:
    ```
    r = len(compressed) / len(raw)
    ```
+   Guard: if `len(raw) == 0`, then `r = 1.0` (empty stream is "incompressible")
 
 ### Example
 
@@ -265,17 +420,43 @@ r = 1005 / 1000 = 1.005 ≈ 1.0  # Incompressible
 ```python
 import zlib
 
-def compute_compressibility(data):
-    if len(data) == 0:
-        return 1.0
+def compute_compressibility(data: bytes) -> float:
+    """
+    Compute compressibility ratio per CLAUDE_PHASE1.md.
 
-    compressed = zlib.compress(data, level=9)
+    Args:
+        data: Canonical row format (UTF-8 encoded)
+
+    Returns:
+        Compression ratio r ∈ [0, 1], rounded to 9 decimals
+    """
+    if len(data) == 0:
+        return 1.0  # Empty stream guard
+
+    compressed = zlib.compress(data, level=6)  # Level 6 per CLAUDE_PHASE1
     ratio = len(compressed) / len(data)
 
     # Clamp to [0, 1]
     ratio = max(0.0, min(1.0, ratio))
 
     return round(ratio, 9)
+```
+
+**Canonical Row Format Example**:
+```python
+# Event data: [(timestamp, key, value), ...]
+events = [(1.5, "temp", 23.4), (2.0, "temp", 23.5)]
+
+# Build canonical rows
+rows = []
+for t, k, v in events:
+    rows.append(f"{t:.9f},{k},{v:.9f}")  # Use . as decimal separator
+
+# Join with newlines and encode
+raw = "\n".join(rows).encode("utf-8")
+
+# Compute compressibility
+r = compute_compressibility(raw)
 ```
 
 ### Limitations
@@ -390,6 +571,8 @@ Domain-specific! Adjust weights (α, β, γ) based on your application.
 ---
 
 ## 6. Verification Tolerances
+
+**IMPORTANT** (per CLAUDE_PHASE1.md §2.3): Tolerances are enforced **only** on the **verifier** (backend). Agents compute signals independently and do not apply these tolerances during PCS generation.
 
 ### Tolerances
 

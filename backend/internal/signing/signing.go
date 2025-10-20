@@ -1,9 +1,6 @@
 package signing
 
 import (
-	"crypto/ed25519"
-	"crypto/hmac"
-	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 
@@ -30,26 +27,15 @@ func (h *HMACVerifier) Verify(pcs *api.PCS) error {
 		return fmt.Errorf("signature is empty")
 	}
 
-	// Get canonical signing payload
-	payload, err := pcs.SigningPayload()
+	// Get canonical signature digest
+	digest, err := SignatureDigest(pcs)
 	if err != nil {
-		return fmt.Errorf("failed to generate signing payload: %w", err)
+		return fmt.Errorf("failed to generate signature digest: %w", err)
 	}
 
-	// Compute expected HMAC
-	mac := hmac.New(sha256.New, h.key)
-	mac.Write(payload)
-	expectedMAC := mac.Sum(nil)
-
-	// Decode provided signature
-	providedMAC, err := base64.StdEncoding.DecodeString(pcs.Sig)
-	if err != nil {
-		return fmt.Errorf("failed to decode signature: %w", err)
-	}
-
-	// Compare
-	if !hmac.Equal(expectedMAC, providedMAC) {
-		return fmt.Errorf("HMAC signature mismatch")
+	// Verify HMAC
+	if err := VerifyHMAC(digest, pcs.Sig, h.key); err != nil {
+		return fmt.Errorf("HMAC verification failed: %w", err)
 	}
 
 	return nil
@@ -57,7 +43,7 @@ func (h *HMACVerifier) Verify(pcs *api.PCS) error {
 
 // Ed25519Verifier verifies Ed25519 signatures
 type Ed25519Verifier struct {
-	pubKey ed25519.PublicKey
+	pubKey []byte
 }
 
 // NewEd25519Verifier creates an Ed25519 verifier from base64-encoded public key
@@ -67,11 +53,11 @@ func NewEd25519Verifier(pubKeyB64 string) (*Ed25519Verifier, error) {
 		return nil, fmt.Errorf("failed to decode public key: %w", err)
 	}
 
-	if len(pubKey) != ed25519.PublicKeySize {
-		return nil, fmt.Errorf("invalid Ed25519 public key size: expected %d, got %d", ed25519.PublicKeySize, len(pubKey))
+	if len(pubKey) != 32 { // ed25519.PublicKeySize
+		return nil, fmt.Errorf("invalid Ed25519 public key size: expected 32, got %d", len(pubKey))
 	}
 
-	return &Ed25519Verifier{pubKey: ed25519.PublicKey(pubKey)}, nil
+	return &Ed25519Verifier{pubKey: pubKey}, nil
 }
 
 func (e *Ed25519Verifier) Verify(pcs *api.PCS) error {
@@ -79,24 +65,15 @@ func (e *Ed25519Verifier) Verify(pcs *api.PCS) error {
 		return fmt.Errorf("signature is empty")
 	}
 
-	// Get canonical signing payload
-	payload, err := pcs.SigningPayload()
+	// Get canonical signature digest
+	digest, err := SignatureDigest(pcs)
 	if err != nil {
-		return fmt.Errorf("failed to generate signing payload: %w", err)
+		return fmt.Errorf("failed to generate signature digest: %w", err)
 	}
 
-	// Compute digest (Ed25519 signs the hash)
-	digest := sha256.Sum256(payload)
-
-	// Decode provided signature
-	sig, err := base64.StdEncoding.DecodeString(pcs.Sig)
-	if err != nil {
-		return fmt.Errorf("failed to decode signature: %w", err)
-	}
-
-	// Verify
-	if !ed25519.Verify(e.pubKey, digest[:], sig) {
-		return fmt.Errorf("Ed25519 signature verification failed")
+	// Verify Ed25519
+	if err := VerifyEd25519(digest, pcs.Sig, e.pubKey); err != nil {
+		return fmt.Errorf("Ed25519 verification failed: %w", err)
 	}
 
 	return nil
