@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 
@@ -16,6 +17,7 @@ import (
 	"github.com/fractal-lba/kakeya/internal/dedup"
 	"github.com/fractal-lba/kakeya/internal/metrics"
 	"github.com/fractal-lba/kakeya/internal/signing"
+	"github.com/fractal-lba/kakeya/internal/tenant"
 	"github.com/fractal-lba/kakeya/internal/verify"
 	"github.com/fractal-lba/kakeya/internal/wal"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -23,12 +25,14 @@ import (
 )
 
 type Server struct {
-	verifier  *verify.Engine
-	dedupStore dedup.Store
-	inboxWAL  *wal.InboxWAL
-	sigVerifier signing.Verifier
-	metrics   *metrics.Metrics
-	limiter   *rate.Limiter
+	verifier     *verify.Engine
+	dedupStore   dedup.Store
+	inboxWAL     *wal.InboxWAL
+	sigVerifier  *signing.MultiTenantVerifier
+	metrics      *metrics.Metrics
+	limiter      *rate.Limiter // Global rate limiter (backward compat)
+	tenantMgr    *tenant.Manager
+	multiTenant  bool // Phase 3 multi-tenant mode enabled
 	metricsAuth struct {
 		enabled  bool
 		user     string
@@ -75,7 +79,7 @@ func main() {
 
 	// Setup signature verification
 	sigAlg := getEnv("PCS_SIGN_ALG", "none")
-	var sigVerifier signing.Verifier
+	var fallbackVerifier signing.Verifier
 
 	switch sigAlg {
 	case "hmac":
@@ -83,37 +87,59 @@ func main() {
 		if hmacKey == "" {
 			log.Fatal("PCS_HMAC_KEY is required when PCS_SIGN_ALG=hmac")
 		}
-		sigVerifier = signing.NewHMACVerifier(hmacKey)
+		fallbackVerifier = signing.NewHMACVerifier(hmacKey)
 	case "ed25519":
 		pubKeyB64 := getEnv("PCS_ED25519_PUB_B64", "")
 		if pubKeyB64 == "" {
 			log.Fatal("PCS_ED25519_PUB_B64 is required when PCS_SIGN_ALG=ed25519")
 		}
-		sigVerifier, err = signing.NewEd25519Verifier(pubKeyB64)
+		fallbackVerifier, err = signing.NewEd25519Verifier(pubKeyB64)
 		if err != nil {
 			log.Fatalf("Failed to create Ed25519 verifier: %v", err)
 		}
 	case "none":
-		sigVerifier = &signing.NoOpVerifier{}
+		fallbackVerifier = &signing.NoOpVerifier{}
 	default:
 		log.Fatalf("Unknown PCS_SIGN_ALG: %s", sigAlg)
 	}
 
+	// Multi-tenant signature verifier (Phase 3)
+	mtVerifier := signing.NewMultiTenantVerifier(fallbackVerifier)
+
 	// Setup metrics
 	m := metrics.New()
 
-	// Rate limiter
+	// Rate limiter (global, for backward compatibility)
 	tokenRate := getEnvInt("TOKEN_RATE", 100)
 	limiter := rate.NewLimiter(rate.Limit(tokenRate), tokenRate*2)
+
+	// Multi-tenant mode (Phase 3)
+	multiTenantEnabled := getEnv("MULTI_TENANT", "false") == "true"
+	tenantMgr := tenant.NewManager()
+
+	// Register default tenant for backward compatibility
+	if !multiTenantEnabled {
+		defaultTenant := tenant.DefaultTenant()
+		if err := tenantMgr.RegisterTenant(defaultTenant); err != nil {
+			log.Fatalf("Failed to register default tenant: %v", err)
+		}
+		log.Println("Running in single-tenant mode (backward compatible)")
+	} else {
+		log.Println("Running in multi-tenant mode (Phase 3)")
+		// Load tenants from configuration
+		loadTenants(tenantMgr, mtVerifier)
+	}
 
 	// Create server
 	srv := &Server{
 		verifier:    verifier,
 		dedupStore:  dedupStore,
 		inboxWAL:    inboxWAL,
-		sigVerifier: sigVerifier,
+		sigVerifier: mtVerifier,
 		metrics:     m,
 		limiter:     limiter,
+		tenantMgr:   tenantMgr,
+		multiTenant: multiTenantEnabled,
 	}
 
 	// Metrics auth
@@ -175,14 +201,40 @@ func (s *Server) handleSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Rate limiting
-	if !s.limiter.Allow() {
-		w.Header().Set("Retry-After", "10")
-		http.Error(w, "Too many requests", http.StatusTooManyRequests)
-		return
+	// Extract tenant ID from header (Phase 3)
+	tenantID := r.Header.Get("X-Tenant-Id")
+	if tenantID == "" {
+		tenantID = "default" // Backward compatibility
 	}
 
+	// Tenant-aware rate limiting (Phase 3)
+	if s.multiTenant {
+		ctx := r.Context()
+		if err := s.tenantMgr.Allow(ctx, tenantID); err != nil {
+			if err == tenant.ErrQuotaExceeded {
+				s.metrics.QuotaExceededByTenant.WithLabelValues(tenantID).Inc()
+				w.Header().Set("Retry-After", "10")
+				http.Error(w, "Tenant quota exceeded", http.StatusTooManyRequests)
+				return
+			}
+			log.Printf("Tenant check failed for %s: %v", tenantID, err)
+			http.Error(w, "Tenant error", http.StatusBadRequest)
+			return
+		}
+	} else {
+		// Global rate limiting (backward compatibility)
+		if !s.limiter.Allow() {
+			w.Header().Set("Retry-After", "10")
+			http.Error(w, "Too many requests", http.StatusTooManyRequests)
+			return
+		}
+	}
+
+	// Update metrics (both global and per-tenant)
 	s.metrics.IngestTotal.Inc()
+	if s.multiTenant {
+		s.metrics.IngestTotalByTenant.WithLabelValues(tenantID).Inc()
+	}
 
 	// Read body
 	body, err := io.ReadAll(io.LimitReader(r.Body, 1<<20)) // 1MB limit
@@ -208,11 +260,22 @@ func (s *Server) handleSubmit(w http.ResponseWriter, r *http.Request) {
 
 	// Verify signature BEFORE dedup check (per CLAUDE_PHASE1.md)
 	// This ensures we don't cache results for unsigned/invalid signatures
-	if err := s.sigVerifier.Verify(&pcs); err != nil {
-		log.Printf("Signature verification failed for %s: %v", pcs.PCSID, err)
-		s.metrics.SignatureErr.Inc()
-		http.Error(w, "Signature verification failed", http.StatusUnauthorized)
-		return
+	// Use tenant-specific verifier in multi-tenant mode (Phase 3)
+	if s.multiTenant {
+		if err := s.sigVerifier.VerifyForTenant(tenantID, &pcs); err != nil {
+			log.Printf("Signature verification failed for tenant %s, PCS %s: %v", tenantID, pcs.PCSID, err)
+			s.metrics.SignatureErr.Inc()
+			s.metrics.SignatureErrByTenant.WithLabelValues(tenantID).Inc()
+			http.Error(w, "Signature verification failed", http.StatusUnauthorized)
+			return
+		}
+	} else {
+		if err := s.sigVerifier.Verify(&pcs); err != nil {
+			log.Printf("Signature verification failed for %s: %v", pcs.PCSID, err)
+			s.metrics.SignatureErr.Inc()
+			http.Error(w, "Signature verification failed", http.StatusUnauthorized)
+			return
+		}
 	}
 
 	// Idempotent dedup check
@@ -227,6 +290,9 @@ func (s *Server) handleSubmit(w http.ResponseWriter, r *http.Request) {
 	if existingResult != nil {
 		// Duplicate - return cached result
 		s.metrics.DedupHits.Inc()
+		if s.multiTenant {
+			s.metrics.DedupHitsByTenant.WithLabelValues(tenantID).Inc()
+		}
 		respondWithResult(w, existingResult)
 		return
 	}
@@ -246,12 +312,18 @@ func (s *Server) handleSubmit(w http.ResponseWriter, r *http.Request) {
 		// Continue anyway - this is not fatal
 	}
 
-	// Update metrics
+	// Update metrics (global and per-tenant)
 	if result.Accepted && !result.Escalated {
 		s.metrics.Accepted.Inc()
+		if s.multiTenant {
+			s.metrics.AcceptedByTenant.WithLabelValues(tenantID).Inc()
+		}
 	}
 	if result.Escalated {
 		s.metrics.Escalated.Inc()
+		if s.multiTenant {
+			s.metrics.EscalatedByTenant.WithLabelValues(tenantID).Inc()
+		}
 	}
 
 	respondWithResult(w, result)
@@ -316,4 +388,60 @@ func getEnvInt(key string, defaultValue int) int {
 		}
 	}
 	return defaultValue
+}
+
+// loadTenants loads tenant configuration from environment variables (Phase 3)
+// Format: TENANTS=tenant1:hmac:key1,tenant2:ed25519:pubkey2
+func loadTenants(mgr *tenant.Manager, verifier *signing.MultiTenantVerifier) {
+	tenantsConfig := getEnv("TENANTS", "")
+	if tenantsConfig == "" {
+		log.Println("No tenants configured. Use TENANTS env var to configure multi-tenant mode")
+		// Register a default tenant for testing
+		defaultTenant := tenant.DefaultTenant()
+		if err := mgr.RegisterTenant(defaultTenant); err != nil {
+			log.Printf("Warning: failed to register default tenant: %v", err)
+		}
+		return
+	}
+
+	tenantSpecs := strings.Split(tenantsConfig, ",")
+	for _, spec := range tenantSpecs {
+		parts := strings.Split(spec, ":")
+		if len(parts) < 3 {
+			log.Printf("Invalid tenant spec: %s (expected format: tenant_id:alg:key)", spec)
+			continue
+		}
+
+		tenantID := strings.TrimSpace(parts[0])
+		alg := strings.TrimSpace(parts[1])
+		key := strings.TrimSpace(parts[2])
+
+		// Register tenant
+		t := &tenant.Tenant{
+			ID:           tenantID,
+			DisplayName:  tenantID,
+			SigningKey:   key,
+			SigningAlg:   alg,
+			TokenRate:    100,  // Default rate
+			BurstRate:    200,  // Default burst
+			DailyQuota:   0,    // Unlimited by default
+			CustomParams: false,
+			CreatedAt:    time.Now(),
+			Active:       true,
+			Metadata:     make(map[string]string),
+		}
+
+		if err := mgr.RegisterTenant(t); err != nil {
+			log.Printf("Failed to register tenant %s: %v", tenantID, err)
+			continue
+		}
+
+		// Register verifier for tenant
+		if err := verifier.RegisterTenant(tenantID, alg, key); err != nil {
+			log.Printf("Failed to register verifier for tenant %s: %v", tenantID, err)
+			continue
+		}
+
+		log.Printf("Registered tenant: %s (alg=%s)", tenantID, alg)
+	}
 }

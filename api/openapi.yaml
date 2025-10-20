@@ -1,0 +1,380 @@
+openapi: 3.0.3
+info:
+  title: Fractal LBA + Kakeya FT Stack API
+  description: |
+    API for submitting and verifying Proof-of-Computation Summaries (PCS) with
+    fractal dimension analysis, directional coherence, and compressibility metrics.
+
+    Supports multi-tenant isolation, signature verification (HMAC/Ed25519), and
+    fault-tolerant processing with WAL-backed idempotency.
+  version: 0.3.0 (Phase 3)
+  contact:
+    name: API Support
+    email: api@fractal-lba.example.com
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://api.fractal-lba.example.com
+    description: Production
+  - url: https://api-staging.fractal-lba.example.com
+    description: Staging
+  - url: http://localhost:8080
+    description: Local development
+
+tags:
+  - name: pcs
+    description: Proof-of-Computation Summary operations
+  - name: health
+    description: Health and readiness checks
+  - name: metrics
+    description: Prometheus metrics (requires authentication)
+
+paths:
+  /v1/pcs/submit:
+    post:
+      summary: Submit a Proof-of-Computation Summary
+      description: |
+        Submits a PCS for verification. The request is:
+        1. Written to WAL (fault tolerance)
+        2. Signature verified (if enabled)
+        3. Checked for duplicates (idempotency)
+        4. Verified (recompute D̂, check tolerances)
+        5. Stored with TTL
+
+        Returns 200 (accepted), 202 (escalated), or 401 (signature failed).
+      operationId: submitPCS
+      tags:
+        - pcs
+      parameters:
+        - name: X-Tenant-Id
+          in: header
+          description: Tenant ID for multi-tenant isolation (Phase 3)
+          required: false
+          schema:
+            type: string
+            example: "tenant-001"
+        - name: X-PCS-Schema-Version
+          in: header
+          description: PCS schema version
+          required: false
+          schema:
+            type: string
+            default: "0.1"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PCS'
+            examples:
+              sticky:
+                summary: Sticky regime example
+                value:
+                  pcs_id: "a7b3c8d9e0f1234567890abcdef12345"
+                  schema: "fractal-lba-kakeya"
+                  version: "0.1"
+                  shard_id: "shard-001"
+                  epoch: 12345
+                  attempt: 1
+                  sent_at: "2025-01-15T10:30:00Z"
+                  seed: 42
+                  scales: [2, 4, 8, 16, 32]
+                  N_j: {"2": 3, "4": 5, "8": 9, "16": 17, "32": 31}
+                  coh_star: 0.85
+                  v_star: [0.12, 0.98, -0.05]
+                  D_hat: 1.35
+                  r: 0.65
+                  regime: "sticky"
+                  budget: 0.55
+                  merkle_root: "a1b2c3d4e5f6789012345678901234567890abcdefabcdef1234567890abcd"
+                  sig: "aGVsbG8gd29ybGQK..."
+                  ft:
+                    outbox_seq: 123
+                    degraded: false
+                    fallbacks: []
+                    clock_skew_ms: 0
+
+      responses:
+        '200':
+          description: PCS accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResult'
+              example:
+                accepted: true
+                recomputed_D_hat: 1.36
+                recomputed_budget: 0.54
+                escalated: false
+        '202':
+          description: PCS escalated (uncertain verification)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResult'
+              example:
+                accepted: false
+                recomputed_D_hat: 1.62
+                reason: "D_hat tolerance exceeded"
+                escalated: true
+        '400':
+          description: Bad request (malformed JSON or validation error)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized (signature verification failed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Too many requests (rate limit or quota exceeded)
+          headers:
+            Retry-After:
+              description: Seconds to wait before retrying
+              schema:
+                type: integer
+                example: 10
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /health:
+    get:
+      summary: Health check
+      description: Returns 200 OK if service is healthy
+      operationId: healthCheck
+      tags:
+        - health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      description: |
+        Prometheus metrics endpoint. Requires Basic Auth if METRICS_USER is configured.
+
+        Metrics include:
+        - flk_ingest_total: Total PCS submissions
+        - flk_dedup_hits: Duplicate requests served from cache
+        - flk_accepted: Accepted verifications (200)
+        - flk_escalated: Escalated verifications (202)
+        - flk_signature_errors: Signature verification failures
+        - flk_wal_errors: WAL write errors
+        - flk_*_by_tenant: Per-tenant labeled metrics (Phase 3)
+      operationId: getMetrics
+      tags:
+        - metrics
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: Prometheus metrics
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: |
+                  # HELP flk_ingest_total Total number of PCS submissions received
+                  # TYPE flk_ingest_total counter
+                  flk_ingest_total 12345
+        '401':
+          description: Unauthorized (missing or invalid credentials)
+
+components:
+  schemas:
+    PCS:
+      type: object
+      required:
+        - pcs_id
+        - schema
+        - version
+        - shard_id
+        - epoch
+        - attempt
+        - sent_at
+        - seed
+        - scales
+        - N_j
+        - coh_star
+        - v_star
+        - D_hat
+        - r
+        - regime
+        - budget
+        - merkle_root
+        - sig
+        - ft
+      properties:
+        pcs_id:
+          type: string
+          description: "Canonical ID: sha256(merkle_root|epoch|shard_id)"
+          example: "a7b3c8d9e0f1234567890abcdef12345"
+        schema:
+          type: string
+          enum: ["fractal-lba-kakeya"]
+          description: Schema identifier
+        version:
+          type: string
+          description: Schema version (semver)
+          example: "0.1"
+        shard_id:
+          type: string
+          description: Shard identifier
+          example: "shard-001"
+        epoch:
+          type: integer
+          minimum: 0
+          description: Epoch number
+        attempt:
+          type: integer
+          minimum: 1
+          description: Submission attempt number
+        sent_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp
+        seed:
+          type: integer
+          description: Random seed for signal computation
+        scales:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+          minItems: 1
+          description: Scale values for fractal analysis
+          example: [2, 4, 8, 16, 32]
+        N_j:
+          type: object
+          additionalProperties:
+            type: integer
+          description: "Unique non-empty cells per scale (keys: stringified scales)"
+          example: {"2": 3, "4": 5, "8": 9, "16": 17, "32": 31}
+        coh_star:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1.05
+          description: Directional coherence (max fraction in histogram bins)
+        v_star:
+          type: array
+          items:
+            type: number
+            format: double
+          minItems: 3
+          maxItems: 3
+          description: Best projection direction [x, y, z]
+        D_hat:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 3.5
+          description: Fractal dimension estimate (Theil-Sen slope)
+        r:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+          description: Compressibility ratio (zlib)
+        regime:
+          type: string
+          enum: ["sticky", "mixed", "non_sticky"]
+          description: Classified regime
+        budget:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+          description: Computed budget score
+        merkle_root:
+          type: string
+          pattern: '^[a-f0-9]{64}$'
+          description: Merkle root of input data (64 hex chars)
+        sig:
+          type: string
+          description: Base64-encoded signature (HMAC-SHA256 or Ed25519)
+        ft:
+          $ref: '#/components/schemas/FaultToleranceInfo'
+
+    FaultToleranceInfo:
+      type: object
+      required:
+        - outbox_seq
+        - degraded
+        - fallbacks
+        - clock_skew_ms
+      properties:
+        outbox_seq:
+          type: integer
+          description: Outbox WAL sequence number
+        degraded:
+          type: boolean
+          description: Whether agent is in degraded mode
+        fallbacks:
+          type: array
+          items:
+            type: string
+          description: List of fallback mechanisms used
+        clock_skew_ms:
+          type: integer
+          description: Clock skew in milliseconds
+
+    VerifyResult:
+      type: object
+      required:
+        - accepted
+        - escalated
+      properties:
+        accepted:
+          type: boolean
+          description: Whether PCS was accepted
+        recomputed_D_hat:
+          type: number
+          format: double
+          description: Server-recomputed D̂ value
+        recomputed_budget:
+          type: number
+          format: double
+          description: Server-recomputed budget
+        reason:
+          type: string
+          description: Reason for rejection/escalation
+        escalated:
+          type: boolean
+          description: Whether PCS was escalated for manual review
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: "Signature verification failed"
+
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Basic authentication for /metrics endpoint
+
+security: []
