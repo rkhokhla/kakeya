@@ -206,6 +206,15 @@ func (s *Server) handleSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Verify signature BEFORE dedup check (per CLAUDE_PHASE1.md)
+	// This ensures we don't cache results for unsigned/invalid signatures
+	if err := s.sigVerifier.Verify(&pcs); err != nil {
+		log.Printf("Signature verification failed for %s: %v", pcs.PCSID, err)
+		s.metrics.SignatureErr.Inc()
+		http.Error(w, "Signature verification failed", http.StatusUnauthorized)
+		return
+	}
+
 	// Idempotent dedup check
 	ctx := r.Context()
 	existingResult, err := s.dedupStore.Get(ctx, pcs.PCSID)
@@ -219,14 +228,6 @@ func (s *Server) handleSubmit(w http.ResponseWriter, r *http.Request) {
 		// Duplicate - return cached result
 		s.metrics.DedupHits.Inc()
 		respondWithResult(w, existingResult)
-		return
-	}
-
-	// Verify signature
-	if err := s.sigVerifier.Verify(&pcs); err != nil {
-		log.Printf("Signature verification failed for %s: %v", pcs.PCSID, err)
-		s.metrics.SignatureErr.Inc()
-		http.Error(w, "Signature verification failed", http.StatusUnauthorized)
 		return
 	}
 

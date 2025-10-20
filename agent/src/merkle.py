@@ -3,7 +3,7 @@ Merkle tree implementation for PCS integrity.
 """
 
 import hashlib
-from typing import List
+from typing import List, Tuple
 
 
 def hash_leaf(data: bytes) -> str:

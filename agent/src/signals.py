@@ -57,15 +57,23 @@ def compute_D_hat(scales: List[int], N_j: Dict[int, int]) -> float:
 def compute_coherence(
     points: np.ndarray,
     num_directions: int = 100,
-    num_bins: int = 20
+    num_bins: int = 20,
+    seed: int = None
 ) -> Tuple[float, np.ndarray]:
     """
     Compute directional coherence coh★ using histogram projection.
 
+    Per CLAUDE_PHASE1.md:
+    - Sample directions uniformly on sphere
+    - Bin projections linearly between min/max
+    - Handle zero-width case (pmax == pmin) with single-bin behavior
+    - Support reproducibility via seed
+
     Args:
         points: Nx3 array of 3D points
         num_directions: Number of random directions to sample
-        num_bins: Number of histogram bins for projection
+        num_bins: Number of histogram bins for projection (default 20, recommended 64)
+        seed: Random seed for reproducibility (optional)
 
     Returns:
         (coh_star, v_star): Maximum coherence and corresponding direction
@@ -73,23 +81,33 @@ def compute_coherence(
     if len(points) == 0:
         return 0.0, np.array([0.0, 0.0, 0.0])
 
+    # Set seed for reproducibility
+    if seed is not None:
+        np.random.seed(seed)
+
     max_coherence = 0.0
     best_direction = np.array([1.0, 0.0, 0.0])
 
     # Sample random unit directions
     for _ in range(num_directions):
-        # Random direction on unit sphere
+        # Random direction on unit sphere (uniform via normal distribution)
         v = np.random.randn(3)
         v = v / np.linalg.norm(v)
 
         # Project points onto direction
         projections = points @ v
 
-        # Histogram
-        hist, _ = np.histogram(projections, bins=num_bins)
+        # Handle zero-width case (all points project to same value)
+        pmin, pmax = projections.min(), projections.max()
+        if abs(pmax - pmin) < 1e-9:
+            # All points in single bin → coh = 1.0
+            coherence = 1.0
+        else:
+            # Create histogram with linear bins between [pmin, pmax]
+            hist, _ = np.histogram(projections, bins=num_bins, range=(pmin, pmax))
 
-        # Coherence = max fraction in any bin
-        coherence = hist.max() / len(points) if len(points) > 0 else 0.0
+            # Coherence = max fraction in any bin
+            coherence = hist.max() / len(points) if len(points) > 0 else 0.0
 
         if coherence > max_coherence:
             max_coherence = coherence
@@ -102,16 +120,18 @@ def compute_compressibility(data: bytes) -> float:
     """
     Compute compressibility ratio r = compressed_size / raw_size.
 
+    Per CLAUDE_PHASE1.md: Use zlib level=6 for balance between speed and compression.
+
     Args:
-        data: Raw byte data
+        data: Raw byte data (canonical row format, UTF-8 encoded)
 
     Returns:
         Compression ratio r ∈ [0, 1], rounded to 9 decimals
     """
     if len(data) == 0:
-        return 1.0
+        return 1.0  # Empty stream guard
 
-    compressed = zlib.compress(data, level=9)
+    compressed = zlib.compress(data, level=6)  # Level 6 per CLAUDE_PHASE1
     ratio = len(compressed) / len(data)
 
     # Clamp to [0, 1]

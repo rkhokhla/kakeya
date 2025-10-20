@@ -76,3 +76,44 @@ def sign_ed25519(pcs: Dict[str, Any], private_key) -> str:
     digest = hashlib.sha256(payload).digest()
     signature = private_key.sign(digest)
     return base64.b64encode(signature).decode("utf-8")
+
+
+def verify_hmac(pcs: Dict[str, Any], key: bytes) -> bool:
+    """
+    Verify HMAC-SHA256 signature on a PCS.
+
+    Process:
+    1. Extract signature from pcs["sig"]
+    2. Generate canonical signature payload (excluding sig field)
+    3. Compute SHA-256 digest of payload
+    4. HMAC-SHA256 the digest with provided key
+    5. Compare with extracted signature (constant-time)
+
+    Args:
+        pcs: Complete PCS dictionary with "sig" field
+        key: HMAC secret key (bytes)
+
+    Returns:
+        True if signature is valid, False otherwise
+    """
+    try:
+        # Extract signature
+        sig_b64 = pcs.get("sig", "")
+        if not sig_b64:
+            return False
+
+        # Decode signature
+        expected_sig = base64.b64decode(sig_b64)
+
+        # Compute signature over PCS (excluding sig field)
+        pcs_without_sig = {k: v for k, v in pcs.items() if k != "sig"}
+        payload = signature_payload(pcs_without_sig)
+        digest = hashlib.sha256(payload).digest()
+        computed_sig = hmac.new(key, digest, hashlib.sha256).digest()
+
+        # Constant-time comparison
+        return hmac.compare_digest(expected_sig, computed_sig)
+
+    except Exception:
+        # Any error in verification should return False
+        return False
