@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/fractal-lba/backend/internal/sharding"
+	"github.com/fractal-lba/kakeya/internal/sharding"
 	"github.com/spf13/cobra"
 )
 

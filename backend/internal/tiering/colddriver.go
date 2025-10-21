@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/fractal-lba/backend/internal/api"
+	"github.com/fractal-lba/kakeya/internal/api"
 )
 
 // ColdDriver implements StorageDriver for object storage (S3/GCS) - Phase 5 WP2

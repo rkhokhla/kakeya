@@ -142,7 +142,6 @@ func (bd *BlockingDetector) Detect(ctx context.Context, pcsID string, features [
 	} else if score >= bd.guardThreshold {
 		// Medium confidence or high uncertainty → GUARDRAIL (escalate to HRS/ensemble)
 		decision = "guardrail"
-		action = "escalate"
 
 		bd.metrics.mu.Lock()
 		bd.metrics.GuardrailCount++
@@ -154,7 +153,6 @@ func (bd *BlockingDetector) Detect(ctx context.Context, pcsID string, features [
 	} else {
 		// Low score → ACCEPT
 		decision = "accept"
-		action = "continue"
 
 		bd.metrics.mu.Lock()
 		bd.metrics.AcceptedCount++
