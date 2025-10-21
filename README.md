@@ -43,12 +43,12 @@ It’s **model-agnostic**, **auditable**, and **production-ready**.
 
 Dive deeper:
 
-* 📄 **Signal computation details:** `docs/architecture/signal-computation.md`
-* 🧭 **System overview:** `docs/architecture/overview.md`
-* ⚙️ **Operator & policies:** `docs/operations/policies.md`
-* 🔐 **Security & keys:** `docs/security/overview.md`
-* 📊 **Dashboards & SLOs:** `docs/observability/dashboards.md`
-* 🚑 **Runbooks (incidents):** `docs/runbooks/` *(start with `signature-spike.md`, `dedup-outage.md`, `geo-failover.md`)*
+* 📄 **Signal computation details:** [docs/architecture/signal-computation.md](docs/architecture/signal-computation.md)
+* 🧭 **System overview:** [docs/architecture/overview.md](docs/architecture/overview.md)
+* ⚙️ **Operator & policies:** [docs/operations/policies.md](docs/operations/policies.md)
+* 🔐 **Security & keys:** [docs/security/overview.md](docs/security/overview.md)
+* 📊 **Dashboards & SLOs:** [docs/observability/dashboards.md](docs/observability/dashboards.md)
+* 🚑 **Runbooks (incidents):** [docs/runbooks/](docs/runbooks/) *(start with [signature-spike.md](docs/runbooks/signature-spike.md), [dedup-outage.md](docs/runbooks/dedup-outage.md), [geo-failover.md](docs/runbooks/geo-failover.md))*
 
 ---
 
@@ -109,9 +109,9 @@ Dive deeper:
 
 Helpful docs:
 
-* 🧪 **E2E tests:** `./docs/testing/e2e.md`
-* 📦 **Helm usage:** `./docs/deploy/helm.md`
-* 🧰 **Local dev (Compose/kind):** `./docs/deploy/local.md`
+* 🧪 **E2E tests:** [docs/testing/e2e.md](docs/testing/e2e.md)
+* 📦 **Helm usage:** [docs/deploy/helm.md](docs/deploy/helm.md)
+* 🧰 **Local dev (Compose/kind):** [docs/deploy/local.md](docs/deploy/local.md)
 
 ---
 
@@ -125,9 +125,9 @@ Helpful docs:
 
 See:
 
-* 🧱 **Invariants & guarantees:** `./docs/architecture/invariants.md` *(create)*
-* 🌍 **Multi-region & DR:** `./docs/architecture/geo-dr.md` *(create)*
-* 🧯 **SLOs & alerts:** `./docs/observability/slos.md` *(create)*
+* 🧱 **Invariants & guarantees:** [docs/architecture/invariants.md](docs/architecture/invariants.md)
+* 🌍 **Multi-region & DR:** [docs/architecture/geo-dr.md](docs/architecture/geo-dr.md)
+* 🧯 **SLOs & alerts:** [docs/observability/slos.md](docs/observability/slos.md)
 
 ---
 
@@ -139,8 +139,8 @@ See:
 
 Progress notes live in:
 
-* 🛣️ `./docs/roadmap/phases.md` *(create)*
-* 🔁 `./docs/roadmap/changelog.md` *(create)*
+* 🛣️ [docs/roadmap/phases.md](docs/roadmap/phases.md)
+* 🔁 [docs/roadmap/changelog.md](docs/roadmap/changelog.md)
 
 ---
 
@@ -154,15 +154,15 @@ We love minimal, safe changes:
 
 Start here:
 
-* 🤝 `./docs/contributing/guide.md` *(create)*
-* ✅ `./docs/contributing/checklist.md` *(create)*
+* 🤝 [docs/contributing/guide.md](docs/contributing/guide.md)
+* ✅ [docs/contributing/checklist.md](docs/contributing/checklist.md)
 
 ---
 
 ## License & Contact
 
 * License: see `LICENSE`.
-* Security disclosures: `./docs/security/overview.md` → **Responsible Disclosure**.
+* Security disclosures: [docs/security/overview.md](docs/security/overview.md) → **Responsible Disclosure**.
 * Questions? Open a GitHub Discussion or ping maintainers listed in `CODEOWNERS`.
 
 ---
