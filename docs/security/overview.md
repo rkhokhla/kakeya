@@ -599,7 +599,7 @@ for entry in wal.load_all():
 If you discover a security vulnerability:
 
 1. **Do NOT** open a public GitHub issue
-2. **Email**: security@fractal-lba.example.com (PGP key: [link])
+2. **Email**: rkhokhla@gmail.com (PGP key: [link])
 3. **Include**:
    - Description of vulnerability
    - Steps to reproduce
