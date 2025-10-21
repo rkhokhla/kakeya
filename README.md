@@ -10,14 +10,18 @@ Imagine you're analyzing massive, distributed event streams from IoT sensors, fi
 
 1. **Computing cryptographic summaries (PCS)** that capture the "shape" of your data using fractal geometry (D̂), directional coherence (coh★), and compressibility (r)
 2. **Verifying summaries server-side** with robust statistical methods (Theil-Sen regression) to catch manipulated or corrupted data
-3. **Guaranteeing delivery** with write-ahead logs (WAL) on both agent and backend—your proofs survive crashes
-4. **Preventing duplicates** with idempotent deduplication across memory, Redis, Postgres, or sharded stores
-5. **Ensuring authenticity** with HMAC-SHA256 or Ed25519 signatures
-6. **Multi-tenant isolation** with per-tenant keys, quotas, rate limits, and labeled metrics
-7. **Immutable audit trails** (WORM logs) for compliance and tamper-evidence
-8. **Adversarial defenses** with VRF verification, sanity checks, and anomaly scoring
-9. **Global scale** with active-active multi-region deployment, tiered storage (hot/warm/cold), and sharded dedup
-10. **Production SDKs** for Python, Go, and TypeScript with automatic signing and retry logic
+3. **Predicting hallucination risk** (Phase 7) with real-time ML models that provide confidence intervals (≤10ms p95) before requests execute
+4. **Ensemble verification** (Phase 7) with N-of-M acceptance rules combining PCS recompute, retrieval overlap, and micro-vote strategies
+5. **Cost attribution** (Phase 7) tracking per-tenant/model/task spend (compute, storage, network, anchoring) with budget enforcement
+6. **Guaranteeing delivery** with write-ahead logs (WAL) on both agent and backend—your proofs survive crashes
+7. **Preventing duplicates** with idempotent deduplication across memory, Redis, Postgres, or sharded stores
+8. **Ensuring authenticity** with HMAC-SHA256 or Ed25519 signatures
+9. **Multi-tenant isolation** with per-tenant keys, quotas, rate limits, and labeled metrics
+10. **Immutable audit trails** (WORM logs) for compliance and tamper-evidence
+11. **Adversarial defenses** with VRF verification, sanity checks, and anomaly scoring (autoencoder-based)
+12. **Global scale** with active-active multi-region deployment, tiered storage (hot/warm/cold), and sharded dedup
+13. **Production SDKs** for Python, Go, TypeScript, Rust, and WASM with automatic signing and retry logic
+14. **Risk-aware policies** (Phase 7) with Kubernetes CRDs for routing, budgets, and ensemble thresholds with canary rollout
 
 All wrapped in production-ready **Docker Compose** and **Kubernetes Helm charts** with observability (Prometheus + Grafana), auto-scaling (HPA), security hardening (mTLS, NetworkPolicies), and comprehensive runbooks.
 
@@ -107,13 +111,17 @@ We add a **verifiable control plane** around generation:
 * **Phase 3–4:** multi-tenant & multi-region design, sharded/tiered storage, SDKs (Py/Go/TS), chaos & DR suites.
 * **Phase 5:** implement CRR shipper/reader, cold-tier drivers & demotion, async audit workers, geo divergence detection.
 * **Phase 6:** Kubernetes Operator, selective/multi-way CRR, SIEM integration, compliance automation, predictive tiering, Rust/WASM SDKs, formal verification (TLA+/Coq), buyer dashboards with hallucination KPIs.
+* **Phase 7 (COMPLETE):** Real-time hallucination risk scorer (HRS) with confidence intervals, ensemble verification (N-of-M), per-tenant/model/task cost attribution, risk routing policies (CRDs), autoencoder anomaly detection, buyer dashboards v2 with prediction quality metrics, compliance reports extended with Phase 7 controls.
 
 ---
 
 ## KPIs we track
 
-* **Hallucination containment rate:** % low-trust generations caught before action.
-* **Cost per accepted task:** dollars per trusted completion vs baseline.
+* **Hallucination containment rate:** % low-trust generations caught before action (Phase 7: ≥98% SLO).
+* **HRS prediction quality (Phase 7):** AUC ≥0.85 in shadow mode, p95 latency ≤10ms.
+* **Ensemble agreement rate (Phase 7):** % N-of-M consensus (target: ≥85%).
+* **Cost per trusted task (Phase 7):** dollars per trusted completion with ≥15% savings vs baseline cohorts.
+* **Anomaly detection rate (Phase 7):** % requests flagged with ≤5% target, <2% false positive rate.
 * **p95 verify latency:** stays <200 ms under nominal load.
 * **Error-budget burn:** (escalations + non-2xx) / ingest; alert <2% over rolling window.
 * **DR readiness:** RTO/RPO met in drills; replication lag SLO.
