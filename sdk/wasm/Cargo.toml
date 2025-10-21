@@ -1,0 +1,40 @@
+[package]
+name = "fractal-lba-wasm"
+version = "0.6.0"
+edition = "2021"
+authors = ["Fractal LBA Team"]
+description = "WASM SDK for Fractal LBA - run agents in the browser"
+license = "MIT"
+repository = "https://github.com/fractal-lba/fractal-lba"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde-wasm-bindgen = "0.6"
+js-sys = "0.3"
+web-sys = { version = "0.3", features = [
+    "console",
+    "Window",
+    "Request",
+    "RequestInit",
+    "RequestMode",
+    "Response",
+    "Headers",
+] }
+sha2 = "0.10"
+hmac = "0.12"
+base64 = "0.21"
+getrandom = { version = "0.2", features = ["js"] }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1

@@ -1,0 +1,33 @@
+[package]
+name = "fractal-lba-client"
+version = "0.6.0"
+edition = "2021"
+authors = ["Fractal LBA Team"]
+description = "High-performance Rust SDK for Fractal LBA with zero-copy signing"
+license = "MIT"
+repository = "https://github.com/fractal-lba/fractal-lba"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.11", features = ["json", "blocking"] }
+tokio = { version = "1.0", features = ["full"] }
+thiserror = "1.0"
+sha2 = "0.10"
+hmac = "0.12"
+base64 = "0.21"
+ed25519-dalek = "2.0"
+bytes = "1.4"
+zerocopy = { version = "0.7", features = ["derive"] }
+
+[dev-dependencies]
+tokio-test = "0.4"
+criterion = "0.5"
+
+[lib]
+name = "fractal_lba_client"
+path = "src/lib.rs"
+
+[[bench]]
+name = "signing_benchmark"
+harness = false
