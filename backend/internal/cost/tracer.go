@@ -360,11 +360,11 @@ func (ct *CostTracer) CheckBudget(tenantID string) (exceeded bool, level string,
 	}
 
 	if agg.GrandTotal >= agg.SoftCap {
-		remaining := agg.HardCap - agg.GrandTotal
+		remaining = agg.HardCap - agg.GrandTotal
 		return true, "soft", remaining
 	}
 
-	remaining := agg.SoftCap - agg.GrandTotal
+	remaining = agg.SoftCap - agg.GrandTotal
 	return false, "ok", remaining
 }
 
@@ -518,3 +518,8 @@ func (cb *CostBudgetPolicySpec) ApplyAction(usagePercent float64) *CostBudgetAct
 	}
 	return applicableAction
 }
+
+
+// Type aliases for backward compatibility with Phase 9 code
+type Tracer = CostTracer
+

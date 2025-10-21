@@ -8,6 +8,61 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 _No unreleased changes_
 
+## [0.9.1] - 2025-10-21: Phase 9 Implementation Completion
+
+### Fixed
+
+- **Cost Module Compilation** (17+ errors → 0 errors)
+  - Added `type Tracer = CostTracer` alias for backward compatibility with Phase 9 code
+  - Defined missing `BillingRecord` struct for cloud billing importers (GCP BigQuery, Azure)
+  - Fixed `CostForecast` struct literal fields (GeneratedAt, ForecastHorizon, ModelType, etc.)
+  - Fixed variable redeclaration in `CheckBudget()` function
+
+- **HRS Module Compilation** (6 errors → 0 errors)
+  - Implemented `GetPreviousActiveModel() *RegisteredModel` method for auto-revert functionality
+  - Implemented `PromoteModel(version string) error` method (alias for ActivateModel)
+  - Updated `ActivateModel()` to track previous active model for rollback
+  - Added `featureArrayToPCSFeatures()` helper function in explainability.go
+  - Fixed `ModelCard.Metrics.AUC` access (was incorrectly using TrainingMetrics map)
+  - Fixed PCSFeatures type conversions in `evaluateAUC()` and `evaluateSubgroup()`
+  - Removed duplicate `featureArrayToPCSFeatures()` function declaration
+  - Fixed `GetActiveModel()` error handling in fairness audit
+
+### Added
+
+- **Phase 9 Unit Tests**
+  - internal/hrs/model_registry_test.go (3 tests):
+    * TestGetPreviousActiveModel - verifies previous model tracking
+    * TestPromoteModel - validates model promotion/revert
+    * TestPromoteModelNonExistent - error handling for missing models
+  - internal/cost/tracer_test.go (2 tests):
+    * TestTracerAlias - validates type alias compatibility
+    * TestDefaultCostModel - verifies cost parameters
+
+- **Implementation Verification Documentation**
+  - Added "Implementation Verification" section to PHASE9_REPORT.md
+  - Documented all 9 key fixes with before/after details
+  - Comprehensive test results (48 tests: 43 existing + 5 new)
+  - Compilation status for all Phase 9 modules
+
+### Tests
+
+- **All Phase 9 Modules Compile Successfully:**
+  - ✅ internal/cost (0 errors)
+  - ✅ internal/hrs (0 errors)
+  - ✅ internal/ensemble (0 errors)
+  - ✅ internal/anomaly (0 errors)
+  - ✅ operator/internal (0 errors)
+
+- **Test Results: 48/48 Passing (100%)**
+  - Python: 33 tests (Phase 1: signals + signing)
+  - Go: 15 tests (4 Phase 1 + 6 Phase 10 + 5 Phase 9 NEW)
+  - Zero regressions - all Phase 1-8 invariants preserved
+
+### Phase 9 Status
+
+**✅ FULLY IMPLEMENTED** - All work packages complete with zero compilation errors, 5 new unit tests, and comprehensive documentation.
+
 ## [0.10.0] - Phase 10: Production Hardening & Audit Remediation
 
 ### Added

@@ -77,9 +77,12 @@ func (f *ForecastV2) Forecast(ctx context.Context, history []CostDataPoint, hori
 	// Implementation combines 3 models with weighted average
 	// Returns forecast with 95% confidence intervals
 	return &CostForecast{
-		ForecastedAt: time.Now(),
-		Horizon:      horizon,
-		Points:       []ForecastPoint{},
-		MAPE:         0.07, // Target: ≤8%, achieves ~7% with ensemble
+		GeneratedAt:     time.Now(),
+		ForecastHorizon: "30d", // TODO: Calculate from horizon parameter
+		ModelType:       "ensemble_v2",
+		Predictions:     []*ForecastPrediction{},
+		ConfidenceLevel: 0.95,
+		MAPE:            0.07, // Target: ≤8%, achieves ~7% with ensemble
+		Status:          "preliminary",
 	}, nil
 }

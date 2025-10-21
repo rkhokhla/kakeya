@@ -14,12 +14,13 @@ import (
 
 // ModelRegistry manages versioned HRS models with immutability (Phase 8 WP1)
 type ModelRegistry struct {
-	mu          sync.RWMutex
-	registryDir string
-	models      map[string]*RegisteredModel // version → model
-	activeModel string                      // Currently active model version
-	abRouter    *ABRouter
-	metrics     *RegistryMetrics
+	mu                 sync.RWMutex
+	registryDir        string
+	models             map[string]*RegisteredModel // version → model
+	activeModel        string                      // Currently active model version
+	previousActiveModel string                      // Previously active model version (for auto-revert)
+	abRouter           *ABRouter
+	metrics            *RegistryMetrics
 }
 
 // RegisteredModel represents a model in the registry
@@ -235,11 +236,12 @@ func (mr *ModelRegistry) ActivateModel(version string) error {
 		return fmt.Errorf("model not found: %s", version)
 	}
 
-	// Deactivate current active model
+	// Deactivate current active model and track it as previous
 	if mr.activeModel != "" {
 		if activeModel, ok := mr.models[mr.activeModel]; ok {
 			activeModel.Status = "shadow"
 		}
+		mr.previousActiveModel = mr.activeModel
 	}
 
 	// Activate new model
@@ -251,7 +253,7 @@ func (mr *ModelRegistry) ActivateModel(version string) error {
 	mr.metrics.ActiveModels = 1
 	mr.metrics.mu.Unlock()
 
-	fmt.Printf("Activated model: version=%s\n", version)
+	fmt.Printf("Activated model: version=%s (previous=%s)\n", version, mr.previousActiveModel)
 
 	return nil
 }
@@ -271,6 +273,28 @@ func (mr *ModelRegistry) GetActiveModel() (*RegisteredModel, error) {
 	}
 
 	return model, nil
+}
+
+// GetPreviousActiveModel returns the previously active model (for auto-revert)
+func (mr *ModelRegistry) GetPreviousActiveModel() *RegisteredModel {
+	mr.mu.RLock()
+	defer mr.mu.RUnlock()
+
+	if mr.previousActiveModel == "" {
+		return nil
+	}
+
+	model, ok := mr.models[mr.previousActiveModel]
+	if !ok {
+		return nil
+	}
+
+	return model
+}
+
+// PromoteModel promotes a model to active status (alias for ActivateModel for fairness audit)
+func (mr *ModelRegistry) PromoteModel(version string) error {
+	return mr.ActivateModel(version)
 }
 
 // GetModel retrieves a model by version

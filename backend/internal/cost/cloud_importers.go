@@ -15,6 +15,16 @@ type GCPBigQueryImporter struct {
 	client    BigQueryClient // Interface to google.golang.org/api/bigquery/v2
 }
 
+// BillingRecord represents a generic billing record from cloud providers
+type BillingRecord struct {
+	Service    string
+	SKU        string
+	Cost       float64
+	UsageStart time.Time
+	UsageEnd   time.Time
+	Metadata   map[string]string
+}
+
 // BigQueryClient interface for GCP billing queries
 type BigQueryClient interface {
 	Query(ctx context.Context, sql string) ([]BillingRecord, error)

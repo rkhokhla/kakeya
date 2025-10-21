@@ -135,9 +135,9 @@ func (fa *FairnessAuditor) RunAudit(ctx context.Context) error {
 	fa.metrics.mu.Unlock()
 
 	// Get active model
-	activeModel := fa.registry.GetActiveModel()
-	if activeModel == nil {
-		return fmt.Errorf("no active model to audit")
+	activeModel, err := fa.registry.GetActiveModel()
+	if err != nil {
+		return fmt.Errorf("failed to get active model: %w", err)
 	}
 
 	// 1. Check for AUC drift
@@ -220,8 +220,8 @@ func (fa *FairnessAuditor) RunAudit(ctx context.Context) error {
 // checkAUCDrift checks if AUC has dropped significantly
 func (fa *FairnessAuditor) checkAUCDrift(ctx context.Context, model *RegisteredModel) (bool, float64, error) {
 	// Get baseline AUC from model card
-	baselineAUC, ok := model.ModelCard.TrainingMetrics["auc"]
-	if !ok {
+	baselineAUC := model.ModelCard.Metrics.AUC
+	if baselineAUC == 0 {
 		return false, 0, fmt.Errorf("baseline AUC not found in model card")
 	}
 
@@ -256,7 +256,9 @@ func (fa *FairnessAuditor) evaluateAUC(model RiskModel, dataset *TrainingDataset
 	// Predict on all samples
 	predictions := make([]float64, dataset.NumSamples)
 	for i := 0; i < dataset.NumSamples; i++ {
-		pred, err := model.Predict(dataset.Features[i])
+		// Convert []float64 to *PCSFeatures
+		pcsFeatures := featureArrayToPCSFeatures(dataset.Features[i])
+		pred, err := model.Predict(pcsFeatures)
 		if err != nil {
 			return 0, err
 		}
@@ -409,7 +411,9 @@ func (fa *FairnessAuditor) evaluateSubgroup(model RiskModel, subgroup subgroupDa
 	// Predict on subgroup
 	predictions := make([]float64, len(subgroup.Features))
 	for i, features := range subgroup.Features {
-		pred, err := model.Predict(features)
+		// Convert []float64 to *PCSFeatures
+		pcsFeatures := featureArrayToPCSFeatures(features)
+		pred, err := model.Predict(pcsFeatures)
 		if err != nil {
 			return SubgroupMetrics{}, err
 		}
