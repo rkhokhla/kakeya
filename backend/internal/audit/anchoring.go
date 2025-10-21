@@ -41,23 +41,7 @@ type WORMStore interface {
 	GetSegmentRoot(ctx context.Context, segmentPath string) (string, error) // Merkle root of segment
 }
 
-// WORMEntry represents a single entry in the WORM audit log
-type WORMEntry struct {
-	Timestamp         time.Time `json:"timestamp"`
-	PCSID             string    `json:"pcs_id"`
-	TenantID          string    `json:"tenant_id"`
-	MerkleRoot        string    `json:"merkle_root"`
-	DHat              float64   `json:"D_hat"`
-	CohStar           float64   `json:"coh_star"`
-	R                 float64   `json:"r"`
-	Budget            float64   `json:"budget"`
-	Regime            string    `json:"regime"`
-	VerifyOutcome     bool      `json:"verify_outcome"`
-	VerifyParamsHash  string    `json:"verify_params_hash"`
-	PolicyVersion     string    `json:"policy_version"`
-	RegionID          string    `json:"region_id"`
-	EntryHash         string    `json:"entry_hash"` // SHA-256 of entry (tamper-evidence)
-}
+// WORMEntry is defined in worm.go
 
 // AttestationStore writes external attestations (blockchain, timestamping service, etc.)
 type AttestationStore interface {

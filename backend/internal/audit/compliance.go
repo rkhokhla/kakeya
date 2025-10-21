@@ -105,15 +105,7 @@ type EvidenceItem struct {
 	Metadata    map[string]interface{} `json:"metadata"`
 }
 
-// Attestation represents an external attestation
-type Attestation struct {
-	BatchID     string    `json:"batch_id"`
-	Timestamp   time.Time `json:"timestamp"`
-	MerkleRoot  string    `json:"merkle_root"`
-	Provider    string    `json:"provider"` // blockchain, timestamp-service
-	TxHash      string    `json:"tx_hash,omitempty"`
-	URL         string    `json:"url,omitempty"`
-}
+// Attestation is defined in anchoring.go
 
 // AnchoringDatabase stores attestation records
 type AnchoringDatabase struct {
@@ -783,7 +775,7 @@ func (crg *ComplianceReportGenerator) gatherAttestations(ctx context.Context, co
 
 	attestations := []Attestation{}
 	for _, attestation := range crg.anchoringDB.attestations {
-		if attestation.Timestamp.After(config.StartDate) && attestation.Timestamp.Before(config.EndDate) {
+		if attestation.AncoredAt.After(config.StartDate) && attestation.AncoredAt.Before(config.EndDate) {
 			attestations = append(attestations, *attestation)
 		}
 	}

@@ -241,8 +241,8 @@ func (q *CrossShardQuery) FindKey(ctx context.Context, key string) (*ShardLocati
 
 	location := &ShardLocation{
 		Key:          key,
-		CurrentShard: shard.ID,
-		Endpoint:     shard.Endpoint,
+		CurrentShard: shard.Name,
+		Endpoint:     shard.Addr,
 		Healthy:      shard.Healthy,
 	}
 
@@ -268,7 +268,7 @@ func (q *CrossShardQuery) getShardDistribution(ctx context.Context, shard *Shard
 	// - Estimate bytes: MEMORY USAGE (Redis) or pg_relation_size (Postgres)
 
 	dist := ShardDistribution{
-		ShardID:        shard.ID,
+		ShardID:        shard.Name,
 		KeyCount:       100000, // Placeholder
 		EstimatedBytes: 50 * 1024 * 1024, // 50MB
 		Healthy:        shard.Healthy,
@@ -291,9 +291,9 @@ func (q *CrossShardQuery) checkShardHealth(ctx context.Context, shard *Shard) (S
 	latency := time.Since(start).Milliseconds()
 
 	health := ShardHealth{
-		ShardID:   shard.ID,
+		ShardID:   shard.Name,
 		Healthy:   shard.Healthy,
-		Endpoint:  shard.Endpoint,
+		Endpoint:  shard.Addr,
 		Latency:   float64(latency),
 		LastCheck: time.Now(),
 	}
@@ -310,11 +310,11 @@ func (q *CrossShardQuery) sampleShardKeys(ctx context.Context, shard *Shard, sam
 	// Placeholder
 	keys := make([]string, 0, sampleSize)
 	for i := 0; i < sampleSize; i++ {
-		keys = append(keys, fmt.Sprintf("key-%s-%d", shard.ID, i))
+		keys = append(keys, fmt.Sprintf("key-%s-%d", shard.Name, i))
 	}
 
 	sample := KeySample{
-		ShardID:    shard.ID,
+		ShardID:    shard.Name,
 		Keys:       keys,
 		SampleSize: len(keys),
 	}

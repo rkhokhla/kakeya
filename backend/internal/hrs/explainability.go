@@ -68,6 +68,41 @@ func NewExplainer(model RiskModel, baselineFeatures []float64, numSamples int) *
 	}
 }
 
+// featureArrayToPCSFeatures converts []float64 to *PCSFeatures for SHAP computation
+// Assumes feature array order: [DHat, CohStar, R, Budget, VerifyLatencyMs, SignalEntropy, CoherenceDelta, CompressibilityZ, ...]
+func featureArrayToPCSFeatures(features []float64) *PCSFeatures {
+	pcsFeatures := &PCSFeatures{
+		ExtractedAt: time.Now(),
+	}
+
+	if len(features) > 0 {
+		pcsFeatures.DHat = features[0]
+	}
+	if len(features) > 1 {
+		pcsFeatures.CohStar = features[1]
+	}
+	if len(features) > 2 {
+		pcsFeatures.R = features[2]
+	}
+	if len(features) > 3 {
+		pcsFeatures.Budget = features[3]
+	}
+	if len(features) > 4 {
+		pcsFeatures.VerifyLatencyMs = features[4]
+	}
+	if len(features) > 5 {
+		pcsFeatures.SignalEntropy = features[5]
+	}
+	if len(features) > 6 {
+		pcsFeatures.CoherenceDelta = features[6]
+	}
+	if len(features) > 7 {
+		pcsFeatures.CompressibilityZ = features[7]
+	}
+
+	return pcsFeatures
+}
+
 // ExplainPrediction returns SHAP-style attributions for a prediction
 // Async computation recommended for low latency; inline returns compact summary
 func (e *Explainer) ExplainPrediction(ctx context.Context, features []float64, featureNames []string) (*Attribution, error) {
@@ -87,13 +122,13 @@ func (e *Explainer) ExplainPrediction(ctx context.Context, features []float64, f
 	e.metrics.mu.Unlock()
 
 	// Compute baseline prediction (using global mean features)
-	baselineScore, err := e.model.Predict(e.baselineFeatures)
+	baselineScore, err := e.model.Predict(featureArrayToPCSFeatures(e.baselineFeatures))
 	if err != nil {
 		return nil, fmt.Errorf("baseline prediction failed: %w", err)
 	}
 
 	// Compute actual prediction
-	predictionScore, err := e.model.Predict(features)
+	predictionScore, err := e.model.Predict(featureArrayToPCSFeatures(features))
 	if err != nil {
 		return nil, fmt.Errorf("prediction failed: %w", err)
 	}
@@ -162,7 +197,7 @@ func (e *Explainer) computeSHAPApprox(features []float64, prediction, baseline f
 			}
 
 			// Predict with this coalition
-			coalScore, err := e.model.Predict(coalition)
+			coalScore, err := e.model.Predict(featureArrayToPCSFeatures(coalition))
 			if err != nil {
 				continue // Skip on error
 			}

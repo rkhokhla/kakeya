@@ -337,14 +337,14 @@ func (aec *AdaptiveEnsembleController) TunePolicy(tenantID string) (*TenantEnsem
 	// Compute strategy weights based on accuracy
 	weights := make(map[string]float64)
 	totalAccuracy := 0.0
-	for strategy, accuracy := range history.StrategyAccuracy {
+	for _, accuracy := range history.StrategyAccuracy {
 		totalAccuracy += accuracy
 	}
-	for strategy, accuracy := range history.StrategyAccuracy {
+	for strategyName, accuracy := range history.StrategyAccuracy {
 		if totalAccuracy > 0 {
-			weights[strategy] = accuracy / totalAccuracy
+			weights[strategyName] = accuracy / totalAccuracy
 		} else {
-			weights[strategy] = 1.0 / float64(len(history.StrategyAccuracy))
+			weights[strategyName] = 1.0 / float64(len(history.StrategyAccuracy))
 		}
 	}
 

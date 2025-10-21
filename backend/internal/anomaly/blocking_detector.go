@@ -100,19 +100,25 @@ func (bd *BlockingDetector) Detect(ctx context.Context, pcsID string, features [
 	bd.metrics.mu.Unlock()
 
 	// Run VAE detection
-	score, uncertainty, err := bd.vaeDetector.DetectWithUncertainty(ctx, features)
+	sample := &AnomalySample{
+		PCSID:     pcsID,
+		Features:  features,
+		Timestamp: time.Now(),
+	}
+	anomalyScore, err := bd.vaeDetector.Detect(ctx, sample)
 	if err != nil {
 		return "error", 0, fmt.Errorf("VAE detection failed: %w", err)
 	}
 
+	score := anomalyScore.Score
+	uncertainty := anomalyScore.Uncertainty
+
 	// Decision logic based on dual thresholds
 	var decision string
-	var action string
 
 	if score >= bd.blockThreshold && uncertainty <= bd.uncertaintyMax {
 		// High confidence anomaly with low uncertainty → BLOCK
 		decision = "block"
-		action = "reject_pcs"
 
 		bd.metrics.mu.Lock()
 		bd.metrics.BlockedCount++

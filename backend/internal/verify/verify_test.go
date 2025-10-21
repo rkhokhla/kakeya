@@ -76,7 +76,7 @@ func TestVerify(t *testing.T) {
 		Attempt:    1,
 		Scales:     []int{2, 4, 8},
 		Nj:         map[string]int{"2": 3, "4": 5, "8": 9},
-		DHat:       0.96,
+		DHat:       0.79,  // Updated to match Theil-Sen computation from Nj values
 		CohStar:    0.75,
 		R:          0.50,
 		Regime:     "sticky",
