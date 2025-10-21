@@ -1,7 +1,3 @@
-Here’s a refreshed, more compelling `README.md` you can drop into the repo. I kept it crisp for devs, but punchy for investors—plus added helpful links into `./docs/` (incl. your `architecture/signal-computation.md`). If any link doesn’t exist yet, treat it as a todo and create a stub doc to match.
-
----
-
 # FLK / PCS — A Verification Layer that Tames LLM Hallucinations
 
 ### TL;DR
