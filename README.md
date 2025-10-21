@@ -159,7 +159,7 @@ Start here:
 
 * License: see [LICENSE](LICENSE).
 * Security disclosures: [docs/security/overview.md](docs/security/overview.md) → **Responsible Disclosure**.
-* Questions? Open a GitHub Discussion or ping maintainers listed in `CODEOWNERS`.
+* Questions? Open a GitHub Discussion or ping maintainers listed in [CODEOWNERS](CODEOWNERS).
 
 ---
 
