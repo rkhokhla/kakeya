@@ -46,7 +46,7 @@ Dive deeper:
 * 📄 **Signal computation details:** `docs/architecture/signal-computation.md`
 * 🧭 **System overview:** `docs/architecture/overview.md`
 * ⚙️ **Operator & policies:** `docs/operations/policies.md`
-* 🔐 **Security & keys:** `docs/operations/security.md`
+* 🔐 **Security & keys:** `docs/security/overview.md`
 * 📊 **Dashboards & SLOs:** `docs/observability/dashboards.md`
 * 🚑 **Runbooks (incidents):** `docs/runbooks/` *(start with `signature-spike.md`, `dedup-outage.md`, `geo-failover.md`)*
 
@@ -162,7 +162,7 @@ Start here:
 ## License & Contact
 
 * License: see `LICENSE`.
-* Security disclosures: `./docs/operations/security.md` → **Responsible Disclosure**.
+* Security disclosures: `./docs/security/overview.md` → **Responsible Disclosure**.
 * Questions? Open a GitHub Discussion or ping maintainers listed in `CODEOWNERS`.
 
 ---
