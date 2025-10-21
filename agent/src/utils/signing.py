@@ -36,11 +36,12 @@ def sign_hmac(pcs: Dict[str, Any], key: bytes) -> str:
     """
     Sign a PCS using HMAC-SHA256.
 
-    Process:
+    Process (WP2 simplified):
     1. Generate canonical signature payload
-    2. Compute SHA-256 digest of payload
-    3. HMAC-SHA256 the digest with provided key
-    4. Return base64-encoded signature
+    2. HMAC-SHA256 the payload directly with provided key
+    3. Return base64-encoded signature
+
+    Pre-hashing is unnecessary since HMAC provides cryptographic security.
 
     Args:
         pcs: Complete PCS dictionary
@@ -50,8 +51,7 @@ def sign_hmac(pcs: Dict[str, Any], key: bytes) -> str:
         Base64-encoded HMAC signature
     """
     payload = signature_payload(pcs)
-    digest = hashlib.sha256(payload).digest()
-    sig = hmac.new(key, digest, hashlib.sha256).digest()
+    sig = hmac.new(key, payload, hashlib.sha256).digest()
     return base64.b64encode(sig).decode("utf-8")
 
 
@@ -82,12 +82,13 @@ def verify_hmac(pcs: Dict[str, Any], key: bytes) -> bool:
     """
     Verify HMAC-SHA256 signature on a PCS.
 
-    Process:
+    Process (WP2 simplified):
     1. Extract signature from pcs["sig"]
     2. Generate canonical signature payload (excluding sig field)
-    3. Compute SHA-256 digest of payload
-    4. HMAC-SHA256 the digest with provided key
-    5. Compare with extracted signature (constant-time)
+    3. HMAC-SHA256 the payload directly with provided key
+    4. Compare with extracted signature (constant-time)
+
+    Pre-hashing is unnecessary since HMAC provides cryptographic security.
 
     Args:
         pcs: Complete PCS dictionary with "sig" field
@@ -108,8 +109,7 @@ def verify_hmac(pcs: Dict[str, Any], key: bytes) -> bool:
         # Compute signature over PCS (excluding sig field)
         pcs_without_sig = {k: v for k, v in pcs.items() if k != "sig"}
         payload = signature_payload(pcs_without_sig)
-        digest = hashlib.sha256(payload).digest()
-        computed_sig = hmac.new(key, digest, hashlib.sha256).digest()
+        computed_sig = hmac.new(key, payload, hashlib.sha256).digest()
 
         # Constant-time comparison
         return hmac.compare_digest(expected_sig, computed_sig)

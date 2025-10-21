@@ -27,14 +27,14 @@ func (h *HMACVerifier) Verify(pcs *api.PCS) error {
 		return fmt.Errorf("signature is empty")
 	}
 
-	// Get canonical signature digest
-	digest, err := SignatureDigest(pcs)
+	// Get canonical signature payload (WP2: sign payload directly, not digest)
+	payload, err := SignaturePayload(pcs)
 	if err != nil {
-		return fmt.Errorf("failed to generate signature digest: %w", err)
+		return fmt.Errorf("failed to generate signature payload: %w", err)
 	}
 
-	// Verify HMAC
-	if err := VerifyHMAC(digest, pcs.Sig, h.key); err != nil {
+	// Verify HMAC directly on payload
+	if err := VerifyHMAC(payload, pcs.Sig, h.key); err != nil {
 		return fmt.Errorf("HMAC verification failed: %w", err)
 	}
 

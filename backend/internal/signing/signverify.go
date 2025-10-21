@@ -21,13 +21,15 @@ var (
 
 // VerifyHMAC verifies an HMAC-SHA256 signature.
 //
-// Process:
-// 1. Compute HMAC-SHA256 of the digest with the key
+// Process (WP2 simplified):
+// 1. Compute HMAC-SHA256 of the payload directly with the key
 // 2. Decode base64 signature from PCS
 // 3. Compare using constant-time comparison
 //
+// Pre-hashing is unnecessary since HMAC provides cryptographic security.
+//
 // Args:
-//   - digest: SHA-256 hash of canonical payload (32 bytes)
+//   - payload: Canonical JSON payload bytes
 //   - sigB64: Base64-encoded HMAC signature from PCS
 //   - key: HMAC secret key (bytes)
 //
@@ -35,10 +37,10 @@ var (
 //   - nil if verification succeeds
 //   - ErrBadHMAC if signature doesn't match
 //   - ErrInvalidSignature if base64 decoding fails
-func VerifyHMAC(digest []byte, sigB64 string, key []byte) error {
-	// Compute expected HMAC
+func VerifyHMAC(payload []byte, sigB64 string, key []byte) error {
+	// Compute expected HMAC directly on payload
 	mac := hmac.New(sha256.New, key)
-	mac.Write(digest)
+	mac.Write(payload)
 	expected := mac.Sum(nil)
 
 	// Decode provided signature

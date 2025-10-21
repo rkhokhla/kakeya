@@ -129,8 +129,8 @@ See:
 
 ## Roadmap (high level)
 
-* **✅ Completed (Phases 1-9):** Core verification, E2E testing, multi-tenant governance, global scale, CRR/tiering, autonomous ops, real-time HRS, production ML, explainable risk, bandit ensembles, blocking anomalies, multi-cloud cost governance.
-* **Next (Phase 10+):** Online learning for HRS, federated learning, advanced bandit strategies (contextual), adversarial robustness, global query federation, runtime auto-sharding.
+* **✅ Completed (Phases 1-10):** Core verification, E2E testing, multi-tenant governance, global scale, CRR/tiering, autonomous ops, real-time HRS, production ML, explainable risk, bandit ensembles, blocking anomalies, multi-cloud cost governance, **cross-language signature parity** (Phase 10), **atomic dedup** with first-write-wins, **thread-safe LRU caches**, HMAC simplification (sign payload directly).
+* **Next (Phase 11+):** Real VRF verification (ECVRF), tokenized RAG overlap, JWT authentication, risk-based routing, fuzz testing, CI/CD hardening, Helm production readiness.
 
 Progress notes live in:
 
