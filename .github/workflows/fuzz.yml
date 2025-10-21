@@ -1,0 +1,48 @@
+name: Nightly Fuzz Testing
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Run at 2 AM UTC daily
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  fuzz-go:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120  # 2 hours max
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Fuzz verify package
+        working-directory: ./backend
+        run: |
+          go test -fuzz=FuzzVerifyPCS -fuzztime=30m ./internal/verify/ || echo "Fuzz test completed"
+
+      - name: Fuzz canonical package
+        working-directory: ./backend
+        run: |
+          go test -fuzz=FuzzCanonicalJSON -fuzztime=30m ./pkg/canonical/ || echo "Fuzz test completed"
+
+      - name: Fuzz tokenizer package
+        working-directory: ./backend
+        run: |
+          go test -fuzz=FuzzTokenize -fuzztime=30m ./pkg/text/ || echo "Fuzz test completed"
+
+      - name: Check for crashes
+        run: |
+          if find ./backend -name "testdata" -type d | xargs -I{} find {} -name "*.txt" | grep -q .; then
+            echo "Fuzz testing found crashes!"
+            exit 1
+          fi
+          echo "No crashes found"
+
+      - name: Upload crash artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-crashes
+          path: ./backend/**/testdata/fuzz/

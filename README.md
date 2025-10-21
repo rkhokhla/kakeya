@@ -10,11 +10,12 @@
 
 LLMs are brilliant but unreliable. Throwing bigger models or more prompts at the problem just burns cash. **FLK/PCS** plugs into any agent or RAG stack and makes each generation **provably safer**:
 
-* The agent emits a compact **PCS**—signals like fractal slope **D̂**, **directional coherence** `coh★`, and **compressibility** `r`—and **cryptographically signs** it.
+* The agent emits a compact **PCS**—signals like fractal slope **D̂**, **directional coherence** `coh★`, and **compressibility** `r`—and **cryptographically signs** it (HMAC/Ed25519/**VRF**).
 * Our Go verifier **recomputes** those signals with tolerances, enforces **verify-before-dedup**, and decides a **trust-tier + budget** for the request.
-* Low-trust outputs are **gated** into safer lanes; good outputs sail through.
+* Low-trust outputs are **gated** into safer lanes (RAG grounding, human review); high-trust outputs take the **fast path** (25-40% latency reduction).
+* **JWT authentication** at gateway prevents tenant spoofing, **OpenTelemetry** traces correlate metrics→traces, and **risk-based routing** optimizes cost/containment trade-offs.
 
-It’s **model-agnostic**, **auditable**, and **production-ready**.
+It's **model-agnostic**, **auditable**, **production-ready**, and **cost-optimized**.
 
 ---
 

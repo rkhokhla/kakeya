@@ -112,6 +112,30 @@ backend:
     # METRICS_USER: ""  # Set via Secret
     # METRICS_PASS: ""  # Set via Secret
 
+    # Phase 11 WP1: VRF verification
+    VRF_ENABLED: "false"  # Enable VRF proof verification
+    VRF_MODE: "shadow"  # Options: shadow (log only), enforce (reject invalid)
+    # VRF_PUBKEY: ""  # Set via Secret/ConfigMap (base64-encoded Ed25519 public key)
+
+    # Phase 11 WP3: JWT Authentication
+    JWT_ENABLED: "false"  # Enable JWT authentication middleware
+    JWT_REQUIRE_VERIFIED: "true"  # Require X-Auth-Verified header from gateway
+    JWT_BYPASS_HEALTH: "true"  # Allow /health without JWT
+    JWT_BYPASS_METRICS: "true"  # Allow /metrics without JWT (use Basic Auth)
+
+    # Phase 11 WP2: RAG Overlap
+    RAG_ENABLED: "false"  # Enable tokenized RAG overlap checks
+    RAG_MIN_OVERLAP: "0.35"  # Minimum Jaccard similarity (0.0-1.0)
+    RAG_SHINGLE_SIZE: "2"  # N-gram size (2=bigrams)
+    RAG_STOPWORDS: "true"  # Filter common stop words
+    RAG_STEMMING: "false"  # Apply stemming (reduces precision)
+
+    # Phase 11 WP4: Risk-Based Routing
+    RISK_ROUTING_ENABLED: "false"  # Enable fast path for low-risk PCS
+    RISK_SKIP_ENSEMBLE_BELOW: "0.10"  # Risk threshold (0.0-1.0)
+    RISK_MAX_CI_WIDTH: "0.05"  # Max confidence interval width (0.0-1.0)
+    RISK_REQUIRE_NARROW_CI: "true"  # Require narrow CI for fast path
+
   # Environment variables from Secrets/ConfigMaps
   envFrom: []
   # - secretRef:
@@ -126,6 +150,14 @@ backend:
     accessMode: ReadWriteOnce
     size: 50Gi
     annotations: {}
+
+  # Phase 11 WP6: Cache configuration (LRU caches for hot tier)
+  cache:
+    hot:
+      enabled: true
+      size: "1Gi"  # In-memory cache size
+      ttl: "1h"  # Hot tier TTL
+      maxEntries: 100000  # Max number of cached entries
 
   # Liveness and readiness probes
   livenessProbe:
@@ -153,6 +185,22 @@ backend:
   tolerations: []
 
   affinity: {}
+
+# Phase 11 WP6: RBAC configuration
+rbac:
+  enabled: true
+  # Create ClusterRole with least-privilege permissions
+  clusterRole:
+    name: fractal-lba-minimal
+    rules:
+      # ConfigMap and Secret access (read-only)
+      - apiGroups: [""]
+        resources: ["configmaps", "secrets"]
+        verbs: ["get", "list"]
+      # Pod access for shard discovery
+      - apiGroups: [""]
+        resources: ["pods"]
+        verbs: ["get", "list"]
 
 # NetworkPolicy configuration
 networkPolicy:
