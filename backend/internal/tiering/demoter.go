@@ -167,15 +167,22 @@ func (d *Demoter) demoteHotToWarm(ctx context.Context) (int, error) {
 	// In production, you'd use Redis SCAN + TTL checks, or maintain a separate expiry index
 	// For now, we'll use a simplified approach via the TieredStore
 
-	expiredKeys, err := d.getExpiredKeys(ctx, TierHot, d.tieredStore.config.HotTTL)
+	expiredKeys, err := d.getExpiredKeys(ctx, TierHot, d.tieredStore.config.Default.HotTTL)
 	if err != nil {
 		return 0, err
 	}
 
 	demoted := 0
 	for _, key := range expiredKeys {
+		// Retrieve value before demotion
+		value, err := d.tieredStore.hot.Get(ctx, key)
+		if err != nil || value == nil {
+			fmt.Printf("Tiering Demoter: warning: failed to get value for %s: %v\n", key, err)
+			continue
+		}
+
 		// Call TieredStore.Demote to move hot→warm
-		if err := d.tieredStore.Demote(ctx, key, TierHot, TierWarm); err != nil {
+		if err := d.tieredStore.Demote(ctx, key, value, TierHot, TierWarm); err != nil {
 			fmt.Printf("Tiering Demoter: warning: failed to demote %s (hot→warm): %v\n", key, err)
 			continue
 		}
@@ -196,15 +203,22 @@ func (d *Demoter) demoteWarmToCold(ctx context.Context) (int, error) {
 		return 0, nil // No demotion if tiers not configured
 	}
 
-	expiredKeys, err := d.getExpiredKeys(ctx, TierWarm, d.tieredStore.config.WarmTTL)
+	expiredKeys, err := d.getExpiredKeys(ctx, TierWarm, d.tieredStore.config.Default.WarmTTL)
 	if err != nil {
 		return 0, err
 	}
 
 	demoted := 0
 	for _, key := range expiredKeys {
+		// Retrieve value before demotion
+		value, err := d.tieredStore.warm.Get(ctx, key)
+		if err != nil || value == nil {
+			fmt.Printf("Tiering Demoter: warning: failed to get value for %s: %v\n", key, err)
+			continue
+		}
+
 		// Call TieredStore.Demote to move warm→cold
-		if err := d.tieredStore.Demote(ctx, key, TierWarm, TierCold); err != nil {
+		if err := d.tieredStore.Demote(ctx, key, value, TierWarm, TierCold); err != nil {
 			fmt.Printf("Tiering Demoter: warning: failed to demote %s (warm→cold): %v\n", key, err)
 			continue
 		}
@@ -228,7 +242,7 @@ func (d *Demoter) evictColdExpired(ctx context.Context) (int, error) {
 	// In production, S3/GCS lifecycle policies handle this automatically
 	// This is a backup path for explicit deletion if needed
 
-	expiredKeys, err := d.getExpiredKeys(ctx, TierCold, d.tieredStore.config.ColdTTL)
+	expiredKeys, err := d.getExpiredKeys(ctx, TierCold, d.tieredStore.config.Default.ColdTTL)
 	if err != nil {
 		return 0, err
 	}
