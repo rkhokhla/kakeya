@@ -10,18 +10,20 @@ Imagine you're analyzing massive, distributed event streams from IoT sensors, fi
 
 1. **Computing cryptographic summaries (PCS)** that capture the "shape" of your data using fractal geometry (D̂), directional coherence (coh★), and compressibility (r)
 2. **Verifying summaries server-side** with robust statistical methods (Theil-Sen regression) to catch manipulated or corrupted data
-3. **Predicting hallucination risk** (Phase 7) with real-time ML models that provide confidence intervals (≤10ms p95) before requests execute
-4. **Ensemble verification** (Phase 7) with N-of-M acceptance rules combining PCS recompute, retrieval overlap, and micro-vote strategies
-5. **Cost attribution** (Phase 7) tracking per-tenant/model/task spend (compute, storage, network, anchoring) with budget enforcement
-6. **Guaranteeing delivery** with write-ahead logs (WAL) on both agent and backend—your proofs survive crashes
-7. **Preventing duplicates** with idempotent deduplication across memory, Redis, Postgres, or sharded stores
-8. **Ensuring authenticity** with HMAC-SHA256 or Ed25519 signatures
-9. **Multi-tenant isolation** with per-tenant keys, quotas, rate limits, and labeled metrics
-10. **Immutable audit trails** (WORM logs) for compliance and tamper-evidence
-11. **Adversarial defenses** with VRF verification, sanity checks, and anomaly scoring (autoencoder-based)
-12. **Global scale** with active-active multi-region deployment, tiered storage (hot/warm/cold), and sharded dedup
-13. **Production SDKs** for Python, Go, TypeScript, Rust, and WASM with automatic signing and retry logic
-14. **Risk-aware policies** (Phase 7) with Kubernetes CRDs for routing, budgets, and ensemble thresholds with canary rollout
+3. **Predicting hallucination risk** (Phase 7 → Phase 8) with **production-trained** ML models (≤10ms p95) featuring scheduled retraining, drift monitoring, A/B testing, and model registry with immutable binaries
+4. **Ensemble verification** (Phase 7 → Phase 8) with **real micro-vote model** (≤30ms timeout, embedding cache), **RAG grounding checks** (citation overlap + source quality), and **adaptive N-of-M tuning** per tenant (90%→2-of-3, <75%→3-of-3)
+5. **Cost optimization** (Phase 7 → Phase 8) with **billing reconciliation** (AWS/GCP/Azure, ±3%), **cost forecasting** (MAPE ≤10%), and **automated recommendations** (tiering, cache TTL, ensemble config) with projected $ savings
+6. **Anomaly detection v2** (Phase 8) with **VAE-based detector**, **semantic clustering**, **auto-thresholding** (FPR≤2%, TPR≥95%), and **feedback loop** for continuous improvement
+7. **Adaptive deployments** (Phase 8) with **multi-objective canary** (latency, cost, containment, error budget gates), **policy simulator** (dry-run with historical traces), and **automatic rollback** on SLO violations
+8. **Guaranteeing delivery** with write-ahead logs (WAL) on both agent and backend—your proofs survive crashes
+9. **Preventing duplicates** with idempotent deduplication across memory, Redis, Postgres, or sharded stores
+10. **Ensuring authenticity** with HMAC-SHA256 or Ed25519 signatures
+11. **Multi-tenant isolation** with per-tenant keys, quotas, rate limits, and labeled metrics
+12. **Immutable audit trails** (WORM logs) for compliance and tamper-evidence
+13. **Adversarial defenses** with VRF verification, sanity checks, and anomaly scoring (VAE-based with uncertainty)
+14. **Global scale** with active-active multi-region deployment, tiered storage (hot/warm/cold), and sharded dedup
+15. **Production SDKs** for Python, Go, TypeScript, Rust, and WASM with automatic signing and retry logic
+16. **Risk-aware policies** with Kubernetes CRDs for routing, budgets, and ensemble thresholds with adaptive canary rollout
 
 All wrapped in production-ready **Docker Compose** and **Kubernetes Helm charts** with observability (Prometheus + Grafana), auto-scaling (HPA), security hardening (mTLS, NetworkPolicies), and comprehensive runbooks.
 
