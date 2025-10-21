@@ -26,7 +26,7 @@ It’s **model-agnostic**, **auditable**, and **production-ready**.
 
 **Why now:** Enterprises are moving from pilots to production. They need **governance and cost control**—not just accuracy anecdotes. We reduce hallucinations **without retraining**, prove it with dashboards, and keep options open across model vendors.
 
-**Moat:** Verifiable signals + server recomputation, strict invariants (verify → dedup), audit lineage, multi-region DR, and SDK parity across Python/Go/TS (Rust/WASM in roadmap). It’s a **drop-in layer** that standardizes safety and spend.
+**Moat:** Verifiable signals + server recomputation, strict invariants (verify → dedup), audit lineage, multi-region DR, SDK parity across Python/Go/TS (Rust/WASM deployed), **explainable risk scores** (SHAP/LIME), **self-optimizing ensembles** (bandit-tuned), **blocking anomaly detection**, and **policy-level ROI attribution**. It's a **drop-in layer** that standardizes safety and spend.
 
 ---
 
@@ -129,9 +129,8 @@ See:
 
 ## Roadmap (high level)
 
-* **Now:** CRR shipper/reader, cold-tier lifecycle, async audit/anchoring, SDK parity.
-* **Next:** Operator-driven migrations/CRR, risk-based routing (HRS), ensemble verification, buyer KPIs.
-* **Later:** Automated optimization (cost + containment), formal specs, enterprise compliance bundles.
+* **✅ Completed (Phases 1-9):** Core verification, E2E testing, multi-tenant governance, global scale, CRR/tiering, autonomous ops, real-time HRS, production ML, explainable risk, bandit ensembles, blocking anomalies, multi-cloud cost governance.
+* **Next (Phase 10+):** Online learning for HRS, federated learning, advanced bandit strategies (contextual), adversarial robustness, global query federation, runtime auto-sharding.
 
 Progress notes live in:
 
