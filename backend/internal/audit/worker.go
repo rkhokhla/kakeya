@@ -206,7 +206,7 @@ func (w *Worker) processTask(ctx context.Context, task AuditTask) error {
 		reason := fmt.Sprintf("no handler for task type: %s", task.Type)
 		w.sendToDLQ(ctx, task, reason)
 		w.queue.Ack(ctx, task.ID) // Ack to remove from queue (can't process)
-		return fmt.Errorf(reason)
+		return fmt.Errorf("%s", reason)
 	}
 
 	// Execute task with retries

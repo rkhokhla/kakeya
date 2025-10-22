@@ -10,6 +10,7 @@ package canonical
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -56,8 +57,9 @@ func F9(x float64) string {
 // consistent behavior across operations.
 func Round9(x float64) float64 {
 	// Multiply by 10^9, round, divide by 10^9
+	// Use math.Round for correct handling of positive and negative numbers
 	const factor = 1e9
-	return float64(int64(x*factor+0.5)) / factor
+	return math.Round(x*factor) / factor
 }
 
 // CanonicalJSONBytes generates canonical JSON bytes for signing.
