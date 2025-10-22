@@ -362,3 +362,35 @@ ENDPOINT=https://api.example.com/v1/pcs/submit
 ---
 
 If you (human or LLM) propose changes, **attach a diff** and explicitly list which **invariants** remain preserved and which require a `version` bump.
+
+---
+
+## 18) Phase 3-9 Metrics Concurrency (Known Technical Debt)
+
+**Status:** 24 copy lock warnings in stub implementations (advisory-only in CI)
+
+Phase 3-9 packages have metrics structs that embed `sync.RWMutex` and return by value, copying the mutex. This is detected by `go vet` but is **intentionally advisory-only** until full implementation.
+
+### Architecture Decision
+
+See `backend/docs/architecture/METRICS_CONCURRENCY.md` for full details.
+
+**Current approach:**
+- `go vet` runs with `continue-on-error: true` in CI
+- Warnings are visible but don't block builds
+- All 24 affected files remain unchanged
+
+**Migration plan:**
+- When implementing Phase 3-9 fully, use **snapshot pattern**
+- Create `XxxMetricsSnapshot` structs without mutexes
+- Implement `Snapshot()` methods that copy fields under lock
+- Update `GetMetrics()` to return snapshots
+
+**Why not fix now:**
+1. Phase 3-9 are stubs - field names will change
+2. Snapshot pattern requires matching 420+ fields across 24 structs
+3. High maintenance burden during rapid prototyping
+4. Proper fix deferred to full implementation phase
+
+**Affected packages:** audit (5), crr (4), tiering (3), cost (4), hrs (4), anomaly (2), ensemble (1), sharding (1)
+
