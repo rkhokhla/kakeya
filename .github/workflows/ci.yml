@@ -119,7 +119,7 @@ jobs:
 
       - name: Start backend with Docker Compose
         run: |
-          docker-compose -f infra/compose-tests.yml up -d
+          docker compose -f infra/compose-tests.yml up -d
           sleep 10  # Wait for services to start
 
       - name: Wait for backend health
@@ -144,7 +144,7 @@ jobs:
       - name: Collect logs
         if: always()
         run: |
-          docker-compose -f infra/compose-tests.yml logs > e2e-logs.txt
+          docker compose -f infra/compose-tests.yml logs > e2e-logs.txt
 
       - name: Upload logs
         if: always()
@@ -156,7 +156,7 @@ jobs:
       - name: Stop services
         if: always()
         run: |
-          docker-compose -f infra/compose-tests.yml down -v
+          docker compose -f infra/compose-tests.yml down -v
 
   # Helm lint and validation
   helm-lint:
