@@ -179,3 +179,51 @@ func (e *Engine) ComputeBudget(dhat, cohStar, r float64) float64 {
 func (e *Engine) Params() api.VerifyParams {
 	return e.params
 }
+
+// VerifyWithProofs performs verification with mathematical proof certificates
+// Returns both verification result and formal proofs via induction
+func (e *Engine) VerifyWithProofs(pcs *api.PCS) (*api.VerifyResult, *Guarantee, error) {
+	// Perform standard verification first
+	result, err := e.Verify(pcs)
+	if err != nil {
+		return result, nil, err
+	}
+
+	// Generate formal proofs for each theorem
+	proofs := []Proof{}
+
+	// Theorem 1: D̂ Monotonicity (induction on scales)
+	proof1 := Theorem1_DHatMonotonicity(pcs.Scales, pcs.Nj)
+	proofs = append(proofs, proof1)
+
+	// Theorem 2: Coherence Bounds
+	proof2 := Theorem2_CoherenceBound(pcs.CohStar, pcs.VStar, e.params)
+	proofs = append(proofs, proof2)
+
+	// Theorem 3: Compressibility Bounds
+	proof3 := Theorem3_CompressibilityBound(pcs.R)
+	proofs = append(proofs, proof3)
+
+	// Theorem 4: Ensemble Confidence (combines all proofs)
+	guarantee := Theorem4_EnsembleConfidence(proofs, e.params)
+
+	// Attach proofs to result (convert to interface{} for API compatibility)
+	result.Proofs = make([]interface{}, len(proofs))
+	for i, p := range proofs {
+		result.Proofs[i] = p
+	}
+	var guaranteeInterface interface{} = guarantee
+	result.Guarantee = &guaranteeInterface
+	result.Confidence = averageConfidence([]float64{proof1.Confidence, proof2.Confidence, proof3.Confidence})
+
+	// Update escalation decision based on guarantee
+	if !guarantee.MeetsGuarantee {
+		result.Escalated = true
+		if result.Reason == "" {
+			result.Reason = fmt.Sprintf("Error budget exceeded: %.2f%% > %.2f%%",
+				guarantee.ActualError*100, guarantee.ErrorBudget*100)
+		}
+	}
+
+	return result, &guarantee, nil
+}

@@ -45,6 +45,9 @@ type VerifyResult struct {
 	RecomputedBudget float64 `json:"recomputed_budget,omitempty"`
 	Reason          string  `json:"reason,omitempty"`
 	Escalated       bool    `json:"escalated"`
+	Confidence      float64 `json:"confidence,omitempty"` // [0, 1] overall confidence from formal proofs
+	Proofs          []interface{} `json:"proofs,omitempty"` // Mathematical proof certificates (Theorems 1-3)
+	Guarantee       *interface{} `json:"guarantee,omitempty"` // End-to-end error guarantee (Theorem 4)
 }
 
 // VerifyParams contains tolerances and budget calculation parameters
