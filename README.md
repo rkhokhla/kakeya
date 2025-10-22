@@ -1,3 +1,20 @@
+- "Research prototype for LLM hallucination detection using fractal analysis"
+- "Early stage - working implementation of signal computation and verification"
+- "Hypothesis: Multi-scale structure differs between factual and hallucinated outputs"
+- "Built with AI assistance (Claude Code)"
+- "Early-stage research, not production-deployed"
+- "Seeking collaborators/early adopters"
+
+# Who Actually Needs This?
+
+Primary Target: Companies using LLMs for high-stakes decisions where errors are expensive
+
+Real Pain Points:
+1. Support/Customer Service - Need to know when to escalate to humans (chatbot uncertainty)
+2. Legal/Compliance - Need audit trails proving outputs were verified (regulatory requirement)
+3. Code Generation - Need to catch when LLM generates broken/insecure code (security)
+4. Financial Analysis - Need to flag when models make up numbers (liability)
+
 # Fractal LBA — The Trust Layer for AI Agents
 
 > **When AI makes $10M decisions, hallucinations aren't bugs—they're business risks.**
