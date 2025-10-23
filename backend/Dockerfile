@@ -1,16 +1,19 @@
 # Build stage
-FROM golang:1.22-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 WORKDIR /build
 
 # Copy go mod files
 COPY go.mod go.sum ./
+
+# Allow Go to auto-download the correct toolchain version if needed
+ENV GOTOOLCHAIN=auto
 RUN go mod download
 
 # Copy source
 COPY . .
 
-# Build binary
+# Build binary (GOTOOLCHAIN=auto inherited from ENV above)
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server ./cmd/server
 
 # Runtime stage
