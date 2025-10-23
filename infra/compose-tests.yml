@@ -8,13 +8,11 @@
 # - Redis for testing external store scenarios
 # - No Prometheus/Grafana (keeps CI fast)
 
-version: '3.8'
-
 services:
   # Backend under test
   backend:
     build:
-      context: ./backend
+      context: ../backend
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
