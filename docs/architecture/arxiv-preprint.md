@@ -53,7 +53,7 @@ We bridge this gap by applying **multi-scale geometric analysis** to LLM embeddi
    - For n=3 signals at 96% confidence: 28.1% error (optimal)
 
 3. **Production Implementation**: Open-source system with <0.2ms overhead
-   - Go backend: `github.com/fractal-lba/kakeya`
+   - Go backend: `github.com/rkhokhla/kakeya`
    - Python agent: Signal computation + proof generation
    - Proof certificates: Auditable, immutable, compliance-ready
 
@@ -861,7 +861,7 @@ Our approach provides the first mathematically rigorous solution to LLM verifica
 3. GPU acceleration for 10,000 req/s throughput
 4. Extension to multimodal outputs (images, audio)
 
-**Open Source**: Implementation available at `github.com/fractal-lba/kakeya` under Apache 2.0 license.
+**Open Source**: Implementation available at `github.com/rkhokhla/kakeya` under Apache 2.0 license.
 
 ---
 
