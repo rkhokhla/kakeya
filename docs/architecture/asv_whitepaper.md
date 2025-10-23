@@ -12,14 +12,14 @@
 
 LLMs can produce fluent but unreliable content. Many “hallucination” defenses are empirical (thresholds on perplexity, RAG consistency, or self-consistency) and lack explicit, non-asymptotic guarantees for unseen data. Conformal prediction gives distribution-free, finite-sample guarantees and is applicable as a post-hoc wrapper over arbitrary predictors—exactly what we need to turn simple geometric signals into auditable accept/flag decisions with controlled error.
 
-**What this paper *does***
+**What this paper *does***  
 
-- Introduces three *computationally cheap*, model-agnostic signals on embedding trajectories and shows how to calibrate them with split-conformal classification.
-- Replaces misapplied independence/tail-bound reasoning with *valid* finite-sample coverage (no independence assumptions among signals).
-- Provides defensible theory for coherence estimation via $(\varepsilon)$-nets/covering numbers on the sphere.
+- Introduces three *computationally cheap*, model-agnostic signals on embedding trajectories and shows how to calibrate them with split-conformal classification.  
+- Replaces misapplied independence/tail-bound reasoning with *valid* finite-sample coverage (no independence assumptions among signals).  
+- Provides defensible theory for coherence estimation via $(\varepsilon)$-nets/covering numbers on the sphere.  
 - Clarifies audit/compliance language: PCS are *auditable artifacts*, not mathematical proofs; SOC 2 / ISO 27001 remain process standards outside the scope of our statistical guarantees.
 
-**What this paper *does not* claim**
+**What this paper *does not* claim**  
 
 - We do not claim truth verification from geometry alone. For factuality, we evaluate against public benchmarks and position the verifier as a *health-check and pre-filter*, not a truth oracle.
 
@@ -67,11 +67,11 @@ We first **product-quantize** each embedding (e.g. using 8-bit sub-codebooks) to
 
 ## 4. From scores to guarantees: split-conformal verification
 
-Let $s(x)\in\mathbb{R}^3$ denote the vector of our three signals for an output $x$ (e.g. $s(x) = (\hat D,\ \operatorname{coh}_\star,\ r_{\text{LZ}})$, possibly including windowed variants). We train a lightweight classifier $f$ on $s(x)$ to produce a scalar *nonconformity score*. On a disjoint *calibration set*, we then compute the $(1-\delta)$ quantile $q_{1-\delta}$ of these scores. This defines an **ACCEPT** region $\mathcal{A}_\delta = \{\,x: \text{nonconf}(x) \le q_{1-\delta}\,\}$. Under exchangeability (i.e. the calibration and future data are i.i.d.), we obtain the finite-sample guarantee:
+Let $s(x)\in\mathbb{R}^3$ denote the vector of our three signals for an output $x$ (e.g. $s(x) = (\hat D,\ \operatorname{coh}_\star,\ r_{\text{LZ}})$, possibly including windowed variants). We train a lightweight classifier $f$ on $s(x)$ to produce a scalar *nonconformity score*. On a disjoint *calibration set*, we then compute the $(1-\delta)$ quantile $q_{1-\delta}$ of these scores. This defines an **ACCEPT** region $\mathcal{A}_\delta = \{\,x: \text{nonconf}(x) \le q_{1-\delta}\,\}$. Under exchangeability (i.e. the calibration and future data are i.i.d.), we obtain the finite-sample guarantee: 
 
 $$
 \Pr\{\text{true “good” output } x \in \mathcal{A}_\delta\} \ge 1-\delta,
-$$
+$$ 
 
 with no parametric modeling and no independence assumption among the signals. In practice, when a new output falls outside $\mathcal{A}_\delta$, the verifier *flags* it (e.g. *REJECT* or *ESCALATE* for human review). We include the calibration set’s hash and the quantile $q_{1-\delta}$ in the PCS for transparency.
 
@@ -89,9 +89,9 @@ We use Theil–Sen’s median-slope estimator over the log–log scale counts, a
 
 Let $g(v) = \operatorname{coh}(v)$ for $v \in S^{d-1}$ (the unit sphere in $\mathbb{R}^d$), with a fixed binning scheme. Suppose $g$ is $L$-Lipschitz on the sphere (e.g. by smoothing the bin histogram slightly). Let $N(\varepsilon)$ be the covering number of $S^{d-1}$ at granularity $\varepsilon$; standard bounds give $N(\varepsilon)\le (1 + 2/\varepsilon)^d$. If we sample $M$ random directions uniformly from $S^{d-1}$, then with probability at least $1-\delta$ we capture an almost-maximal coherence:
 
-\[
+\[ 
 \max_{v \in \mathcal{V}_M} g(v)\ \ge\ \max_{u \in S^{d-1}} g(u)\;-\;L\,\varepsilon,
-\]
+\] 
 
 provided $M \ge N(\varepsilon)\ln(1/\delta)$. This geometrically sound argument replaces the earlier misapplied i.i.d. Hoeffding bound with a correct covering-number approach.
 
@@ -123,7 +123,7 @@ Given a held-out calibration set and chosen nonconformity scoring function, spli
 
 ## 8. Limitations & threat model
 
-- **Scope of detection:** Our geometric signals flag structural anomalies (loops, divergence, abrupt topic shifts) *not factual accuracy itself*. This method should be used to complement, not replace, content-based checks like retrieval or entailment verification. The verifier is a probabilistic “safety net,” not an oracle of truth.
+- **Scope of detection:** Our geometric signals flag structural anomalies (loops, divergence, abrupt topic shifts) *not factual accuracy itself*. This method should be used to complement, not replace, content-based checks like retrieval or entailment verification. The verifier is a probabilistic “safety net,” not an oracle of truth. 
 
 - **Exchangeability assumptions:** Strong exchangeability can break under adversarial or feedback conditions (e.g. if users repeatedly feed the model’s outputs back into itself). We mitigate this by frequent re-calibration on fresh data and by monitoring for distribution shifts. Recent work on conformal prediction under data contamination suggests that validity degrades gracefully under mild violations, but heavy feedback loops may require additional adjustments.
 
@@ -139,26 +139,26 @@ Auditable, lightweight geometry-based signals—when properly calibrated with sp
 
 ## References
 
-1. Angelopoulos, A.N. & Bates, S. (2023). *Conformal Prediction: A Gentle Introduction*. FnT in Machine Learning, 20(2).
-2. Angelopoulos, A.N. et al. (2021). *A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification*. arXiv:2107.07511.
-3. Vershynin, R. (2018). *High-Dimensional Probability: An Introduction with Applications in Data Science*. (Ch. II: covering numbers and $\varepsilon$-nets on spheres.)
-4. AICPA (2017). **SOC 2** – SOC for Service Organizations (online overview).
-5. Lin, S. et al. (2022). *TruthfulQA: Measuring How Models Mimic Human Falsehoods*. ACL 2022 / arXiv:2109.07958.
-6. Ziv, J. & Lempel, A. (1978). *Compression of Individual Sequences via Variable-Rate Coding*. IEEE Trans. Inf. Theory, 24(5):530–536.
-7. Jégou, H. et al. (2011). *Product Quantization for Nearest Neighbor Search*. IEEE PAMI, 33(1):117–128.
-8. Thorne, J. et al. (2018). *FEVER: a Large-scale Dataset for Fact Extraction and VERification*. NAACL 2018.
-9. Sen, P.K. (1968). *Estimates of the Regression Coefficient Based on Kendall’s Tau*. JASA 63(324):1379–1389.
-10. Oliveira, R.I., Orenstein, P., Ramos, T., & Romano, J.V. (2024). *Split Conformal Prediction and Non-Exchangeable Data*. JMLR 25(225):1–38.
-11. Clarkson, J., Xu, W., Cucuringu, M., & Reinert, G. (2024). *Split Conformal Prediction under Data Contamination*. PMLR (COPA 2024).
-12. Shannon, C.E. (1948). *A Mathematical Theory of Communication*. Bell System Tech. J., 27(3).
+1. Angelopoulos, A.N. & Bates, S. (2023). *Conformal Prediction: A Gentle Introduction*. FnT in Machine Learning, 20(2).  
+2. Angelopoulos, A.N. et al. (2021). *A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification*. arXiv:2107.07511.  
+3. Vershynin, R. (2018). *High-Dimensional Probability: An Introduction with Applications in Data Science*. (Ch. II: covering numbers and $\varepsilon$-nets on spheres.)  
+4. AICPA (2017). **SOC 2** – SOC for Service Organizations (online overview).  
+5. Lin, S. et al. (2022). *TruthfulQA: Measuring How Models Mimic Human Falsehoods*. ACL 2022 / arXiv:2109.07958.  
+6. Ziv, J. & Lempel, A. (1978). *Compression of Individual Sequences via Variable-Rate Coding*. IEEE Trans. Inf. Theory, 24(5):530–536.  
+7. Jégou, H. et al. (2011). *Product Quantization for Nearest Neighbor Search*. IEEE PAMI, 33(1):117–128.  
+8. Thorne, J. et al. (2018). *FEVER: a Large-scale Dataset for Fact Extraction and VERification*. NAACL 2018.  
+9. Sen, P.K. (1968). *Estimates of the Regression Coefficient Based on Kendall’s Tau*. JASA 63(324):1379–1389.  
+10. Oliveira, R.I., Orenstein, P., Ramos, T., & Romano, J.V. (2024). *Split Conformal Prediction and Non-Exchangeable Data*. JMLR 25(225):1–38.  
+11. Clarkson, J., Xu, W., Cucuringu, M., & Reinert, G. (2024). *Split Conformal Prediction under Data Contamination*. PMLR (COPA 2024).  
+12. Shannon, C.E. (1948). *A Mathematical Theory of Communication*. Bell System Tech. J., 27(3).  
 13. Deans, S.R. (2007). *The Radon Transform and Some of Its Applications*. Dover Publications.
 
 ---
 
 ## Appendix A — PCS schema (abbreviated)
 
-- **Model attestation**: {model_name, version, model_SHA256; embedder_name, version, embedder_SHA256}
-- **Seeds & RNG**: {global_seed; direction_sampling_seed; PQ_init_seed; binning_seed}
-- **Signals (per run)**: {scales used for $\hat D$; computed $\hat D$; bootstrap_CI for $\hat D$; $M$ (directions); $B$ (bins); computed $\operatorname{coh}_\star$; PQ bits; computed $r_{\text{LZ}}$}
+- **Model attestation**: {model_name, version, model_SHA256; embedder_name, version, embedder_SHA256}  
+- **Seeds & RNG**: {global_seed; direction_sampling_seed; PQ_init_seed; binning_seed}  
+- **Signals (per run)**: {scales used for $\hat D$; computed $\hat D$; bootstrap_CI for $\hat D$; $M$ (directions); $B$ (bins); computed $\operatorname{coh}_\star$; PQ bits; computed $r_{\text{LZ}}$}  
 
 *(All PCS fields are logged in a structured format and hashed; see Sec. 6.)*

@@ -1,0 +1,116 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bbm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage[numbers]{natbib} % natbib for arXiv compatibility
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+
+\title{Auditable Statistical Verification of LLM Outputs via\\ Geometric Signals and Conformal Guarantees}
+\author{Roman Khokhla\\ \small Independent Researcher\\ \small \texttt{rkhokhla@gmail.com}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present an \emph{auditable statistical verification} (ASV) layer for large language models (LLMs) that flags degenerate or unreliable generations using three lightweight geometric signals computed over token-embedding trajectories: (i) a multi-scale \emph{fractal slope} (robust Theil--Sen estimate over dyadic scales), (ii) \emph{directional coherence} (maximal projection concentration), and (iii) \emph{quantized-symbol complexity} (Lempel--Ziv compression on product-quantized embeddings). Rather than heuristic confidence aggregation, we calibrate a \emph{split-conformal classifier} on these signals to obtain distribution-free, finite-sample error control: for a miscoverage level $\delta$, the verifier's \textsc{ACCEPT} region attains coverage $\ge 1-\delta$ under exchangeability, without assuming independence among signals. We formalize a sampling bound for the coherence estimator via $\varepsilon$-nets on the sphere, specify reproducible \emph{proof-of-computation summaries} (PCS) with seed commitments and model/embedding attestation, and outline a public-data evaluation against contemporary hallucination benchmarks (TruthfulQA, FEVER, HaluEval, HalluLens). We replace earlier ``formal verification'' language with statistically sound, auditable guarantees anchored in standard results.
+\end{abstract}
+
+\section{Introduction}
+LLMs produce fluent text but can hallucinate. Existing defenses (perplexity thresholds, self-consistency, or RAG heuristics) often lack explicit finite-sample guarantees and are difficult to audit. Conformal prediction provides distribution-free coverage for arbitrary base predictors via a simple calibration step, fitting naturally as a post-hoc wrapper around geometric signals computed from embedding trajectories. Our goal is a small, deterministic verifier that (i) emits compact, reproducible PCS artifacts and (ii) provides honest, distribution-free acceptance guarantees \citep{angelopoulos2023gentle,shafer2008tutorial}.
+
+\paragraph{Contributions.}
+\begin{itemize}
+  \item \textbf{Signals.} Three cheap, model-agnostic signals on embedding paths: robust multi-scale slope $\hat D$, maximal directional coherence $\mathrm{coh}_\star$, and PQ$\to$LZ complexity $r_{\mathrm{LZ}}$.
+  \item \textbf{Guarantees.} Split-conformal classification turns these scores into an \textsc{ACCEPT}/\textsc{ESCALATE}/\textsc{REJECT} policy with finite-sample miscoverage control---no independence assumption among signals \citep{angelopoulos2023gentle,oliveira2024nonexchangeable}.
+  \item \textbf{Theory fixes.} We replace misapplied i.i.d.\ tail bounds with an $\varepsilon$-net/covering-number sampling bound for $\mathrm{coh}_\star$; we avoid interpreting raw float-byte compression as entropy by quantizing to a finite alphabet before universal coding \citep{vershynin2018hdp,ziv1978}.
+  \item \textbf{Auditability.} PCS encapsulate seeds, codebook hashes, calibration digests, and decisions; logs are tamper-evident. SOC~2/ISO~27001 are process attestations; PCS are auditable computational artifacts and not third-party attestations \citep{aicpa-soc2}.
+\end{itemize}
+
+\section{Related Work}
+\textbf{Conformal prediction.} Split/inductive conformal prediction delivers distribution-free coverage for sets produced by arbitrary scorers; extensions address abstention and some forms of distribution shift \citep{angelopoulos2023gentle,shafer2008tutorial}.\\
+\textbf{Compression-based complexity.} Universal coding (Lempel--Ziv) and normalized compression distances relate compressibility to complexity for finite-alphabet sequences \citep{ziv1978,shannon1948}.\\
+\textbf{Embedding quantization.} Product quantization (PQ) maps high-dimensional vectors to short discrete codes, enabling finite-alphabet complexity for trajectories \citep{jegou2011}.\\
+\textbf{Hallucination benchmarks.} TruthfulQA, FEVER, HaluEval, HalluLens provide standardized evaluation for hallucination/faithfulness \citep{lin2022truthfulqa,thorne2018fever}.
+
+\section{Geometric Signals on Embedding Trajectories}
+Let $E=(e_1,\dots,e_n)\in(\mathbb{R}^d)^n$ denote token embeddings.
+
+\subsection{Multi-scale fractal slope $\hat D$ (robust Theil--Sen)}
+Compute box-counts $N(s)$ for dyadic scales $s\in\{2,4,8,\dots\}$ on a bounding box of $E$. Regress $\log N$ on $\log s$ via \textbf{Theil--Sen} (median of pairwise slopes), yielding a robust slope proxy $\hat D$. We report bootstrap CIs and scale-sensitivity; we do not assert finite-sample absolute bounds like $\hat D\le d$ \citep{sen1968}.
+
+\subsection{Directional coherence $\mathrm{coh}(v)$ and $\mathrm{coh}_\star$}
+For unit $v\in S^{d-1}$, project $p_i=\langle e_i,v\rangle$, bin into $B$ fixed bins, and define
+$
+  \mathrm{coh}(v)=\max_{b\in[B]} \frac{1}{n}\sum_{i=1}^n \mathbbm{1}\{p_i\in \text{bin }b\},\;
+  \mathrm{coh}_\star = \max_{v\in\mathcal{V}} \mathrm{coh}(v).
+$
+Approximating the sphere by a finite set $\mathcal{V}$ (random or deterministic), loops and mode-locking typically yield high $\mathrm{coh}_\star$.
+We analyze sampling via $\varepsilon$-nets \citep{vershynin2018hdp}.
+
+\subsection{Quantized-symbol complexity $r_{\mathrm{LZ}}$}
+Product-quantize embeddings (e.g., $m$ subspaces with $b$ bits each) to obtain a finite-alphabet sequence $Z$. Define $r_{\mathrm{LZ}}$ as a (monotone) function of the LZ77 compression ratio or NCD of $Z$. This respects the finite-alphabet premise behind universal coding and avoids artifacts of compressing raw IEEE-754 bytes \citep{ziv1978,shannon1948}.
+
+\section{From Scores to Guarantees: Split-Conformal Verification}
+Let $s(x)\in\mathbb{R}^k$ collect the signals and transforms. A base classifier produces a \emph{nonconformity} score $\eta(x)$. On a held-out calibration set $\mathcal{C}$, compute the $(1-\delta)$ quantile $q_{1-\delta}$ of $\{\eta(x):x\in\mathcal{C}\}$. Define the \textsc{ACCEPT} region $\mathcal{A}_\delta=\{x:\eta(x)\le q_{1-\delta}\}$. Under exchangeability of calibration and test points, $\Pr\{x\text{ from the target class}\in\mathcal{A}_\delta\}\ge 1-\delta$ in finite samples. We adopt an \textsc{ESCALATE} state for ambiguity \citep{angelopoulos2023gentle,oliveira2024nonexchangeable}.
+
+\section{Theory Highlights}
+\subsection{Robust slope: properties and reporting}
+Theil--Sen provides a high-breakdown, outlier-resistant slope estimate on $(\log s,\log N(s))$. We report bootstrap CIs and sensitivity to scale selection \citep{sen1968}.
+
+\subsection{Directional coherence via $\varepsilon$-nets}
+\begin{proposition}[Sampling bound for $\mathrm{coh}_\star$]
+Let $g(v)=\mathrm{coh}(v)$ be $L$-Lipschitz on $S^{d-1}$. If $M\ge N(\varepsilon)\log(1/\delta)$ uniformly random directions are sampled, then with prob.\ $\ge 1-\delta$,
+$
+\max_{v\in\mathcal{V}_M} g(v) \ge \max_{u\in S^{d-1}} g(u) - L\,\varepsilon.
+$
+\end{proposition}
+\noindent(Proof sketch: standard covering-number argument \citep{vershynin2018hdp}.)
+
+\subsection{Finite-alphabet complexity}
+For a discrete sequence $Z$, Lempel--Ziv compression approaches entropy rate under broad conditions; $r_{\mathrm{LZ}}$ is a practical monotone of complexity for PQ-symbolized trajectories \citep{ziv1978,shannon1948}.
+
+\subsection{Conformal acceptance guarantee}
+Given $\mathcal{C}$ and $q_{1-\delta}$, split-conformal classification guarantees $\Pr\{\text{miscoverage}\}\le\delta$ without independence among features/scores; abstention is handled by thresholds \citep{angelopoulos2023gentle,shafer2008tutorial}.
+
+\section{Proof-of-Computation Summaries (PCS) and Auditability}
+A PCS contains: seeds/RNG commitments; model/embedding attestations; signal parameters; per-signal values; calibration hashes/quantiles; decision. PCS go to a tamper-evident log; anchor Merkle roots periodically. SOC~2/ISO~27001 are process standards; PCS are auditable artifacts \citep{aicpa-soc2}.
+
+\section{Experimental Protocol (Public, Replicable)}
+Benchmarks: TruthfulQA, FEVER, HaluEval, HalluLens. Metrics: confusion matrices, class priors, 95\% bootstrap CIs, ROC/AUPRC, cost-sensitive trade-offs. Baselines: ASV (ours), perplexity thresholding, entailment-based verifiers, RAG checks. We publish prompts, seeds, and PCS for all runs \citep{lin2022truthfulqa,thorne2018fever}.
+
+\subsection*{Unified latency table (specification)}
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+Component & Median (ms) & p95 (ms) & Notes & Hardware \\
+\midrule
+PQ encoding ($n,d,m,b$) & & & $m$ subspaces, $b$ bits & \\
+Fractal slope $\hat D$ & & & dyadic scales & \\
+Directional coherence ($M,B$) & & & $M$ directions, $B$ bins & \\
+LZ ratio $r_{\mathrm{LZ}}$ & & & window size & \\
+Conformal scoring & & & model type & \\
+\midrule
+End-to-end & & & batch size & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Limitations and Threat Model}
+Geometry flags structural degeneracy (loops, drift, mode collapse) rather than truth per se; combine with retrieval/entailment for factuality. Exchangeability may fail under feedback; mitigate via re-calibration and drift tests. Adversaries can target signals; use randomized challenges, attestation, and seed commitments.
+
+\section{Conclusion}
+Lightweight geometric signals, calibrated with split-conformal prediction, yield distribution-free acceptance guarantees and compact PCS artifacts suitable for audit.
+
+\bibliographystyle{plainnat}
+\bibliography{asv_refs}
+
+\end{document}
