@@ -139,7 +139,7 @@ class EvaluationRunner:
         Initialize evaluation runner.
 
         Args:
-            benchmark: Benchmark name ('truthfulqa', 'fever', 'halueval')
+            benchmark: Benchmark name ('truthfulqa', 'fever', 'halueval', 'degeneracy')
         """
         self.benchmark = benchmark
         self.logger = logging.getLogger(__name__)
@@ -157,6 +157,8 @@ class EvaluationRunner:
             return Path("data/benchmarks/fever/shared_task_dev.jsonl")
         elif self.benchmark == 'halueval':
             return Path("data/benchmarks/halueval/qa_samples.json")
+        elif self.benchmark == 'degeneracy':
+            return Path("data/benchmarks/degeneracy/degeneracy_synthetic.jsonl")
         else:
             raise ValueError(f"Unknown benchmark: {self.benchmark}")
 
@@ -217,6 +219,16 @@ class EvaluationRunner:
                     sample_id = data['id']
                     # Use ground truth from metadata
                     labels[sample_id] = data['metadata'].get('hallucination', False)
+
+        elif self.benchmark == 'degeneracy':
+            # Degeneracy dataset: load directly from synthetic JSONL (no LLM outputs)
+            degeneracy_file = Path("data/benchmarks/degeneracy/degeneracy_synthetic.jsonl")
+            with open(degeneracy_file, 'r') as f:
+                for line in f:
+                    data = json.loads(line)
+                    sample_id = data['id']
+                    # Use is_degenerate field as ground truth
+                    labels[sample_id] = data['is_degenerate']
 
         self.logger.info(f"Loaded {len(labels)} ground truth labels")
         pos_count = sum(labels.values())
@@ -506,7 +518,7 @@ def main():
         '--benchmark',
         type=str,
         required=True,
-        choices=['truthfulqa', 'fever', 'halueval', 'all'],
+        choices=['truthfulqa', 'fever', 'halueval', 'degeneracy', 'all'],
         help='Which benchmark to evaluate'
     )
     parser.add_argument(

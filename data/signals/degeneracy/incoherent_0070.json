@@ -1,0 +1,25 @@
+{
+  "id": "incoherent_0070",
+  "D_hat": 0.0,
+  "coh_star": 0.666666667,
+  "r_LZ": 0.791666667,
+  "scales": [
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "N_j": {
+    "2": 4,
+    "4": 2,
+    "8": 4,
+    "16": 4,
+    "32": 4
+  },
+  "metadata": {
+    "degeneracy_type": "incoherence",
+    "severity": "medium",
+    "num_contradictions": 2
+  }
+}

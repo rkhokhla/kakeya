@@ -1,0 +1,26 @@
+{
+  "id": "repetition_0001",
+  "D_hat": 0.396240625,
+  "coh_star": 0.75,
+  "r_LZ": 0.53125,
+  "scales": [
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "N_j": {
+    "2": 1,
+    "4": 3,
+    "8": 2,
+    "16": 3,
+    "32": 3
+  },
+  "metadata": {
+    "degeneracy_type": "repetition",
+    "severity": "medium",
+    "repeated_word": "really",
+    "num_repeats": 8
+  }
+}

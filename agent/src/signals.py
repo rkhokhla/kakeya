@@ -74,7 +74,7 @@ def compute_coherence(
     - Support reproducibility via seed
 
     Args:
-        points: Nx3 array of 3D points
+        points: NxD array of D-dimensional points (e.g., N embeddings of dimension D)
         num_directions: Number of random directions to sample
         num_bins: Number of histogram bins for projection (default 20, recommended 64)
         seed: Random seed for reproducibility (optional)
@@ -83,19 +83,23 @@ def compute_coherence(
         (coh_star, v_star): Maximum coherence and corresponding direction
     """
     if len(points) == 0:
-        return 0.0, np.array([0.0, 0.0, 0.0])
+        return 0.0, np.zeros(points.shape[1] if len(points.shape) > 1 else 3)
+
+    # Get dimensionality from input
+    d = points.shape[1]
 
     # Set seed for reproducibility
     if seed is not None:
         np.random.seed(seed)
 
     max_coherence = 0.0
-    best_direction = np.array([1.0, 0.0, 0.0])
+    best_direction = np.zeros(d)
+    best_direction[0] = 1.0
 
     # Sample random unit directions
     for _ in range(num_directions):
         # Random direction on unit sphere (uniform via normal distribution)
-        v = np.random.randn(3)
+        v = np.random.randn(d)
         v = v / np.linalg.norm(v)
 
         # Project points onto direction
@@ -287,7 +291,10 @@ def product_quantize_embeddings(
         d = embeddings.shape[1]
 
     subspace_dim = d // n_subspaces
-    n_centroids = 2 ** codebook_bits
+    n_centroids_max = 2 ** codebook_bits
+
+    # Cap n_centroids at n_tokens (k-means requires n_samples >= n_clusters)
+    n_centroids = min(n_centroids_max, n_tokens)
 
     quantized = np.zeros((n_tokens, n_subspaces), dtype=np.uint8)
 

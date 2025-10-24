@@ -1,0 +1,26 @@
+{
+  "id": "drift_0098",
+  "D_hat": 0.269118307,
+  "coh_star": 0.428571429,
+  "r_LZ": 0.732142857,
+  "scales": [
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "N_j": {
+    "2": 4,
+    "4": 2,
+    "8": 7,
+    "16": 7,
+    "32": 7
+  },
+  "metadata": {
+    "degeneracy_type": "semantic_drift",
+    "severity": "medium",
+    "topic_start": "machine learning",
+    "topic_end": "cooking recipes"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "loop_0100",
+  "D_hat": -0.584962501,
+  "coh_star": 0.739130435,
+  "r_LZ": 0.260869565,
+  "scales": [
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "N_j": {
+    "2": 12,
+    "4": 6,
+    "8": 3,
+    "16": 2,
+    "32": 3
+  },
+  "metadata": {
+    "degeneracy_type": "loop",
+    "severity": "medium",
+    "num_repeats": 23
+  }
+}
