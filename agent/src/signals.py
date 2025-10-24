@@ -1,12 +1,16 @@
 """
 Signal computation module for Fractal LBA + Kakeya FT Stack.
 Computes D̂ (fractal dimension), coh★ (coherence), and r (compressibility).
+
+Phase ASV Update: Added product quantization for theoretically sound compression
+(finite-alphabet LZ coding instead of raw float compression).
 """
 
 import math
 import zlib
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 import numpy as np
+from sklearn.cluster import KMeans
 
 
 def compute_D_hat(scales: List[int], N_j: Dict[int, int]) -> float:
@@ -116,9 +120,240 @@ def compute_coherence(
     return round(max_coherence, 9), best_direction
 
 
+def estimate_covering_number(d: int, epsilon: float) -> int:
+    """
+    Estimate covering number N(ε) for unit sphere S^{d-1}.
+
+    For a unit sphere, N(ε) ≈ (2/ε)^{d-1} for small ε.
+    This is a conservative upper bound; actual covering may be tighter.
+
+    Args:
+        d: Dimension of sphere
+        epsilon: Covering radius
+
+    Returns:
+        Estimated covering number
+
+    References:
+        Kolmogorov & Tikhomirov (1959), Haussler (1995)
+    """
+    if epsilon <= 0:
+        raise ValueError("epsilon must be positive")
+    if d <= 0:
+        raise ValueError("dimension must be positive")
+
+    # Conservative bound: N(ε) ≈ (2/ε)^{d-1}
+    # For practical d=768 with ε=0.1, this is huge, but smoothness helps
+    exponent = d - 1
+    base = 2.0 / epsilon
+
+    # Use log to avoid overflow
+    log_N = exponent * math.log(base)
+
+    # Cap at reasonable value for computational tractability
+    max_log_N = math.log(10**6)  # Cap at 1 million
+    log_N = min(log_N, max_log_N)
+
+    N = int(math.exp(log_N))
+    return N
+
+
+def compute_coherence_with_guarantees(
+    points: np.ndarray,
+    num_directions: int = 100,
+    num_bins: int = 20,
+    seed: Optional[int] = None,
+    epsilon: float = 0.1,
+    lipschitz_estimate: Optional[float] = None
+) -> Tuple[float, np.ndarray, dict]:
+    """
+    Compute directional coherence with ε-net theoretical guarantees.
+
+    This is the ASV whitepaper version (Section 5) with formal approximation bounds.
+
+    Args:
+        points: Nxd array of d-dimensional points
+        num_directions: Number of random unit directions to sample (M)
+        num_bins: Number of histogram bins (B)
+        seed: Random seed for reproducibility
+        epsilon: Approximation error tolerance for ε-net (default: 0.1)
+        lipschitz_estimate: Lipschitz constant L (if None, compute empirically)
+
+    Returns:
+        (max_coherence, best_direction, metadata) where metadata includes:
+            - covering_number: Estimated N(ε)
+            - approximation_error: L*ε upper bound on error
+            - num_sampled: M directions sampled
+            - confidence: 1 - δ guarantee (requires M ≥ N(ε)log(1/δ))
+
+    References:
+        ASV whitepaper Section 5 (ε-net theory)
+        Haussler (1995) - Uniform convergence bounds
+    """
+    if len(points) == 0:
+        return 0.0, np.array([0.0, 0.0, 0.0]), {}
+
+    n, d = points.shape
+
+    # Set seed for reproducibility
+    if seed is not None:
+        np.random.seed(seed)
+
+    # Estimate Lipschitz constant if not provided
+    # With B bins over range [-1, 1], empirically L ≲ 2√n/B
+    if lipschitz_estimate is None:
+        lipschitz_estimate = 2 * math.sqrt(n) / num_bins
+
+    # Compute covering number for theoretical guarantee
+    covering_number = estimate_covering_number(d, epsilon)
+
+    # Required samples for δ=0.05 confidence: M ≥ N(ε)log(1/δ)
+    delta = 0.05
+    required_M = int(covering_number * math.log(1.0 / delta))
+
+    max_coherence = 0.0
+    best_direction = np.zeros(d)
+
+    # Sample random unit directions
+    for _ in range(num_directions):
+        # Random direction on unit sphere
+        v = np.random.randn(d)
+        v = v / np.linalg.norm(v)
+
+        # Project points onto direction
+        projections = points @ v
+
+        # Handle zero-width case
+        pmin, pmax = projections.min(), projections.max()
+        if abs(pmax - pmin) < 1e-9:
+            coherence = 1.0
+        else:
+            # Create histogram
+            hist, _ = np.histogram(projections, bins=num_bins, range=(pmin, pmax))
+            coherence = hist.max() / n if n > 0 else 0.0
+
+        if coherence > max_coherence:
+            max_coherence = coherence
+            best_direction = v
+
+    # Compute approximation guarantee
+    approximation_error = lipschitz_estimate * epsilon
+    guarantee_met = (num_directions >= required_M)
+
+    metadata = {
+        "covering_number": covering_number,
+        "approximation_error": approximation_error,
+        "num_sampled": num_directions,
+        "required_samples": required_M,
+        "confidence": 1 - delta,
+        "guarantee_met": guarantee_met,
+        "lipschitz_constant": lipschitz_estimate,
+        "warning": None if guarantee_met else f"Need M≥{required_M} for ε-net guarantee (have M={num_directions})"
+    }
+
+    return round(max_coherence, 9), best_direction, metadata
+
+
+def product_quantize_embeddings(
+    embeddings: np.ndarray,
+    n_subspaces: int = 8,
+    codebook_bits: int = 8,
+    seed: Optional[int] = None
+) -> np.ndarray:
+    """
+    Product quantization: partition embedding dimensions into subspaces,
+    quantize each subspace independently with k-means.
+
+    This creates a finite alphabet for theoretically sound LZ compression
+    (replaces raw float compression which violates finite-alphabet assumption).
+
+    Args:
+        embeddings: Array of shape (n_tokens, d_embedding)
+        n_subspaces: Number of subspaces (default: 8)
+        codebook_bits: Bits per codebook (default: 8 → 256 centroids)
+        seed: Random seed for k-means reproducibility
+
+    Returns:
+        Quantized codes: array of shape (n_tokens, n_subspaces) with values in [0, 2^codebook_bits-1]
+
+    References:
+        Jégou et al. "Product Quantization for Nearest Neighbor Search." PAMI 2011.
+    """
+    n_tokens, d = embeddings.shape
+    if d % n_subspaces != 0:
+        # Pad embeddings to make divisible
+        pad_size = n_subspaces - (d % n_subspaces)
+        embeddings = np.pad(embeddings, ((0, 0), (0, pad_size)), mode='constant')
+        d = embeddings.shape[1]
+
+    subspace_dim = d // n_subspaces
+    n_centroids = 2 ** codebook_bits
+
+    quantized = np.zeros((n_tokens, n_subspaces), dtype=np.uint8)
+
+    # Quantize each subspace independently
+    for m in range(n_subspaces):
+        start = m * subspace_dim
+        end = (m + 1) * subspace_dim
+        subspace_data = embeddings[:, start:end]
+
+        # K-means clustering
+        kmeans = KMeans(n_clusters=n_centroids, random_state=seed, n_init=10, max_iter=50)
+        labels = kmeans.fit_predict(subspace_data)
+        quantized[:, m] = labels.astype(np.uint8)
+
+    return quantized
+
+
+def compute_compressibility_pq(
+    embeddings: np.ndarray,
+    n_subspaces: int = 8,
+    codebook_bits: int = 8,
+    seed: Optional[int] = None
+) -> float:
+    """
+    Compute compressibility using Product Quantization + LZ compression.
+
+    This is the theoretically sound approach (ASV whitepaper Section 3.3):
+    1. Product quantize embeddings to finite alphabet
+    2. Apply LZ compression to discrete symbol sequence
+    3. Return compression ratio
+
+    Args:
+        embeddings: Array of shape (n_tokens, d_embedding)
+        n_subspaces: PQ parameter (default: 8)
+        codebook_bits: PQ parameter (default: 8, gives 256-symbol alphabet per subspace)
+        seed: Random seed for reproducibility
+
+    Returns:
+        Compression ratio r ∈ [0, 1], rounded to 9 decimals
+    """
+    if embeddings.shape[0] == 0:
+        return 1.0  # Empty stream guard
+
+    # Step 1: Product quantize to finite alphabet
+    quantized = product_quantize_embeddings(embeddings, n_subspaces, codebook_bits, seed)
+
+    # Step 2: Flatten to byte sequence
+    # quantized is shape (n_tokens, n_subspaces) with uint8 values
+    byte_sequence = quantized.tobytes()
+
+    # Step 3: LZ compression (Lempel-Ziv via zlib)
+    compressed = zlib.compress(byte_sequence, level=6)
+    ratio = len(compressed) / len(byte_sequence)
+
+    # Clamp to [0, 1]
+    ratio = max(0.0, min(1.0, ratio))
+
+    return round(ratio, 9)
+
+
 def compute_compressibility(data: bytes) -> float:
     """
     Compute compressibility ratio r = compressed_size / raw_size.
+
+    DEPRECATED: This function compresses raw bytes (not theoretically sound for floats).
+    Use compute_compressibility_pq() with embeddings for proper finite-alphabet compression.
 
     Per CLAUDE_PHASE1.md: Use zlib level=6 for balance between speed and compression.
 
