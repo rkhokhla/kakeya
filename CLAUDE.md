@@ -394,3 +394,242 @@ See `backend/docs/architecture/METRICS_CONCURRENCY.md` for full details.
 
 **Affected packages:** audit (5), crr (4), tiering (3), cost (4), hrs (4), anomaly (2), ensemble (1), sharding (1)
 
+---
+
+## 19) ASV: Split Conformal Prediction & Statistical Guarantees
+
+**Status:** ✅ **PRODUCTION READY** (Implemented 2025-10-24, Week 1-2 of ASV Timeline)
+
+We've implemented **split conformal prediction** (Vovk 2005, Angelopoulos & Bates 2023) to provide **finite-sample miscoverage guarantees** for verification decisions.
+
+### 19.1 Core Concept
+
+**Nonconformity Score:** `η(x)` measures how anomalous a PCS is relative to calibration data.
+
+**Conformal Guarantee:** Under exchangeability assumption, if we accept when `η(x) ≤ quantile(1-δ)`, then:
+```
+P(accept wrong PCS) ≤ δ
+```
+This is a **finite-sample** guarantee (not asymptotic). For δ=0.05, miscoverage ≤ 5%.
+
+### 19.2 Usage Patterns
+
+#### **Backend Integration (Go)**
+
+```go
+import "github.com/fractal-lba/kakeya/internal/conformal"
+import "github.com/fractal-lba/kakeya/internal/api"
+
+// Create calibration set (per-tenant recommended)
+cs := conformal.NewCalibrationSet(
+    1000,                  // maxSize (FIFO eviction)
+    24 * time.Hour,        // time window (recency-based pruning)
+    "tenant_acme",         // tenantID (empty string = global)
+)
+
+// Add calibration data (from labeled examples)
+cs.Add(conformal.NonconformityScore{
+    PCSID:     "pcs_abc123",
+    Score:     0.42,                  // Computed by ComputeScore()
+    TrueLabel: true,                  // True if known benign
+    Timestamp: time.Now(),
+    TenantID:  "tenant_acme",
+})
+
+// Make prediction for new PCS
+pcs := &api.PCS{
+    DHat:    1.87,
+    CohStar: 0.73,
+    R:       0.42,
+    // ... other fields
+}
+params := api.DefaultVerifyParams()
+delta := 0.05  // Target miscoverage (5%)
+
+result, err := cs.Predict(pcs, params, delta)
+if err != nil {
+    log.Fatalf("Prediction failed: %v", err)
+}
+
+switch result.Decision {
+case conformal.DecisionAccept:
+    // Accept with confidence result.Confidence
+    log.Printf("ACCEPT: score=%.3f ≤ quantile=%.3f, confidence=%.3f",
+        result.Score, result.Quantile, result.Confidence)
+
+case conformal.DecisionEscalate:
+    // Near threshold - ambiguous
+    log.Printf("ESCALATE: score=%.3f ~ quantile=%.3f (margin=%.3f)",
+        result.Score, result.Quantile, result.Margin)
+
+case conformal.DecisionReject:
+    // Clearly anomalous
+    log.Printf("REJECT: score=%.3f >> quantile=%.3f (margin=%.3f)",
+        result.Score, result.Quantile, result.Margin)
+}
+```
+
+#### **Drift Detection**
+
+```go
+// Monitor for distribution shift
+driftDetector := conformal.NewDriftDetector(
+    100,  // maxRecent (track last 100 scores)
+    0.10, // ksThreshold (10% drift threshold)
+)
+
+// Add recent scores
+for _, pcs := range recentPCSBatch {
+    score := conformal.ComputeScore(pcs, params)
+    driftDetector.AddScore(score)
+}
+
+// Check for drift
+report := driftDetector.CheckDrift(cs)
+if report.Drifted {
+    log.Printf("DRIFT DETECTED: KS=%.4f, p-value=%.4f < 0.05",
+        report.KSStatistic, report.PValue)
+    log.Printf("Recommendation: %s", report.Message)
+
+    // Trigger recalibration
+    RecalibrateCalibrationSet(cs, newLabeledData)
+}
+```
+
+#### **Miscoverage Monitoring**
+
+```go
+// Track empirical miscoverage vs. target δ
+monitor := conformal.NewMiscoverageMonitor(1000)
+
+// Record decisions with ground truth labels
+monitor.AddDecision(correct=true)   // Correct decision
+monitor.AddDecision(correct=false)  // Miscoverage
+
+// Check calibration quality
+wellCalibrated, empiricalRate, targetDelta, n := monitor.CheckCalibration(0.05)
+if !wellCalibrated {
+    log.Printf("MISCALIBRATION: empirical %.3f vs target %.3f (n=%d)",
+        empiricalRate, targetDelta, n)
+}
+```
+
+### 19.3 Agent-Side Changes (Python)
+
+**Product Quantization (Theoretically Sound Compression):**
+
+```python
+from agent.src.signals import (
+    product_quantize_embeddings,
+    compute_compressibility_pq,
+)
+
+# Before: Compressed raw floats (violated finite-alphabet assumption)
+# data_bytes = embeddings.tobytes()
+# r = zlib.compress(data_bytes) / len(data_bytes)  # ❌ Not theoretically sound
+
+# After: Product quantization → discrete symbols → LZ
+embeddings = np.random.randn(100, 768)  # (n_tokens, d_embedding)
+r = compute_compressibility_pq(
+    embeddings,
+    n_subspaces=8,      # Partition dims into 8 subspaces
+    codebook_bits=8,    # 256-symbol alphabet per subspace
+    seed=42,            # Reproducibility
+)
+# ✅ Theoretically sound: finite alphabet → LZ universal coding
+```
+
+**ε-Net Sampling (Formal Approximation Guarantees):**
+
+```python
+from agent.src.signals import compute_coherence_with_guarantees
+
+# Compute coherence with ε-net guarantees
+coh, v_star, metadata = compute_coherence_with_guarantees(
+    points=embeddings,       # (n_tokens, d)
+    num_directions=100,      # M sampled directions
+    num_bins=20,             # B histogram bins
+    epsilon=0.1,             # Approximation tolerance
+)
+
+print(f"Coherence: {coh}")
+print(f"Approximation error: {metadata['approximation_error']:.4f}")
+print(f"Covering number N(ε): {metadata['covering_number']}")
+print(f"Required M for guarantee: {metadata['required_samples']}")
+print(f"Guarantee met: {metadata['guarantee_met']}")
+
+# Mathematical guarantee:
+# max(sampled coh) ≥ max(true coh) - L*ε  with prob ≥ 1-δ
+# where L ≲ 2√n/B (Lipschitz constant), δ=0.05 (confidence)
+```
+
+### 19.4 Operational Procedures
+
+**Calibration Data Collection:**
+1. Deploy with `ENABLE_CALIBRATION_LOGGING=true`
+2. Collect n_cal ∈ [100, 1000] labeled examples (human review or trusted ground truth)
+3. Balance benign vs anomalous (50/50 recommended)
+4. Store with timestamps for time-window management
+
+**Recalibration Triggers:**
+1. **Time-based:** Weekly recalibration (or per 10k decisions)
+2. **Drift-based:** KS test p-value < 0.05
+3. **Miscoverage-based:** Empirical rate deviates >50% from target δ
+
+**Multi-Tenant Patterns:**
+- Per-tenant calibration sets (isolated quantiles)
+- Per-tenant drift detection (separate distributions)
+- Global fallback for cold-start tenants (first 100 PCS)
+
+### 19.5 Invariants & Guarantees
+
+**Mathematical:**
+- ✅ Miscoverage ≤ δ under exchangeability (Vovk 2005)
+- ✅ Product quantization → finite alphabet (Jégou et al. 2011)
+- ✅ ε-Net approximation: error ≤ L*ε with prob ≥ 1-δ (Haussler 1995)
+
+**Operational:**
+- ✅ Thread-safe (sync.RWMutex in CalibrationSet)
+- ✅ FIFO eviction (maxSize parameter)
+- ✅ Time-window pruning (automatic old-score removal)
+- ✅ Per-tenant isolation (tenantID filtering)
+
+**Backward Compatibility:**
+- ✅ Old `compute_coherence()` preserved (Phase 1-11 code works)
+- ✅ Old `compute_compressibility()` deprecated but functional
+- ✅ All Phase 1-11 tests passing (33 Python + Phase 11 Go tests)
+
+### 19.6 Documentation & References
+
+**Primary Docs:**
+- `docs/architecture/ASV_IMPLEMENTATION_STATUS.md` → Implementation status (Week 1-2 complete)
+- `docs/architecture/asv_whitepaper_revised.md` → Mathematical foundations
+- `docs/architecture/ASV_WHITEPAPER_ASSESSMENT.md` → Publication roadmap
+
+**Code Locations:**
+- `backend/internal/conformal/calibration.go` → CalibrationSet, ComputeScore, Predict
+- `backend/internal/conformal/drift.go` → DriftDetector, MiscoverageMonitor
+- `backend/internal/conformal/calibration_test.go` → 8 comprehensive tests (all passing)
+- `agent/src/signals.py` → Product quantization, ε-net sampling
+
+**References:**
+- Vovk et al. (2005) - Algorithmic Learning in a Random World
+- Lei et al. (2018) - Distribution-free predictive inference for regression
+- Angelopoulos & Bates (2023) - Conformal Prediction: A Gentle Introduction
+- Jégou et al. (2011) - Product Quantization for Nearest Neighbor Search
+- Haussler (1995) - Sphere Packing Numbers for Subsets of the Boolean n-Cube
+
+### 19.7 LLM Collaboration Notes
+
+**When implementing conformal prediction features:**
+1. **Always** maintain exchangeability assumption (no feedback loops without partitioning)
+2. **Always** use linear interpolation for quantiles (standard split conformal formula)
+3. **Always** check n_cal ≥ 100 before computing quantiles (stability requirement)
+4. **Never** modify quantile computation without updating tests (golden test vectors)
+5. **Never** compress raw floats (use product quantization for theoretical soundness)
+
+**When proposing changes:**
+- Cite Angelopoulos & Bates (2023) for conformal prediction modifications
+- Cite Jégou et al. (2011) for product quantization changes
+- Attach mathematical proof or simulation evidence for new guarantees
+
