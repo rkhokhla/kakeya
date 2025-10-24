@@ -1,0 +1,18 @@
+{
+  "D_hat": 1.0,
+  "coh_star": 0.9979847073554993,
+  "r_LZ": 0.6293706293706294,
+  "embedding_dim": 768,
+  "n_samples": 2,
+  "text_length": 286,
+  "D_hat_valid": false,
+  "coh_star_valid": true,
+  "r_LZ_valid": true,
+  "warnings": [
+    "D\u0302 computation uncertain: insufficient samples or variance"
+  ],
+  "valid": false,
+  "sample_id": "truthfulqa_244",
+  "benchmark": "truthfulqa",
+  "n_sentences": 2
+}

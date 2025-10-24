@@ -1,0 +1,16 @@
+{
+  "D_hat": 3.0,
+  "coh_star": 0.9965347647666931,
+  "r_LZ": 0.6191709844559585,
+  "embedding_dim": 768,
+  "n_samples": 4,
+  "text_length": 386,
+  "D_hat_valid": true,
+  "coh_star_valid": true,
+  "r_LZ_valid": true,
+  "warnings": [],
+  "valid": true,
+  "sample_id": "fever_203012",
+  "benchmark": "fever",
+  "n_sentences": 4
+}

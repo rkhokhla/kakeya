@@ -1,0 +1,40 @@
+{
+  "pcs_id": "c50bb25a7aff94164147b73c846f0e5e10890d75df204875ca70c448f52c6edf",
+  "schema": "fractal-lba-kakeya",
+  "version": "0.1",
+  "shard_id": "test-shard-001",
+  "epoch": 1,
+  "attempt": 1,
+  "sent_at": "2025-01-19T12:00:00Z",
+  "seed": 42,
+  "scales": [
+    2,
+    4,
+    8,
+    16
+  ],
+  "N_j": {
+    "2": 5,
+    "4": 10,
+    "8": 13,
+    "16": 15
+  },
+  "coh_star": 0.066666667,
+  "v_star": [
+    0.6000020458127243,
+    -0.16701530057610703,
+    0.7823703946303298
+  ],
+  "D_hat": 0.528320834,
+  "r": 0.318421053,
+  "regime": "mixed",
+  "budget": 0.317807017,
+  "merkle_root": "e966b52c992aefad3c3d0196db02554f30d10d55e8a6e5e3038f88e79e414112",
+  "sig": "x5KLRpKb75Oy1oxLA+3V+bgY/HL/3ZYOk1rw3pCiSm4=",
+  "ft": {
+    "outbox_seq": 0,
+    "degraded": false,
+    "fallbacks": [],
+    "clock_skew_ms": 0
+  }
+}

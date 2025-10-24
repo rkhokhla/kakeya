@@ -1,0 +1,75 @@
+# Evaluation Configuration for Phase 2-10
+
+# API Configuration
+api:
+  openai_api_key: ${OPENAI_API_KEY}  # Set via environment variable
+  generation_model: "gpt-4-turbo-preview"
+  embedding_model: "sentence-transformers/all-mpnet-base-v2"  # Local HuggingFace model
+  max_retries: 3
+  retry_delay: 2.0
+  timeout: 60
+
+# Benchmark Selection
+benchmarks:
+  truthfulqa:
+    enabled: true
+    max_samples: 0  # 0 = all (789 samples)
+    path: "data/benchmarks/truthfulqa/TruthfulQA.csv"
+
+  fever:
+    enabled: true
+    max_samples: 2500  # Sample 2,500 from 19,998
+    path: "data/benchmarks/fever/shared_task_dev.jsonl"
+
+  halueval:
+    enabled: true
+    max_samples: 5000  # Sample 5,000 from 10,000
+    path: "data/benchmarks/halueval/qa_samples.json"
+
+# Total samples: 789 + 2,500 + 5,000 = 8,289
+
+# Generation Configuration
+generation:
+  system_prompt: "You are a helpful assistant. Answer the question concisely and accurately."
+  max_tokens: 256
+  temperature: 0.7
+  batch_size: 10  # Process in batches for progress tracking
+  save_every: 100  # Save checkpoint every N samples
+
+# Embedding Configuration
+embeddings:
+  model_type: "local"  # "local" or "openai"
+  layer: -1  # Which transformer layer (-1 = last)
+  max_length: 512  # Max sequence length
+  batch_size: 32  # Batch size for embedding extraction
+
+# Output Configuration
+output:
+  llm_outputs_dir: "data/llm_outputs"
+  embeddings_dir: "data/embeddings"
+  signals_dir: "data/signals"
+  results_dir: "data/results"
+  checkpoint_dir: "data/checkpoints"
+
+# Cost Limits (USD)
+cost_limits:
+  generation_max: 60.0  # Max cost for LLM generation (~$50 estimated)
+  total_max: 400.0  # Max total cost for entire evaluation
+
+# Signal Computation
+signals:
+  scales: [2, 4, 8, 16, 32]
+  n_directions: 1000  # Number of random directions for coherence
+  seed: 42
+
+# Evaluation
+evaluation:
+  train_test_split: 0.7  # 70% train, 30% test
+  calibration_delta: 0.1  # 10% miscoverage target
+  seed: 42
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/evaluation.log"

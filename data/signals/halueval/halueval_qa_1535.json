@@ -1,0 +1,18 @@
+{
+  "D_hat": 1.0,
+  "coh_star": 0.9969620704650879,
+  "r_LZ": 0.7884615384615384,
+  "embedding_dim": 768,
+  "n_samples": 2,
+  "text_length": 208,
+  "D_hat_valid": false,
+  "coh_star_valid": true,
+  "r_LZ_valid": true,
+  "warnings": [
+    "D\u0302 computation uncertain: insufficient samples or variance"
+  ],
+  "valid": false,
+  "sample_id": "halueval_qa_1535",
+  "benchmark": "halueval",
+  "n_sentences": 2
+}

@@ -1,0 +1,39 @@
+% Summary of evaluation results
+\begin{table}[htbp]
+\centering
+\caption{Hallucination Detection Performance Across Benchmarks}
+\label{tab:results}
+\begin{tabular}{llrrrrrr}
+\toprule
+Benchmark & Method & AUROC & AUPRC & F1 & Acc & Prec & Recall \\
+\midrule
+TRUTHFULQA & ASV: D̂ (Fractal Dimension) & 0.535 & 0.052 & 0.113 & 0.820 & 0.072 & 0.257 \\
+TRUTHFULQA & ASV: coh★ (Coherence) & 0.424 & 0.045 & 0.110 & 0.796 & 0.068 & 0.286 \\
+TRUTHFULQA & ASV: r (Compressibility) & 0.250 & 0.029 & 0.085 & 0.044 & 0.044 & 1.000 \\
+TRUTHFULQA & ASV: Combined Score & 0.433 & 0.052 & 0.134 & 0.870 & 0.095 & 0.229 \\
+TRUTHFULQA & Baseline: Perplexity & 0.615 & 0.075 & 0.173 & 0.843 & 0.113 & 0.371 \\
+TRUTHFULQA & Baseline: Mean Token Prob & 0.527 & 0.049 & 0.100 & 0.478 & 0.054 & 0.657 \\
+TRUTHFULQA & Baseline: Min Token Prob & 0.590 & 0.081 & 0.200 & 0.939 & 0.240 & 0.171 \\
+TRUTHFULQA & Baseline: Entropy & 0.390 & 0.040 & 0.090 & 0.923 & 0.094 & 0.086 \\
+\midrule
+FEVER & ASV: D̂ (Fractal Dimension) & 0.578 & 0.391 & 0.503 & 0.336 & 0.336 & 1.000 \\
+FEVER & ASV: coh★ (Coherence) & 0.496 & 0.350 & 0.503 & 0.336 & 0.336 & 1.000 \\
+FEVER & ASV: r (Compressibility) & 0.311 & 0.246 & 0.503 & 0.336 & 0.336 & 1.000 \\
+FEVER & ASV: Combined Score & 0.527 & 0.342 & 0.503 & 0.336 & 0.336 & 1.000 \\
+FEVER & Baseline: Perplexity & 0.598 & 0.446 & 0.505 & 0.344 & 0.338 & 0.998 \\
+FEVER & Baseline: Mean Token Prob & 0.563 & 0.420 & 0.508 & 0.356 & 0.342 & 0.990 \\
+FEVER & Baseline: Min Token Prob & 0.544 & 0.386 & 0.507 & 0.365 & 0.343 & 0.971 \\
+FEVER & Baseline: Entropy & 0.400 & 0.283 & 0.503 & 0.336 & 0.336 & 1.000 \\
+\midrule
+HALUEVAL & ASV: D̂ (Fractal Dimension) & 0.506 & 0.508 & 0.672 & 0.506 & 0.506 & 1.000 \\
+HALUEVAL & ASV: coh★ (Coherence) & 0.511 & 0.512 & 0.672 & 0.506 & 0.506 & 1.000 \\
+HALUEVAL & ASV: r (Compressibility) & 0.506 & 0.509 & 0.672 & 0.506 & 0.506 & 1.000 \\
+HALUEVAL & ASV: Combined Score & 0.504 & 0.515 & 0.672 & 0.506 & 0.506 & 1.000 \\
+HALUEVAL & Baseline: Perplexity & 0.500 & 0.506 & 0.672 & 0.506 & 0.506 & 1.000 \\
+HALUEVAL & Baseline: Mean Token Prob & 0.498 & 0.508 & 0.672 & 0.506 & 0.506 & 1.000 \\
+HALUEVAL & Baseline: Min Token Prob & 0.485 & 0.496 & 0.672 & 0.506 & 0.506 & 1.000 \\
+HALUEVAL & Baseline: Entropy & 0.504 & 0.514 & 0.672 & 0.506 & 0.506 & 1.000 \\
+\midrule
+\bottomrule
+\end{tabular}
+\end{table}

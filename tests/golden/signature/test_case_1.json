@@ -1,0 +1,16 @@
+{
+  "description": "Basic PCS with typical values - Test Case 1",
+  "input": {
+    "pcs_id": "sha256_abc123def456",
+    "merkle_root": "abc123def456789012345678901234567890abcd",
+    "epoch": 1,
+    "shard_id": "shard-001",
+    "D_hat": 1.234567890,
+    "coh_star": 0.750000000,
+    "r": 0.500000000,
+    "budget": 0.350000000
+  },
+  "expected_payload": "{\"D_hat\":1.234567890,\"budget\":0.350000000,\"coh_star\":0.750000000,\"epoch\":1,\"merkle_root\":\"abc123def456789012345678901234567890abcd\",\"pcs_id\":\"sha256_abc123def456\",\"r\":0.500000000,\"shard_id\":\"shard-001\"}",
+  "hmac_key": "testsecret",
+  "notes": "Standard test case with 9 decimal place floats"
+}

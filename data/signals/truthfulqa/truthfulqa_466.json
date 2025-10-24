@@ -1,0 +1,16 @@
+{
+  "D_hat": 6.0,
+  "coh_star": 0.9956622123718262,
+  "r_LZ": 0.5606731620903455,
+  "embedding_dim": 768,
+  "n_samples": 12,
+  "text_length": 1129,
+  "D_hat_valid": true,
+  "coh_star_valid": true,
+  "r_LZ_valid": true,
+  "warnings": [],
+  "valid": true,
+  "sample_id": "truthfulqa_466",
+  "benchmark": "truthfulqa",
+  "n_sentences": 12
+}

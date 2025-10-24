@@ -1,0 +1,437 @@
+{
+  "dashboard": {
+    "title": "Fractal LBA - Buyer Dashboard (Hallucination KPIs)",
+    "description": "Investor-grade KPIs for hallucination containment and system economics (Phase 6 WP6)",
+    "tags": ["phase6", "buyer", "hallucination", "kpis"],
+    "timezone": "utc",
+    "editable": false,
+    "graphTooltip": 1,
+    "time": {
+      "from": "now-7d",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "🎯 Hallucination Containment Rate",
+        "type": "stat",
+        "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+        "targets": [
+          {
+            "expr": "(1 - (sum(rate(flk_escalated[7d])) / sum(rate(flk_ingest_total[7d])))) * 100",
+            "legendFormat": "Containment %",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "text": {
+            "titleSize": 18,
+            "valueSize": 48
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "center"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 95, "color": "yellow" },
+                { "value": 98, "color": "green" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "💰 Cost Per Trusted Task",
+        "type": "stat",
+        "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+        "targets": [
+          {
+            "expr": "(sum(rate(flk_cost_compute_usd[7d])) + sum(rate(flk_cost_storage_usd[7d])) + sum(rate(flk_cost_network_usd[7d]))) / sum(rate(flk_accepted[7d]))",
+            "legendFormat": "Cost/Task",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "text": {
+            "titleSize": 18,
+            "valueSize": 48
+          },
+          "colorMode": "value",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD",
+            "decimals": 4,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "green" },
+                { "value": 0.01, "color": "yellow" },
+                { "value": 0.05, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "📊 Escalation Rate (SLO: ≤2%)",
+        "type": "stat",
+        "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+        "targets": [
+          {
+            "expr": "(sum(rate(flk_escalated[7d])) / sum(rate(flk_ingest_total[7d]))) * 100",
+            "legendFormat": "Escalation %",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "text": {
+            "titleSize": 18,
+            "valueSize": 48
+          },
+          "colorMode": "value",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "green" },
+                { "value": 2, "color": "yellow" },
+                { "value": 5, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "⚡ Verification Latency P95 (SLO: <200ms)",
+        "type": "stat",
+        "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(flk_verify_latency_bucket[7d]))",
+            "legendFormat": "P95 Latency",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "text": {
+            "titleSize": 18,
+            "valueSize": 48
+          },
+          "colorMode": "value",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ms",
+            "decimals": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "green" },
+                { "value": 200, "color": "yellow" },
+                { "value": 500, "color": "red" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "📈 Hallucination Containment Trend (7-Day Window)",
+        "type": "graph",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+        "targets": [
+          {
+            "expr": "(1 - (sum(rate(flk_escalated[1h])) / sum(rate(flk_ingest_total[1h])))) * 100",
+            "legendFormat": "Containment %",
+            "refId": "A"
+          },
+          {
+            "expr": "98",
+            "legendFormat": "SLO Target (98%)",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Containment %",
+            "format": "percent",
+            "min": 90,
+            "max": 100
+          }
+        ],
+        "seriesOverrides": [
+          {
+            "alias": "SLO Target (98%)",
+            "color": "#F2495C",
+            "dashes": true,
+            "fill": 0
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "💸 Cost Breakdown (7-Day Total)",
+        "type": "piechart",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+        "targets": [
+          {
+            "expr": "sum(increase(flk_cost_compute_usd[7d]))",
+            "legendFormat": "Compute",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(increase(flk_cost_storage_usd[7d]))",
+            "legendFormat": "Storage",
+            "refId": "B"
+          },
+          {
+            "expr": "sum(increase(flk_cost_network_usd[7d]))",
+            "legendFormat": "Network",
+            "refId": "C"
+          },
+          {
+            "expr": "sum(increase(flk_cost_anchoring_usd[7d]))",
+            "legendFormat": "Anchoring",
+            "refId": "D"
+          }
+        ],
+        "options": {
+          "pieType": "pie",
+          "displayLabels": ["name", "percent"],
+          "legendDisplayMode": "table",
+          "legendPlacement": "right"
+        }
+      },
+      {
+        "id": 7,
+        "title": "🚨 Escalation Events (Last 7 Days)",
+        "type": "table",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+        "targets": [
+          {
+            "expr": "topk(20, sort_desc(sum by (tenant_id, regime) (increase(flk_escalated{tenant_id!=\"\"}[7d]))))",
+            "format": "table",
+            "instant": true,
+            "refId": "A"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true,
+                "__name__": true
+              },
+              "renameByName": {
+                "tenant_id": "Tenant ID",
+                "regime": "Regime",
+                "Value": "Escalations"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "📦 Multi-Tenant Volume Distribution",
+        "type": "graph",
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+        "targets": [
+          {
+            "expr": "topk(10, sum by (tenant_id) (rate(flk_ingest_total_by_tenant[7d])))",
+            "legendFormat": "{{tenant_id}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "PCS/sec",
+            "format": "short"
+          }
+        ],
+        "stack": true
+      },
+      {
+        "id": 9,
+        "title": "🌍 Cross-Region Replication Lag",
+        "type": "graph",
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 22 },
+        "targets": [
+          {
+            "expr": "avg by (source_region, target_region) (flk_crr_lag_seconds)",
+            "legendFormat": "{{source_region}} → {{target_region}}",
+            "refId": "A"
+          },
+          {
+            "expr": "60",
+            "legendFormat": "SLO Target (60s)",
+            "refId": "B"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Lag (seconds)",
+            "format": "s",
+            "min": 0
+          }
+        ],
+        "seriesOverrides": [
+          {
+            "alias": "SLO Target (60s)",
+            "color": "#F2495C",
+            "dashes": true,
+            "fill": 0
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "🔒 Audit Trail Coverage",
+        "type": "stat",
+        "gridPos": { "h": 8, "w": 6, "x": 12, "y": 22 },
+        "targets": [
+          {
+            "expr": "(sum(increase(flk_worm_writes[7d])) / sum(increase(flk_accepted[7d]))) * 100",
+            "legendFormat": "Coverage %",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "text": {
+            "titleSize": 18,
+            "valueSize": 48
+          },
+          "colorMode": "value",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 99, "color": "yellow" },
+                { "value": 99.9, "color": "green" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 11,
+        "title": "⚖️ Anchoring Batch Success Rate",
+        "type": "stat",
+        "gridPos": { "h": 8, "w": 6, "x": 18, "y": 22 },
+        "targets": [
+          {
+            "expr": "(sum(increase(flk_anchoring_batches_succeeded[7d])) / sum(increase(flk_anchoring_batches_attempted[7d]))) * 100",
+            "legendFormat": "Success %",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "text": {
+            "titleSize": 18,
+            "valueSize": 48
+          },
+          "colorMode": "value",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "value": 0, "color": "red" },
+                { "value": 95, "color": "yellow" },
+                { "value": 99, "color": "green" }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 12,
+        "title": "📐 Signal Quality Distribution (Last 24h)",
+        "type": "heatmap",
+        "gridPos": { "h": 8, "w": 24, "x": 0, "y": 30 },
+        "targets": [
+          {
+            "expr": "sum(increase(flk_accepted{regime=~\".*\"}[1h])) by (regime)",
+            "format": "time_series",
+            "legendFormat": "{{regime}}",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "calculate": true,
+          "calculation": {
+            "xBuckets": {
+              "mode": "size",
+              "value": "1h"
+            },
+            "yBuckets": {
+              "mode": "auto"
+            }
+          },
+          "cellGap": 2,
+          "color": {
+            "mode": "scheme",
+            "scheme": "Spectral"
+          },
+          "yAxis": {
+            "axisPlacement": "left",
+            "reverse": false
+          }
+        }
+      }
+    ]
+  }
+}

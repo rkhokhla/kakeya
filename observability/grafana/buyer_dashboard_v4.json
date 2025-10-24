@@ -1,0 +1,168 @@
+{
+  "dashboard": {
+    "title": "Buyer KPIs v4 - Phase 9",
+    "description": "Policy-level ROI attribution, per-tenant/model/region CPTT, savings attribution (Phase 9)",
+    "tags": ["buyer", "kpis", "phase9", "roi", "attribution"],
+    "timezone": "browser",
+    "schemaVersion": 27,
+    "version": 4,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Hallucination Containment Rate (SLO: ≥98%)",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "(sum(rate(flk_accepted[7d])) / sum(rate(flk_ingest_total[7d]))) * 100",
+            "legendFormat": "Containment %"
+          }
+        ]
+      },
+      {
+        "id": 19,
+        "title": "Policy-Level ROI Attribution",
+        "type": "table",
+        "gridPos": {"x": 0, "y": 42, "w": 24, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(flk_policy_savings_usd) by (policy_name)",
+            "legendFormat": "{{policy_name}}"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {},
+              "indexByName": {},
+              "renameByName": {
+                "policy_name": "Policy",
+                "Value": "Savings ($)"
+              }
+            }
+          }
+        ],
+        "options": {
+          "showHeader": true,
+          "columns": [
+            {"text": "Policy", "value": "policy_name"},
+            {"text": "Type", "value": "policy_type"},
+            {"text": "Realized Savings ($)", "value": "realized_savings"},
+            {"text": "Projected Savings ($)", "value": "projected_savings"},
+            {"text": "Accuracy (%)", "value": "accuracy"},
+            {"text": "Benefiting Tenants", "value": "tenant_count"}
+          ]
+        }
+      },
+      {
+        "id": 20,
+        "title": "Cost Per Trusted Task by Tenant/Model/Region",
+        "type": "heatmap",
+        "gridPos": {"x": 0, "y": 50, "w": 24, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(rate(flk_cost_total_usd[1d])) by (tenant_id, model_version, region_id) / sum(rate(flk_accepted[1d])) by (tenant_id, model_version, region_id)",
+            "legendFormat": "{{tenant_id}}/{{model_version}}/{{region_id}}"
+          }
+        ],
+        "options": {
+          "dataFormat": "timeseries",
+          "colorScheme": "interpolateSpectral",
+          "yAxis": {
+            "unit": "currencyUSD",
+            "decimals": 4
+          }
+        }
+      },
+      {
+        "id": 21,
+        "title": "Containment-Cost Frontier (Pareto)",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 58, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(rate(flk_accepted[7d])) / sum(rate(flk_ingest_total[7d]))",
+            "legendFormat": "Containment Rate"
+          },
+          {
+            "expr": "sum(rate(flk_cost_total_usd[7d])) / sum(rate(flk_accepted[7d]))",
+            "legendFormat": "Cost per Trusted Task"
+          }
+        ],
+        "xAxis": {
+          "mode": "series",
+          "name": "Cost per Trusted Task ($)"
+        },
+        "yAxes": [
+          {
+            "format": "percent",
+            "min": 95,
+            "max": 100,
+            "label": "Containment Rate (%)"
+          }
+        ],
+        "seriesOverrides": [
+          {
+            "alias": "Pareto Frontier",
+            "lines": true,
+            "linewidth": 3,
+            "color": "#FF0000"
+          }
+        ]
+      },
+      {
+        "id": 22,
+        "title": "Savings Attribution (Ensemble vs HRS vs Tiering)",
+        "type": "piechart",
+        "gridPos": {"x": 12, "y": 58, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(flk_policy_savings_usd{policy_type='ensemble'})",
+            "legendFormat": "Ensemble Optimization"
+          },
+          {
+            "expr": "sum(flk_policy_savings_usd{policy_type='hrs'})",
+            "legendFormat": "HRS Risk Routing"
+          },
+          {
+            "expr": "sum(flk_policy_savings_usd{policy_type='tiering'})",
+            "legendFormat": "Predictive Tiering"
+          }
+        ],
+        "options": {
+          "legend": {"displayMode": "table", "placement": "right"},
+          "pieType": "donut",
+          "displayLabels": ["percent"]
+        }
+      },
+      {
+        "id": 23,
+        "title": "Realized vs Projected Savings Accuracy",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 66, "w": 8, "h": 4},
+        "targets": [
+          {
+            "expr": "100 * (1 - abs(sum(flk_policy_realized_savings_usd) - sum(flk_policy_projected_savings_usd)) / sum(flk_policy_projected_savings_usd))",
+            "legendFormat": "Accuracy %"
+          }
+        ],
+        "options": {
+          "graphMode": "none",
+          "colorMode": "value",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "red"},
+              {"value": 80, "color": "yellow"},
+              {"value": 90, "color": "green"}
+            ]
+          },
+          "unit": "percent",
+          "decimals": 1
+        }
+      }
+    ]
+  }
+}

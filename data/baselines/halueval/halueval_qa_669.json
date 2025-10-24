@@ -1,0 +1,21 @@
+{
+  "perplexity": Infinity,
+  "log_perplexity": Infinity,
+  "mean_token_prob": 0.0,
+  "min_token_prob": 0.0,
+  "entropy": 0.0,
+  "bert_score_precision": null,
+  "bert_score_recall": null,
+  "bert_score_f1": null,
+  "n_tokens": 0,
+  "text_length": 6,
+  "perplexity_valid": false,
+  "bert_score_valid": false,
+  "warnings": [
+    "Perplexity computation failed: Invalid perplexity: nan"
+  ],
+  "valid": false,
+  "sample_id": "halueval_qa_669",
+  "benchmark": "halueval",
+  "model": "gpt2"
+}

@@ -27,10 +27,10 @@ agent/dist/
 agent/build/
 
 # Data directories
-data/
-*.wal
-*.json
-*.jsonl
+# data/
+# *.wal
+# *.json
+# *.jsonl
 
 # IDE
 .idea/

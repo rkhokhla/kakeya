@@ -1,0 +1,98 @@
+{
+  "benchmark": "fever",
+  "methods": {
+    "ASV_D_hat": {
+      "method_name": "ASV: D\u0302 (Fractal Dimension)",
+      "auroc": 0.5776330321285141,
+      "auprc": 0.39106859655884085,
+      "f1_optimal": 0.5029940119760479,
+      "accuracy_optimal": 0.336,
+      "precision_optimal": 0.336,
+      "recall_optimal": 1.0,
+      "optimal_threshold": 0.0,
+      "n_samples": 2500
+    },
+    "ASV_coh_star": {
+      "method_name": "ASV: coh\u2605 (Coherence)",
+      "auroc": 0.49595273952954677,
+      "auprc": 0.34964216313496344,
+      "f1_optimal": 0.5029940119760479,
+      "accuracy_optimal": 0.336,
+      "precision_optimal": 0.336,
+      "recall_optimal": 1.0,
+      "optimal_threshold": 0.0,
+      "n_samples": 2500
+    },
+    "ASV_r_LZ": {
+      "method_name": "ASV: r (Compressibility)",
+      "auroc": 0.31133964429145156,
+      "auprc": 0.2461405456747648,
+      "f1_optimal": 0.5029940119760479,
+      "accuracy_optimal": 0.336,
+      "precision_optimal": 0.336,
+      "recall_optimal": 1.0,
+      "optimal_threshold": 0.0,
+      "n_samples": 2500
+    },
+    "ASV_Combined": {
+      "method_name": "ASV: Combined Score",
+      "auroc": 0.5274645008605852,
+      "auprc": 0.3424053545544984,
+      "f1_optimal": 0.5029940119760479,
+      "accuracy_optimal": 0.336,
+      "precision_optimal": 0.336,
+      "recall_optimal": 1.0,
+      "optimal_threshold": 0.0,
+      "n_samples": 2500
+    },
+    "Baseline_Perplexity": {
+      "method_name": "Baseline: Perplexity",
+      "auroc": 0.597509323006311,
+      "auprc": 0.4458631213951323,
+      "f1_optimal": 0.5052758516731987,
+      "accuracy_optimal": 0.3436,
+      "precision_optimal": 0.33831247476786436,
+      "recall_optimal": 0.9976190476190476,
+      "optimal_threshold": 0.01857866712001042,
+      "n_samples": 2500
+    },
+    "Baseline_MeanProb": {
+      "method_name": "Baseline: Mean Token Prob",
+      "auroc": 0.5629299340218015,
+      "auprc": 0.42041450294043464,
+      "f1_optimal": 0.5084020776046441,
+      "accuracy_optimal": 0.3564,
+      "precision_optimal": 0.3419646526921496,
+      "recall_optimal": 0.9904761904761905,
+      "optimal_threshold": 0.6454939544200897,
+      "n_samples": 2500
+    },
+    "Baseline_MinProb": {
+      "method_name": "Baseline: Min Token Prob",
+      "auroc": 0.5442147160068846,
+      "auprc": 0.3859574999362563,
+      "f1_optimal": 0.5069897483690587,
+      "accuracy_optimal": 0.3652,
+      "precision_optimal": 0.34300126103404793,
+      "recall_optimal": 0.9714285714285714,
+      "optimal_threshold": 0.24990035174211878,
+      "n_samples": 2500
+    },
+    "Baseline_Entropy": {
+      "method_name": "Baseline: Entropy",
+      "auroc": 0.39966688181296617,
+      "auprc": 0.2834573183759538,
+      "f1_optimal": 0.5029940119760479,
+      "accuracy_optimal": 0.336,
+      "precision_optimal": 0.336,
+      "recall_optimal": 1.0,
+      "optimal_threshold": 3.6644354217685304e-11,
+      "n_samples": 2500
+    }
+  },
+  "summary": {
+    "best_auroc": 0.597509323006311,
+    "best_auprc": 0.4458631213951323,
+    "best_f1": 0.5084020776046441
+  }
+}

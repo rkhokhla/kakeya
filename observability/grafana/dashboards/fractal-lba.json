@@ -1,0 +1,164 @@
+{
+  "dashboard": {
+    "title": "Fractal LBA + Kakeya FT Stack",
+    "timezone": "utc",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "10s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Total Ingests",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "flk_ingest_total",
+            "legendFormat": "Total",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Accepted",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "flk_accepted",
+            "legendFormat": "Accepted",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic", "fixedColor": "green"}
+          }
+        },
+        "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Escalated",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "flk_escalated",
+            "legendFormat": "Escalated",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic", "fixedColor": "yellow"}
+          }
+        },
+        "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Dedup Hits",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "flk_dedup_hits",
+            "legendFormat": "Dedup Hits",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0}
+      },
+      {
+        "id": 5,
+        "title": "Ingest Rate (req/min)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(flk_ingest_total[1m]) * 60",
+            "legendFormat": "Ingest Rate",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4}
+      },
+      {
+        "id": 6,
+        "title": "Accept vs Escalate Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(flk_accepted[1m]) * 60",
+            "legendFormat": "Accepted/min",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(flk_escalated[1m]) * 60",
+            "legendFormat": "Escalated/min",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4}
+      },
+      {
+        "id": 7,
+        "title": "Dedup Hit Ratio (%)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "(flk_dedup_hits / flk_ingest_total) * 100",
+            "legendFormat": "Dedup Hit %",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {"format": "percent", "min": 0, "max": 100}
+        ],
+        "gridPos": {"h": 6, "w": 12, "x": 0, "y": 12}
+      },
+      {
+        "id": 8,
+        "title": "Error Rates",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(flk_signature_errors[1m]) * 60",
+            "legendFormat": "Signature Errors/min",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(flk_wal_errors[1m]) * 60",
+            "legendFormat": "WAL Errors/min",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 12, "x": 12, "y": 12}
+      },
+      {
+        "id": 9,
+        "title": "Escalation Rate (SLO: ≤2%)",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "(flk_escalated / flk_ingest_total) * 100",
+            "legendFormat": "Escalation %",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "green"},
+                {"value": 2, "color": "yellow"},
+                {"value": 5, "color": "red"}
+              ]
+            }
+          }
+        },
+        "gridPos": {"h": 6, "w": 8, "x": 0, "y": 18}
+      }
+    ]
+  }
+}

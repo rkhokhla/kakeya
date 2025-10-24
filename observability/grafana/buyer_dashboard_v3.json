@@ -1,0 +1,384 @@
+{
+  "dashboard": {
+    "title": "Buyer KPIs v3 - Phase 8",
+    "description": "Investor-grade metrics with HRS, ensemble, and cost optimization (Phase 8)",
+    "tags": ["buyer", "kpis", "phase8", "hrs", "ensemble", "cost"],
+    "timezone": "browser",
+    "schemaVersion": 27,
+    "version": 3,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Hallucination Containment Rate (SLO: ≥98%)",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "(sum(rate(flk_accepted[7d])) / sum(rate(flk_ingest_total[7d]))) * 100",
+            "legendFormat": "Containment %"
+          }
+        ],
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "red"},
+              {"value": 97, "color": "yellow"},
+              {"value": 98, "color": "green"}
+            ]
+          },
+          "unit": "percent",
+          "decimals": 2
+        }
+      },
+      {
+        "id": 2,
+        "title": "Cost Per Trusted Task (USD)",
+        "type": "stat",
+        "gridPos": {"x": 6, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "sum(rate(flk_cost_compute_usd[7d]) + rate(flk_cost_storage_usd[7d]) + rate(flk_cost_network_usd[7d]) + rate(flk_cost_anchoring_usd[7d])) / sum(rate(flk_accepted[7d]))",
+            "legendFormat": "$ per task"
+          }
+        ],
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "green"},
+              {"value": 0.0015, "color": "yellow"},
+              {"value": 0.0020, "color": "red"}
+            ]
+          },
+          "unit": "currencyUSD",
+          "decimals": 4
+        }
+      },
+      {
+        "id": 3,
+        "title": "HRS Model AUC (SLO: ≥0.85 shadow, ≥0.82 online)",
+        "type": "stat",
+        "gridPos": {"x": 12, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "flk_hrs_model_auc",
+            "legendFormat": "AUC"
+          }
+        ],
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "red"},
+              {"value": 0.82, "color": "yellow"},
+              {"value": 0.85, "color": "green"}
+            ]
+          },
+          "unit": "short",
+          "decimals": 3
+        }
+      },
+      {
+        "id": 4,
+        "title": "Ensemble Agreement Rate (SLO: ≥85%)",
+        "type": "stat",
+        "gridPos": {"x": 18, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "(sum(rate(flk_ensemble_agreed[7d])) / sum(rate(flk_ensemble_total[7d]))) * 100",
+            "legendFormat": "Agreement %"
+          }
+        ],
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "red"},
+              {"value": 85, "color": "yellow"},
+              {"value": 90, "color": "green"}
+            ]
+          },
+          "unit": "percent",
+          "decimals": 1
+        }
+      },
+      {
+        "id": 5,
+        "title": "Escalation Rate (SLO: ≤2%)",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 4, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "(sum(rate(flk_escalated[1h])) / sum(rate(flk_ingest_total[1h]))) * 100",
+            "legendFormat": "Escalation Rate %"
+          },
+          {
+            "expr": "2",
+            "legendFormat": "SLO Threshold (2%)"
+          }
+        ],
+        "yaxes": [
+          {"format": "percent", "min": 0, "max": 5}
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Cost Breakdown (7-day window)",
+        "type": "piechart",
+        "gridPos": {"x": 12, "y": 4, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "sum(rate(flk_cost_compute_usd[7d]))",
+            "legendFormat": "Compute"
+          },
+          {
+            "expr": "sum(rate(flk_cost_storage_usd[7d]))",
+            "legendFormat": "Storage"
+          },
+          {
+            "expr": "sum(rate(flk_cost_network_usd[7d]))",
+            "legendFormat": "Network"
+          },
+          {
+            "expr": "sum(rate(flk_cost_anchoring_usd[7d]))",
+            "legendFormat": "Anchoring"
+          }
+        ],
+        "options": {
+          "legend": {"displayMode": "table", "placement": "right"},
+          "pieType": "donut"
+        }
+      },
+      {
+        "id": 7,
+        "title": "HRS Prediction Latency P95 (SLO: ≤10ms)",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 10, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(flk_hrs_latency_ms_bucket[5m])) by (le))",
+            "legendFormat": "HRS P95"
+          },
+          {
+            "expr": "10",
+            "legendFormat": "SLO Threshold (10ms)"
+          }
+        ],
+        "yaxes": [
+          {"format": "ms", "min": 0, "max": 20}
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Ensemble Verification Latency P95 (SLO: ≤120ms)",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 10, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(flk_ensemble_latency_ms_bucket[5m])) by (le))",
+            "legendFormat": "Ensemble P95"
+          },
+          {
+            "expr": "120",
+            "legendFormat": "SLO Threshold (120ms)"
+          }
+        ],
+        "yaxes": [
+          {"format": "ms", "min": 0, "max": 200}
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Anomaly Detection Rate (Phase 8 WP4)",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 16, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "(sum(rate(flk_anomaly_detected[1h])) / sum(rate(flk_ingest_total[1h]))) * 100",
+            "legendFormat": "Anomaly Rate %"
+          },
+          {
+            "expr": "5",
+            "legendFormat": "Target (5%)"
+          }
+        ],
+        "yaxes": [
+          {"format": "percent", "min": 0, "max": 10}
+        ]
+      },
+      {
+        "id": 10,
+        "title": "High-Risk PCS Rate (HRS ≥0.7)",
+        "type": "graph",
+        "gridPos": {"x": 12, "y": 16, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "(sum(rate(flk_hrs_high_risk[1h])) / sum(rate(flk_ingest_total[1h]))) * 100",
+            "legendFormat": "High-Risk Rate %"
+          }
+        ],
+        "yaxes": [
+          {"format": "percent", "min": 0}
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Budget Utilization by Tenant (Top 10)",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 22, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "topk(10, sum(rate(flk_budget_used[7d])) by (tenant_id) / sum(rate(flk_budget_cap[7d])) by (tenant_id)) * 100",
+            "legendFormat": "{{tenant_id}}"
+          }
+        ],
+        "yaxes": [
+          {"format": "percent", "min": 0, "max": 100}
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Cost Savings from Optimization (Phase 8 WP3)",
+        "type": "stat",
+        "gridPos": {"x": 12, "y": 22, "w": 6, "h": 6},
+        "targets": [
+          {
+            "expr": "sum(flk_cost_advisor_projected_savings_usd)",
+            "legendFormat": "Projected Savings ($/month)"
+          }
+        ],
+        "options": {
+          "graphMode": "area",
+          "colorMode": "value",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": 0, "color": "yellow"},
+              {"value": 100, "color": "green"}
+            ]
+          },
+          "unit": "currencyUSD",
+          "decimals": 2
+        }
+      },
+      {
+        "id": 13,
+        "title": "Ensemble Disagreement Events (Last 20)",
+        "type": "table",
+        "gridPos": {"x": 18, "y": 22, "w": 6, "h": 6},
+        "targets": [
+          {
+            "expr": "topk(20, flk_ensemble_disagreement_timestamp)",
+            "legendFormat": "{{pcs_id}}"
+          }
+        ],
+        "options": {
+          "showHeader": true,
+          "columns": ["Timestamp", "PCS ID", "Strategies"]
+        }
+      },
+      {
+        "id": 14,
+        "title": "HRS ROC/PR Curves (Model Evaluation)",
+        "type": "graph",
+        "gridPos": {"x": 0, "y": 28, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "flk_hrs_tpr",
+            "legendFormat": "TPR (True Positive Rate)"
+          },
+          {
+            "expr": "flk_hrs_fpr",
+            "legendFormat": "FPR (False Positive Rate)"
+          }
+        ],
+        "yaxes": [
+          {"format": "short", "min": 0, "max": 1}
+        ]
+      },
+      {
+        "id": 15,
+        "title": "Confidence Distribution (HRS Predictions)",
+        "type": "heatmap",
+        "gridPos": {"x": 12, "y": 28, "w": 12, "h": 6},
+        "targets": [
+          {
+            "expr": "sum(rate(flk_hrs_confidence_bucket[5m])) by (le)",
+            "legendFormat": "Confidence {{le}}"
+          }
+        ],
+        "options": {
+          "dataFormat": "timeseries",
+          "colorScheme": "interpolateSpectral"
+        }
+      },
+      {
+        "id": 16,
+        "title": "Containment Delta vs Control (Phase 7 → Phase 8)",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 34, "w": 8, "h": 4},
+        "targets": [
+          {
+            "expr": "((sum(rate(flk_accepted[7d])) / sum(rate(flk_ingest_total[7d]))) - 0.982) * 100",
+            "legendFormat": "Δ Containment %"
+          }
+        ],
+        "options": {
+          "graphMode": "none",
+          "colorMode": "value",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {"value": -1, "color": "red"},
+              {"value": 0, "color": "yellow"},
+              {"value": 1, "color": "green"}
+            ]
+          },
+          "unit": "percent",
+          "decimals": 2
+        }
+      },
+      {
+        "id": 17,
+        "title": "Cost Per Trusted Task Trend (30-day window)",
+        "type": "graph",
+        "gridPos": {"x": 8, "y": 34, "w": 16, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(rate(flk_cost_compute_usd[1d]) + rate(flk_cost_storage_usd[1d]) + rate(flk_cost_network_usd[1d]) + rate(flk_cost_anchoring_usd[1d])) by (tenant_id) / sum(rate(flk_accepted[1d])) by (tenant_id)",
+            "legendFormat": "{{tenant_id}}"
+          }
+        ],
+        "yaxes": [
+          {"format": "currencyUSD", "min": 0}
+        ]
+      },
+      {
+        "id": 18,
+        "title": "Model Version Distribution (Active Deployments)",
+        "type": "bargauge",
+        "gridPos": {"x": 0, "y": 38, "w": 8, "h": 4},
+        "targets": [
+          {
+            "expr": "sum(flk_hrs_active_model_count) by (version)",
+            "legendFormat": "{{version}}"
+          }
+        ],
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "gradient"
+        }
+      }
+    ]
+  }
+}

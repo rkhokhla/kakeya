@@ -1,0 +1,24 @@
+# Additional requirements for real evaluation (Phase 2-10)
+
+# OpenAI API for LLM generation
+openai>=1.0.0
+
+# HuggingFace transformers for local embeddings
+transformers>=4.30.0
+torch>=2.0.0
+sentencepiece>=0.1.99
+
+# Data processing
+datasets>=2.14.0
+pandas>=2.0.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Scientific computing
+scipy>=1.10.0
+scikit-learn>=1.3.0
+
+# Progress bars
+tqdm>=4.65.0

@@ -1,0 +1,42 @@
+{
+  "name": "@fractal-lba/client",
+  "version": "0.4.0",
+  "description": "TypeScript SDK for Fractal LBA + Kakeya FT Stack API (Phase 4)",
+  "main": "dist/fractal-lba-client.js",
+  "types": "dist/fractal-lba-client.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint . --ext .ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "fractal-lba",
+    "kakeya",
+    "proof-of-computation",
+    "verification",
+    "fault-tolerance"
+  ],
+  "author": "Fractal LBA Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fractal-lba/kakeya.git",
+    "directory": "sdk/ts"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}

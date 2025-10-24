@@ -1,0 +1,19 @@
+{
+  "perplexity": 29.229585647583008,
+  "log_perplexity": 3.3751814365386963,
+  "mean_token_prob": 0.28385210037231445,
+  "min_token_prob": 4.268023531039944e-06,
+  "entropy": 3.619210958480835,
+  "bert_score_precision": null,
+  "bert_score_recall": null,
+  "bert_score_f1": null,
+  "n_tokens": 61,
+  "text_length": 280,
+  "perplexity_valid": true,
+  "bert_score_valid": false,
+  "warnings": [],
+  "valid": true,
+  "sample_id": "fever_108956",
+  "benchmark": "fever",
+  "model": "gpt2"
+}

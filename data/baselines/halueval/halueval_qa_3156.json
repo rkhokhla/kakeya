@@ -1,0 +1,19 @@
+{
+  "perplexity": 23.704986572265625,
+  "log_perplexity": 3.1656854152679443,
+  "mean_token_prob": 0.2995307743549347,
+  "min_token_prob": 5.308912705004332e-07,
+  "entropy": 3.481106758117676,
+  "bert_score_precision": null,
+  "bert_score_recall": null,
+  "bert_score_f1": null,
+  "n_tokens": 68,
+  "text_length": 277,
+  "perplexity_valid": true,
+  "bert_score_valid": false,
+  "warnings": [],
+  "valid": true,
+  "sample_id": "halueval_qa_3156",
+  "benchmark": "halueval",
+  "model": "gpt2"
+}

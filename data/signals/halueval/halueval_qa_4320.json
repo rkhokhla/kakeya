@@ -1,0 +1,16 @@
+{
+  "D_hat": 3.0,
+  "coh_star": 0.9968347549438477,
+  "r_LZ": 0.5506692160611855,
+  "embedding_dim": 768,
+  "n_samples": 5,
+  "text_length": 523,
+  "D_hat_valid": true,
+  "coh_star_valid": true,
+  "r_LZ_valid": true,
+  "warnings": [],
+  "valid": true,
+  "sample_id": "halueval_qa_4320",
+  "benchmark": "halueval",
+  "n_sentences": 5
+}

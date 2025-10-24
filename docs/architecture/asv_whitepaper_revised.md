@@ -61,6 +61,65 @@ Train a lightweight scorer \(f\) on signal features to produce a **nonconformity
 **Metrics.** Report **accept / escalate / reject** confusion matrices, calibrated risks (empirical miscoverage vs. target δ), **ECE** (Expected Calibration Error), ROC/AUPRC, and **bootstrapped CIs** (1000 resamples). Include **cost‑sensitive** analyses reflecting human‑in‑the‑loop escalation cost ($/verification).
 **Releases.** Open prompts, outputs, seeds, and **PCS logs** for all runs (full reproducibility).
 
+### 6.1 Experimental Results
+
+We conducted a comprehensive evaluation of ASV signals against standard baseline methods on three public benchmarks: **TruthfulQA** (790 samples, 4.4% hallucinations), **FEVER** (2,500 samples, 33.6% hallucinations), and **HaluEval** (5,000 samples, 50.6% hallucinations). All LLM responses were generated using **GPT-3.5-Turbo** with temperature 0.7. Embeddings were extracted using **GPT-2** (768 dimensions).
+
+#### Setup
+- **ASV Signals:** D̂ (fractal dimension via Theil-Sen), coh★ (directional coherence with M=100, B=20), r_LZ (compressibility with product quantization: 8 subspaces, 8-bit codebooks)
+- **Baselines:** Perplexity (GPT-2), mean token probability, minimum token probability, entropy
+- **Metrics:** AUROC (threshold-independent), AUPRC (better for imbalanced data), F1 score (at optimal threshold), accuracy, precision, recall
+- **Total samples evaluated:** 8,290 across all benchmarks
+- **Compute:** MacBook Pro M1, ~30 minutes total (signal computation + baseline metrics + evaluation)
+
+#### Key Findings
+
+**Best-performing methods:**
+- **TruthfulQA:** Baseline Perplexity (AUROC: **0.6149**, AUPRC: 0.0749, F1: 0.1733)
+- **FEVER:** Baseline Perplexity (AUROC: **0.5975**, AUPRC: 0.4459, F1: 0.5053)
+- **HaluEval:** ASV coh★ (AUROC: **0.5107**, AUPRC: 0.5122, F1: 0.6716)
+
+**ASV Signal Performance:**
+- D̂ shows promise as a standalone signal: **0.535** (TruthfulQA), **0.578** (FEVER), **0.506** (HaluEval)
+- coh★ best on balanced dataset (HaluEval): **0.511** AUROC
+- Combined ASV score (weighted: 0.5×D̂ + 0.3×coh★ + 0.2×r): competitive but does not outperform best individual signals
+- r_LZ (compressibility) struggles in isolation: **0.250** (TruthfulQA), **0.311** (FEVER), **0.506** (HaluEval)
+
+**Analysis:**
+1. **Baseline dominance:** Simple perplexity outperforms ASV on two benchmarks (TruthfulQA, FEVER), suggesting that language model confidence is a strong signal for hallucination detection in factuality-focused tasks.
+2. **Class imbalance impact:** TruthfulQA (4.4% positive) has very low F1 scores across all methods (0.08-0.20), while HaluEval (balanced) achieves higher F1 (0.67+). AUPRC is a better metric for imbalanced datasets.
+3. **Near-random performance on HaluEval:** All methods achieve ~0.50 AUROC on HaluEval, suggesting this benchmark may require different features or the hallucinations are not detectable via geometric or perplexity-based signals alone.
+4. **ASV potential:** D̂ (fractal dimension) shows consistent moderate performance (0.51-0.58 AUROC) across all benchmarks, indicating geometric structure may complement perplexity-based approaches.
+
+#### Detailed Results
+
+See `figures/summary_table.csv` for complete results including precision, recall, and accuracy for all methods across all benchmarks. Visualizations:
+- **ROC curves:** `figures/{benchmark}_roc_curves.png` (one per benchmark)
+- **Precision-Recall curves:** `figures/{benchmark}_pr_curves.png` (one per benchmark)
+- **Cross-benchmark comparison:** `figures/comparison_bars.png` (AUROC/AUPRC/F1 grouped bar charts)
+- **Performance heatmap:** `figures/performance_heatmap.png` (AUROC matrix: methods × benchmarks)
+
+**Table 1: Summary of Evaluation Results (Best Methods Per Benchmark)**
+
+| Benchmark | Method | AUROC | AUPRC | F1 | N | Positive % |
+|-----------|--------|-------|-------|-----|------|------------|
+| TruthfulQA | Baseline: Perplexity | **0.615** | 0.075 | 0.173 | 790 | 4.4% |
+| TruthfulQA | ASV: D̂ | 0.535 | 0.052 | 0.113 | 790 | 4.4% |
+| FEVER | Baseline: Perplexity | **0.598** | 0.446 | 0.505 | 2500 | 33.6% |
+| FEVER | ASV: D̂ | 0.578 | 0.391 | 0.503 | 2500 | 33.6% |
+| HaluEval | ASV: coh★ | **0.511** | 0.512 | 0.672 | 5000 | 50.6% |
+| HaluEval | Baseline: Perplexity | 0.500 | 0.506 | 0.672 | 5000 | 50.6% |
+
+Full results table available in LaTeX format at `figures/summary_table.tex`.
+
+#### Future Work
+
+1. **Split conformal calibration:** Current results use raw signal scores. Implementing split conformal prediction (Section 4) with proper calibration sets (n_cal ∈ [100, 1000]) should improve coverage guarantees and reduce false negatives.
+2. **Hybrid approaches:** Combine perplexity (strong on factuality) with D̂ (captures structural degeneracy) in a calibrated ensemble.
+3. **Advanced baselines:** Compare against SelfCheckGPT (zero-resource sampling) and GPT-4-as-judge (LLM-as-evaluator) for a more complete baseline suite.
+4. **Larger models:** Evaluate on GPT-4, Claude-3, and Llama-3 outputs to assess generalization across model families.
+5. **Cost-sensitive evaluation:** Incorporate escalation costs ($/verification) to optimize accept/escalate/reject thresholds for real-world deployments.
+
 ---
 
 ## 7. ROI & Operational Impact (for Engineering Leaders)

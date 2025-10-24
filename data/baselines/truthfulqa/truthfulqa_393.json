@@ -1,0 +1,19 @@
+{
+  "perplexity": 18.242902755737305,
+  "log_perplexity": 2.903776168823242,
+  "mean_token_prob": 0.24604713916778564,
+  "min_token_prob": 3.2363590435124934e-05,
+  "entropy": 3.5937998294830322,
+  "bert_score_precision": null,
+  "bert_score_recall": null,
+  "bert_score_f1": null,
+  "n_tokens": 69,
+  "text_length": 354,
+  "perplexity_valid": true,
+  "bert_score_valid": false,
+  "warnings": [],
+  "valid": true,
+  "sample_id": "truthfulqa_393",
+  "benchmark": "truthfulqa",
+  "model": "gpt2"
+}
