@@ -1,3 +1,7 @@
+# WARNING! This project is undeer heavy development and not ready for any reliable production use
+
+
+
 - "Research prototype for LLM hallucination detection using fractal analysis"
 - "Early stage - working implementation of signal computation and verification"
 - "Hypothesis: Multi-scale structure differs between factual and hallucinated outputs"
