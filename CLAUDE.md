@@ -597,6 +597,65 @@ print(f"Guarantee met: {metadata['guarantee_met']}")
 **Backward Compatibility:**
 - ✅ Old `compute_coherence()` preserved (Phase 1-11 code works)
 - ✅ Old `compute_compressibility()` deprecated but functional
+
+---
+
+## 20) Performance Characteristics (Priority 1.2)
+
+### 20.1 Production Performance Profile
+
+**Comprehensive latency profiling** on 100 degeneracy samples with p50/p95/p99 measurements:
+
+**Component Latency (p95):**
+- **D̂ (fractal dimension):** 0.003ms - negligible overhead (Theil-Sen is highly efficient)
+- **coh★ (coherence):** 4.872ms - efficient random projection + histogram
+- **r_LZ (compressibility):** 49.458ms - **bottleneck (91% of total)** - PQ + LZ compression intensive
+- **Conformal scoring:** 0.011ms - minimal overhead for weighted ensemble
+- **End-to-end:** 54.124ms total
+
+**Key Insight:** r_LZ (compressibility) dominates latency due to product quantization (8 subspaces, 256-symbol codebook) followed by zlib compression (level 6). This is acceptable for non-critical path verification.
+
+### 20.2 Cost Economics
+
+**Cost Model:**
+- Cloud compute: $0.10/hour for 1 CPU (typical spot instance pricing)
+- Cost per millisecond: $0.10 / (3600 × 1000) = $2.78 × 10⁻⁸
+- ASV cost (p95): 54.124ms × $2.78 × 10⁻⁸ = **$0.000002 per verification**
+
+**Comparison to GPT-4 Judge:**
+| Metric | ASV | GPT-4 Judge | Improvement |
+|--------|-----|-------------|-------------|
+| Latency (p95) | 54ms | 2000ms | 37x faster |
+| Cost | $0.000002 | $0.020 | 13,303x cheaper |
+
+**Production Economics:**
+- At 1,000 verifications/day: ASV **$0.002/day** vs GPT-4 **$20/day** (10,000x savings)
+- At 100,000 verifications/day: ASV **$0.20/day** vs GPT-4 **$2,000/day**
+
+### 20.3 Optimization Opportunities
+
+**Future Work (r_LZ Bottleneck):**
+- **Parallel compression:** Multi-threaded LZ compression (2-4x speedup potential)
+- **GPU acceleration:** CUDA kernel for product quantization (5-10x speedup potential)
+- **Adaptive PQ:** Reduce subspaces for short texts (8 → 4 subspaces saves ~50% PQ time)
+- **Caching:** Memoize embeddings for repeated texts (dedup stores)
+
+**Not Worth Optimizing:**
+- D̂ (<0.01ms) - already negligible
+- Conformal scoring (<0.02ms) - already minimal
+
+### 20.4 Documentation & Files
+
+**Implementation:**
+- Profiling script: `scripts/profile_latency.py` (405 lines)
+- Results: `results/latency/latency_results.csv`
+- Visualization: `docs/architecture/figures/latency_breakdown.png`
+
+**Documentation:**
+- LaTeX whitepaper: Section 7.4 "Performance Characteristics"
+- IMPROVEMENT_ROADMAP.md: Priority 1.2 complete (0.5 days actual)
+
+**Status:** ✅ Production-ready for deployment
 - ✅ All Phase 1-11 tests passing (33 Python + Phase 11 Go tests)
 
 ### 19.6 Documentation & References
