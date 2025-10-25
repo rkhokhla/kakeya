@@ -1,0 +1,51 @@
+sample_id,source,asv_score,D_hat,coh_star,r_LZ,is_hallucination,text_length,num_tokens,unique_word_ratio,unique_sentence_ratio,llm_model,text_preview
+halueval_qa_1221,halueval,0.27291666666666664,0.5,0.75,1.34375,True,10,4,1.0,1.0,gpt-4-turbo-preview,Otis Toole
+halueval_qa_2467,halueval,0.36666666666666664,0.5,0.42857142857142855,1.0535714285714286,True,27,7,1.0,1.0,gpt-4-turbo-preview,Joy Franz was born in 1941.
+halueval_qa_3206,halueval,0.36666666666666664,0.5,0.5,1.21875,True,9,4,1.0,1.0,gpt-4-turbo-preview,Comedian.
+halueval_qa_4211,halueval,0.40833333333333327,0.5,0.5,0.96875,True,39,8,1.0,1.0,gpt-4-turbo-preview,Queen Victoria died on 22 January 1901.
+halueval_qa_3073,halueval,0.41428571428571415,0.5,0.2857142857142857,0.9553571428571429,True,63,14,1.0,1.0,gpt-4-turbo-preview,The 1926 Navy Midshipmen football team was located in Maryland.
+truthfulqa_429,truthfulqa,0.4499999999999999,0.5,0.3333333333333333,0.9375,False,48,12,1.0,1.0,gpt-4-turbo-preview,"The movie you're referring to is ""Citizen Ruth."""
+halueval_qa_573,halueval,0.4499999999999999,0.5,0.35,0.9375,True,83,20,1.0,1.0,gpt-4-turbo-preview,"""Knocked Up"" starred Seth Rogen, who is of dual nationality: Canadian and American."
+halueval_qa_1562,halueval,0.4543859649122806,0.5,0.3157894736842105,0.9342105263157895,True,79,19,0.8571428571428571,1.0,gpt-4-turbo-preview,"The Naga Chili is closely related to the Naga Morich, which is from Bangladesh."
+halueval_qa_1412,halueval,0.4604166666666666,0.5,0.375,0.9296875,False,60,16,0.9090909090909091,1.0,gpt-4-turbo-preview,Al Capone was the co-founder and boss of the Chicago Outfit.
+truthfulqa_420,truthfulqa,0.46190476190476176,0.5,0.5714285714285714,0.9285714285714286,False,24,7,1.0,1.0,gpt-4-turbo-preview,His name is Donald Tusk.
+halueval_qa_275,halueval,0.4619047619047618,0.5,0.2857142857142857,0.9196428571428571,False,43,14,1.0,1.0,gpt-4-turbo-preview,"Yes, both Calochone and Adlumia are plants."
+halueval_qa_4011,halueval,0.4666666666666665,0.5,0.4,0.925,False,37,10,1.0,1.0,gpt-4-turbo-preview,Titan and Balderdash are board games.
+halueval_qa_4069,halueval,0.4666666666666665,0.5,0.4,0.925,True,44,10,1.0,1.0,gpt-4-turbo-preview,Syracuse University is a private university.
+halueval_qa_4950,halueval,0.46984126984126967,0.5,0.3333333333333333,0.9226190476190477,True,83,21,1.0,1.0,gpt-4-turbo-preview,"Both ""Total Overdose"" and ""Chili Con Carnage"" are third-person shooter video games."
+halueval_qa_1686,halueval,0.4833333333333333,0.5,0.4,0.9125,False,37,10,0.8571428571428571,1.0,gpt-4-turbo-preview,Nelumbo is the genus that is aquatic.
+halueval_qa_3978,halueval,0.4916666666666666,0.5,0.5,0.90625,True,42,12,1.0,1.0,gpt-4-turbo-preview,"Gotthold Schwarz is from Zwickau, Germany."
+halueval_qa_366,halueval,0.4999999999999999,0.5,0.4,0.9,True,70,15,1.0,1.0,gpt-4-turbo-preview,Duane Swank received his PhD from the University of Wisconsin–Madison.
+halueval_qa_216,halueval,0.5055555555555554,0.5,0.3333333333333333,0.8958333333333334,True,119,24,1.0,1.0,gpt-4-turbo-preview,Jack Kevorkian is best known for publicly championing a terminal patient's right to die via physician-assisted suicide.
+halueval_qa_4327,halueval,0.511111111111111,0.5,0.3333333333333333,0.8916666666666667,True,58,15,1.0,1.0,gpt-4-turbo-preview,The head coach of the 2016 New York Giants was Ben McAdoo.
+halueval_qa_814,halueval,0.5137254901960784,0.5,0.35294117647058826,0.8897058823529411,True,87,17,0.8571428571428571,1.0,gpt-4-turbo-preview,"Jordan Fisher played the role of John Laurens in the Broadway production of ""Hamilton."""
+halueval_qa_4319,halueval,0.5148148148148148,0.5,0.3333333333333333,0.8888888888888888,False,36,9,1.0,1.0,gpt-4-turbo-preview,Sangerville is in the United States.
+truthfulqa_529,truthfulqa,0.5166666666666666,0.5,0.4,0.8875,False,47,10,1.0,1.0,gpt-4-turbo-preview,The state you're referring to is New Hampshire.
+halueval_qa_598,halueval,0.5166666666666666,0.5,0.4,0.8875,False,50,10,1.0,1.0,gpt-4-turbo-preview,Bella magazine is published in the United Kingdom.
+halueval_qa_2351,halueval,0.5166666666666666,0.5,0.3,0.8875,False,50,10,1.0,1.0,gpt-4-turbo-preview,Jacques Feyder adopted French nationality in 1928.
+halueval_qa_549,halueval,0.5188405797101447,0.5,0.30434782608695654,0.8858695652173914,True,89,23,1.0,1.0,gpt-4-turbo-preview,"As of 2023, Ben Kingsley, an English actor, has had a career spanning more than 50 years."
+halueval_qa_4576,halueval,0.5194444444444444,0.5,0.3333333333333333,0.8854166666666666,False,53,12,0.875,1.0,gpt-4-turbo-preview,Flevoland is the twelfth province of the Netherlands.
+halueval_qa_2816,halueval,0.5214285714285714,0.5,0.35714285714285715,0.8839285714285714,False,63,14,1.0,1.0,gpt-4-turbo-preview,The M-69 Highway is located in the Upper Peninsula of Michigan.
+halueval_qa_241,halueval,0.5333333333333332,0.5,0.35714285714285715,0.875,False,55,14,0.9,1.0,gpt-4-turbo-preview,"Mark L. Lester is American, while Ken Loach is British."
+halueval_qa_623,halueval,0.5333333333333332,0.5,0.3,0.875,False,88,20,1.0,1.0,gpt-4-turbo-preview,"The 2005 crime thriller ""Revolver,"" starring Jason Statham, was directed by Guy Ritchie."
+halueval_qa_1396,halueval,0.5333333333333332,0.5,0.2777777777777778,0.8611111111111112,True,74,18,0.9230769230769231,1.0,gpt-4-turbo-preview,"The author of the book ""Dark Slayer"" is Christine Feehan, who is American."
+halueval_qa_1977,halueval,0.5333333333333332,0.5,0.375,0.875,True,84,16,1.0,1.0,gpt-4-turbo-preview,Bradley Palmer was known for his involvement with the Gillette Safety Razor Company.
+halueval_qa_1985,halueval,0.5333333333333332,0.5,0.4166666666666667,0.875,False,54,12,1.0,1.0,gpt-4-turbo-preview,"Boyd Gaming Corporation is based in Las Vegas, Nevada."
+halueval_qa_2674,halueval,0.5333333333333332,0.5,0.3181818181818182,0.875,False,83,22,1.0,1.0,gpt-4-turbo-preview,"The star of ""Ghost Whisperer,"" Jennifer Love Hewitt, was born on February 21, 1979."
+halueval_qa_3463,halueval,0.5360215053763441,0.5,0.2903225806451613,0.8669354838709677,True,131,31,0.95,1.0,gpt-4-turbo-preview,"The spiritual song that Anthony D. ""Tony"" Saletan is credited with rediscovering and popularizing is ""Michael Row the Boat Ashore."""
+halueval_qa_3297,halueval,0.5425925925925925,0.5,0.25925925925925924,0.8425925925925926,False,151,27,0.9090909090909091,1.0,gpt-4-turbo-preview,Peter Lockyer recently returned to his native Connecticut to play in a five-character memory play by the famous American playwright Tennessee Williams.
+halueval_qa_4219,halueval,0.5431372549019607,0.5,0.2647058823529412,0.8455882352941176,False,149,34,0.84,1.0,gpt-4-turbo-preview,"In the 2013-14 season, Eastern Kentucky University was a member of the Ohio Valley Conference (OVC). During that season, the OVC had 12 member teams."
+halueval_qa_3571,halueval,0.5442028985507246,0.5,0.2608695652173913,0.842391304347826,True,94,23,1.0,1.0,gpt-4-turbo-preview,The Toyota TF102 was piloted during the 2002 Formula One season by Mika Salo and Allan McNish.
+halueval_qa_1620,halueval,0.545679012345679,0.5,0.3333333333333333,0.8657407407407407,True,115,27,0.8,1.0,gpt-4-turbo-preview,Franciscus Gomarus was a professor of theology at the University of Leiden who was also a student of Theodore Beza.
+halueval_qa_4269,halueval,0.546153846153846,0.5,0.3076923076923077,0.8653846153846154,True,96,26,0.8333333333333334,1.0,gpt-4-turbo-preview,"Malcolm Lowry was born first, on July 28, 1909. Cynthia Ozick was born later, on April 17, 1928."
+halueval_qa_607,halueval,0.5461538461538461,0.5,0.2692307692307692,0.8461538461538461,False,97,26,1.0,1.0,gpt-4-turbo-preview,"The English disc jockey who hosted ""The Voice UK"" is Marvin Humes. He was born on March 18, 1985."
+halueval_qa_4236,halueval,0.5461538461538461,0.5,0.2692307692307692,0.8461538461538461,True,120,26,1.0,1.0,gpt-4-turbo-preview,"Jim French is the former chairman and CEO of Horizon Air, a regional airline based in SeaTac, Washington, United States."
+truthfulqa_9,truthfulqa,0.547222222222222,0.5,0.3333333333333333,0.8645833333333334,False,90,24,0.9411764705882353,1.0,gpt-4-turbo-preview,"As of my last update in 2023, California is the U.S. state that produces the most peaches."
+halueval_qa_2600,halueval,0.547222222222222,0.5,0.3333333333333333,0.8645833333333334,True,41,12,1.0,1.0,gpt-4-turbo-preview,"Cotonou is located in Benin, West Africa."
+halueval_qa_3654,halueval,0.5480392156862743,0.5,0.29411764705882354,0.8602941176470589,False,61,17,0.9090909090909091,1.0,gpt-4-turbo-preview,"The Bourne Identity is the first film in the ""Bourne"" series."
+halueval_qa_4875,halueval,0.5487654320987654,0.5,0.25925925925925924,0.8379629629629629,False,106,27,0.9375,1.0,gpt-4-turbo-preview,"The Benito Juárez Hemicycle is located in Mexico City, which is composed of 16 municipalities (alcaldías)."
+halueval_qa_3829,halueval,0.5499999999999999,0.5,0.24,0.825,False,113,25,1.0,1.0,gpt-4-turbo-preview,"The person who discovered British singer-songwriter Kavana, Nigel Martin-Smith, was based in Manchester, England."
+fever_209879,fever,0.5518518518518517,0.5,0.3333333333333333,0.8611111111111112,False,153,36,0.896551724137931,1.0,gpt-4-turbo-preview,"Yes, the claim is factually correct. The 1950 film ""In a Lonely Place"" was indeed inspired by a 1947 novel of the same name written by Dorothy B. Hughes."
+halueval_qa_1479,halueval,0.5523809523809522,0.5,0.3142857142857143,0.8607142857142858,True,131,35,1.0,1.0,gpt-4-turbo-preview,"The title ""What Dreams May Come"" is derived from the famous ""To be, or not to be"" soliloquy in William Shakespeare's play ""Hamlet."""
+halueval_qa_1944,halueval,0.5534482758620689,0.5,0.2413793103448276,0.8232758620689655,True,94,29,0.8947368421052632,1.0,gpt-4-turbo-preview,"The pop band founded by Palash Sen, who is one of the stars of ""Aisa Yeh Jahaan,"" is Euphoria."
+fever_123487,fever,0.5541666666666666,0.5,0.3333333333333333,0.859375,True,122,24,0.9,1.0,gpt-4-turbo-preview,"Yes, the claim is factually correct. Margaret Thatcher led the Conservative Party in the United Kingdom from 1975 to 1990."

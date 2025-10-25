@@ -1,0 +1,31 @@
+{
+  "n_samples": 999,
+  "sources": {
+    "truthfulqa": 95,
+    "fever": 301,
+    "halueval": 603
+  },
+  "distribution_stats": {
+    "mean": 0.7090619063964563,
+    "std": 0.07302802092979901,
+    "median": 0.7372549019607844,
+    "q25": 0.6734552845528455,
+    "q75": 0.7666666666666666,
+    "threshold_outlier": 0.5541666666666666,
+    "n_outliers": 51,
+    "bimodal": true,
+    "n_peaks": 2
+  },
+  "outlier_inspection": {
+    "n_inspected": 50,
+    "n_hallucinations": 26,
+    "sources": {
+      "halueval": 44,
+      "truthfulqa": 4,
+      "fever": 2
+    }
+  },
+  "validation_type": "REAL_PUBLIC_DATASET",
+  "embeddings": "REAL_GPT2_768DIM",
+  "total_available": 8290
+}
