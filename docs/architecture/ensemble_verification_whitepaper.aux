@@ -2,51 +2,83 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
-\citation{khokhla2025synthetic}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Motivation: Why Ensemble Approaches?}{1}{section.1}\protected@file@percent }
 \newlabel{sec:motivation}{{1}{1}{Motivation: Why Ensemble Approaches?}{section.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.1}The Multi-Modal Nature of LLM Failures}{1}{subsection.1.1}\protected@file@percent }
+\citation{khokhla2025synthetic}
 \citation{lin2022truthfulqa}
 \citation{manakul2023selfcheck}
+\citation{lewis2020rag}
+\citation{nie2020nli}
+\citation{zheng2023mtbench}
 \citation{liu2023geval}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2}The Synthetic-Production Gap Challenge}{2}{subsection.1.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Research Questions}{2}{subsection.1.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
 \newlabel{sec:related}{{2}{2}{Related Work}{section.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Methodology}{2}{section.3}\protected@file@percent }
-\newlabel{sec:methodology}{{3}{2}{Methodology}{section.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Data}{2}{subsection.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Signals}{3}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Evaluation Protocol}{3}{subsection.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{4}{section.4}\protected@file@percent }
-\newlabel{sec:results}{{4}{4}{Results}{section.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Key Finding: Ground Truth Limitation}{4}{subsection.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}What We Can Conclude (Without Labels)}{4}{subsection.4.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Statistical Evidence: Outliers vs Normals (n=8,071)}}{4}{table.caption.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Methodology}{3}{section.3}\protected@file@percent }
+\newlabel{sec:methodology}{{3}{3}{Methodology}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Data}{3}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Signals and Baselines}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Geometric Signals (Structural Detection)}{3}{subsubsection.3.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.2}Semantic Baselines (Factual Detection)}{3}{subsubsection.3.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.3}Feature Combinations Tested}{4}{subsubsection.3.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Evaluation Protocol}{5}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{5}{section.4}\protected@file@percent }
+\newlabel{sec:results}{{4}{5}{Results}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Dataset Assembly and Quality}{5}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Performance Results (Test Set: 2,422 Samples)}{6}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Ensemble Verification Performance: All Methods (Test Set)}}{6}{table.caption.1}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{tab:stats}{{1}{4}{Statistical Evidence: Outliers vs Normals (n=8,071)}{table.caption.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Signal Correlations (Exploratory)}{4}{subsection.4.3}\protected@file@percent }
+\newlabel{tab:performance_full}{{1}{6}{Ensemble Verification Performance: All Methods (Test Set)}{table.caption.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Ablation Analysis: Signal Contributions}{6}{subsection.4.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Ablation Study: Impact of Each Signal Category}}{7}{table.caption.2}\protected@file@percent }
+\newlabel{tab:ablation}{{2}{7}{Ablation Study: Impact of Each Signal Category}{table.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Statistical Significance Tests}{7}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.4.1}McNemar's Test: Key Comparisons}{7}{subsubsection.4.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces McNemar's Test Results: Geometric vs Semantic Methods}}{8}{table.caption.3}\protected@file@percent }
+\newlabel{tab:mcnemar_full}{{3}{8}{McNemar's Test Results: Geometric vs Semantic Methods}{table.caption.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Cost-Performance Analysis}{8}{subsection.4.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Cost-Performance Trade-offs: Production Deployment}}{8}{table.caption.4}\protected@file@percent }
+\newlabel{tab:cost_perf}{{4}{8}{Cost-Performance Trade-offs: Production Deployment}{table.caption.4}{}}
 \citation{khokhla2025synthetic}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Signal Correlations}}{5}{table.caption.2}\protected@file@percent }
-\newlabel{tab:correlations}{{2}{5}{Signal Correlations}{table.caption.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Limitations \& Honest Assessment}{5}{section.5}\protected@file@percent }
-\newlabel{sec:limitations}{{5}{5}{Limitations \& Honest Assessment}{section.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Data Limitations}{5}{subsection.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Synthetic-Production Gap Persists}{5}{subsection.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}What This Paper Does NOT Claim}{5}{subsection.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Recommendations for Future Work}{6}{section.6}\protected@file@percent }
-\newlabel{sec:future}{{6}{6}{Recommendations for Future Work}{section.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Ground Truth Annotation}{6}{subsection.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Ensemble Validation Protocol}{6}{subsection.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Alternative Approaches}{6}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Signal Correlations (Exploratory)}{9}{subsection.4.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Signal Correlations}}{9}{table.caption.5}\protected@file@percent }
+\newlabel{tab:correlations}{{5}{9}{Signal Correlations}{table.caption.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Limitations \& Honest Assessment}{9}{section.5}\protected@file@percent }
+\newlabel{sec:limitations}{{5}{9}{Limitations \& Honest Assessment}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Data Limitations}{9}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Synthetic-Production Gap Persists}{10}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}What This Paper Does NOT Claim}{10}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Recommendations for Future Work}{10}{section.6}\protected@file@percent }
+\newlabel{sec:future}{{6}{10}{Recommendations for Future Work}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Ground Truth Annotation}{10}{subsection.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Ensemble Validation Protocol}{11}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Alternative Approaches}{11}{subsection.6.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{11}{section.7}\protected@file@percent }
+\newlabel{sec:conclusion}{{7}{11}{Conclusion}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Key Findings}{12}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Scientific Contributions}{12}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Actionable Recommendations}{13}{subsection.7.3}\protected@file@percent }
 \bibstyle{plain}
 \bibcite{khokhla2025synthetic}{1}
 \bibcite{lin2022truthfulqa}{2}
 \bibcite{thorne2018fever}{3}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{7}{section.7}\protected@file@percent }
-\newlabel{sec:conclusion}{{7}{7}{Conclusion}{section.7}{}}
 \bibcite{manakul2023selfcheck}{4}
 \bibcite{liu2023geval}{5}
-\bibcite{ziv1978compression}{6}
-\bibcite{jegou2011product}{7}
-\gdef \@abspage@last{8}
+\bibcite{lewis2020rag}{6}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Limitations and Future Work}{14}{subsection.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Key Lesson}{14}{subsection.7.5}\protected@file@percent }
+\bibcite{nie2020nli}{7}
+\bibcite{zheng2023mtbench}{8}
+\bibcite{liu2019roberta}{9}
+\bibcite{williams2018mnli}{10}
+\bibcite{ji2023hallusurvey}{11}
+\bibcite{min2023factscore}{12}
+\bibcite{dhuliawala2023chainofverification}{13}
+\bibcite{zhang2023sirens}{14}
+\bibcite{ziv1978compression}{15}
+\bibcite{jegou2011product}{16}
+\bibcite{openai2023gpt4}{17}
+\bibcite{gao2023rag}{18}
+\gdef \@abspage@last{16}
