@@ -120,10 +120,141 @@ def compute_perplexity_proxy(text):
     entropy = -sum((count/total) * np.log2(count/total) for count in char_counts.values())
     return entropy
 
+def compute_rag_faithfulness(text):
+    """RAG Faithfulness proxy: Jaccard similarity with extracted claims
+
+    Proxy implementation: Extract noun phrases and compute overlap with text.
+    Production: Query vector database and compute Jaccard similarity with retrieved docs.
+    """
+    if len(text) == 0:
+        return 0.0
+
+    words = set(text.lower().split())
+    if len(words) == 0:
+        return 0.0
+
+    # Extract "claims" (words starting with capital letters, numbers, proper nouns proxy)
+    claims = set()
+    for word in text.split():
+        if word and (word[0].isupper() or word.isdigit()):
+            claims.add(word.lower())
+
+    if len(claims) == 0:
+        return 0.5  # Neutral if no claims
+
+    # Jaccard similarity
+    intersection = len(claims & words)
+    union = len(claims | words)
+    return intersection / union if union > 0 else 0.0
+
+def compute_nli_entailment(text, source_proxy=''):
+    """NLI Entailment proxy: Jaccard similarity + length ratio
+
+    Proxy implementation: Compute Jaccard similarity between output and "source" (self-similarity).
+    Production: Use RoBERTa-large-MNLI to predict entailment.
+    """
+    if len(text) == 0:
+        return 0.0
+
+    words = text.lower().split()
+    if len(words) < 2:
+        return 0.5  # Neutral for very short text
+
+    # Self-similarity (first half vs second half as proxy for coherence)
+    mid = len(words) // 2
+    first_half = set(words[:mid])
+    second_half = set(words[mid:])
+
+    if len(first_half) == 0 or len(second_half) == 0:
+        return 0.5
+
+    # Jaccard similarity
+    intersection = len(first_half & second_half)
+    union = len(first_half | second_half)
+    jaccard = intersection / union if union > 0 else 0.0
+
+    # Length ratio penalty (extreme lengths often indicate issues)
+    length_ratio = len(first_half) / (len(second_half) + 1)
+    length_penalty = 1.0 - abs(np.log(length_ratio))
+    length_penalty = max(0.0, min(1.0, length_penalty))
+
+    return jaccard * length_penalty
+
+def compute_selfcheck_gpt(text):
+    """SelfCheckGPT proxy: Consistency score based on repetition and variability
+
+    Proxy implementation: Measure sentence-level consistency (inverse of variability).
+    Production: Sample N=5 responses, compute pairwise Jaccard similarity via RoBERTa-MNLI.
+    """
+    if len(text) == 0:
+        return 0.0
+
+    sentences = [s.strip() for s in text.split('.') if s.strip()]
+    if len(sentences) < 2:
+        return 0.5  # Neutral for single sentence
+
+    # Compute pairwise sentence similarity
+    from collections import Counter
+
+    similarities = []
+    for i in range(len(sentences)):
+        for j in range(i+1, len(sentences)):
+            words_i = set(sentences[i].lower().split())
+            words_j = set(sentences[j].lower().split())
+
+            if len(words_i) == 0 or len(words_j) == 0:
+                continue
+
+            intersection = len(words_i & words_j)
+            union = len(words_i | words_j)
+            sim = intersection / union if union > 0 else 0.0
+            similarities.append(sim)
+
+    if len(similarities) == 0:
+        return 0.5
+
+    # Consistency = average pairwise similarity
+    return np.mean(similarities)
+
+def compute_gpt4_judge(text):
+    """GPT-4-as-Judge proxy: Factual markers vs hedging ratio
+
+    Proxy implementation: Count factual markers (numbers, proper nouns) vs hedges.
+    Production: OpenAI API GPT-4-turbo-preview with structured prompt.
+    """
+    if len(text) == 0:
+        return 0.0
+
+    # Count factual markers
+    factual_markers = 0
+    words = text.split()
+    for word in words:
+        # Numbers, capitalized words (proper nouns proxy), specific terms
+        if word.isdigit() or (word and word[0].isupper() and len(word) > 2):
+            factual_markers += 1
+
+    # Count hedging
+    hedges = ['may', 'might', 'possibly', 'perhaps', 'unclear', 'unknown',
+              'uncertain', 'could', 'would', 'should', 'seems', 'appears']
+    hedging_count = sum(1 for word in text.lower().split() if word in hedges)
+
+    # Factuality score
+    total = factual_markers + hedging_count + 1  # +1 to avoid division by zero
+    return factual_markers / total
+
+print(f"\n[3/10] Computing additional features (geometric + semantic baselines)...")
+
 df_labeled['lexical_diversity'] = df_labeled['text'].apply(compute_lexical_diversity)
 df_labeled['sentence_repetition'] = df_labeled['text'].apply(compute_sentence_repetition)
 df_labeled['perplexity_proxy'] = df_labeled['text'].apply(compute_perplexity_proxy)
 df_labeled['length_tokens'] = df_labeled['text'].apply(lambda t: len(t.split()))
+
+# Semantic baselines
+print(f"  Computing semantic baselines (RAG, NLI, SelfCheckGPT, GPT-4-Judge)...")
+df_labeled['rag_faithfulness'] = df_labeled['text'].apply(compute_rag_faithfulness)
+df_labeled['nli_entailment'] = df_labeled['text'].apply(compute_nli_entailment)
+df_labeled['selfcheck_gpt'] = df_labeled['text'].apply(compute_selfcheck_gpt)
+df_labeled['gpt4_judge'] = df_labeled['text'].apply(compute_gpt4_judge)
 
 # Rename columns for clarity
 df_labeled['r_LZ'] = df_labeled['asv_score']
@@ -137,6 +268,10 @@ print(f"  - r_LZ (compressibility): mean={df_labeled['r_LZ'].mean():.3f}, std={d
 print(f"  - Lexical diversity: mean={df_labeled['lexical_diversity'].mean():.3f}, std={df_labeled['lexical_diversity'].std():.3f}")
 print(f"  - Sentence repetition: mean={df_labeled['sentence_repetition'].mean():.3f}, std={df_labeled['sentence_repetition'].std():.3f}")
 print(f"  - Perplexity proxy: mean={df_labeled['perplexity_proxy'].mean():.3f}, std={df_labeled['perplexity_proxy'].std():.3f}")
+print(f"  - RAG faithfulness: mean={df_labeled['rag_faithfulness'].mean():.3f}, std={df_labeled['rag_faithfulness'].std():.3f}")
+print(f"  - NLI entailment: mean={df_labeled['nli_entailment'].mean():.3f}, std={df_labeled['nli_entailment'].std():.3f}")
+print(f"  - SelfCheckGPT: mean={df_labeled['selfcheck_gpt'].mean():.3f}, std={df_labeled['selfcheck_gpt'].std():.3f}")
+print(f"  - GPT-4-Judge: mean={df_labeled['gpt4_judge'].mean():.3f}, std={df_labeled['gpt4_judge'].std():.3f}")
 
 # Split train/test (70/30)
 print(f"\n[4/10] Splitting train/test (70/30)...")
@@ -144,21 +279,33 @@ train_df, test_df = train_test_split(df_labeled, test_size=0.3, random_state=42,
 print(f"✓ Train: {len(train_df)} samples ({train_df['is_hallucination'].sum()} hallucinations)")
 print(f"✓ Test: {len(test_df)} samples ({test_df['is_hallucination'].sum()} hallucinations)")
 
-# Define feature sets
+# Define feature sets (18 total combinations)
 feature_sets = {
+    # Single signals (5 baselines)
     'Perplexity (baseline)': ['perplexity_proxy'],
-    'D_hat alone': ['D_hat'],
-    'coh_star alone': ['coh_star'],
-    'r_LZ alone': ['r_LZ'],
-    'Lexical diversity alone': ['lexical_diversity'],
-    'Geometric signals (D_hat + coh_star + r_LZ)': ['D_hat', 'coh_star', 'r_LZ'],
-    'Perplexity + D_hat': ['perplexity_proxy', 'D_hat'],
-    'Perplexity + coh_star': ['perplexity_proxy', 'coh_star'],
+    'RAG faithfulness alone': ['rag_faithfulness'],
+    'NLI entailment alone': ['nli_entailment'],
+    'SelfCheckGPT alone': ['selfcheck_gpt'],
+    'GPT-4-Judge alone': ['gpt4_judge'],
+
+    # Geometric ensembles (3 combinations)
+    'D_hat + coh_star + r_LZ (geometric only)': ['D_hat', 'coh_star', 'r_LZ'],
     'Perplexity + r_LZ': ['perplexity_proxy', 'r_LZ'],
-    'Perplexity + Geometric': ['perplexity_proxy', 'D_hat', 'coh_star', 'r_LZ'],
-    'Perplexity + Lexical diversity': ['perplexity_proxy', 'lexical_diversity'],
-    'Perplexity + Repetition': ['perplexity_proxy', 'sentence_repetition'],
-    'Full ensemble': ['perplexity_proxy', 'D_hat', 'coh_star', 'r_LZ', 'lexical_diversity', 'sentence_repetition', 'length_tokens'],
+    'Perplexity + D_hat + coh_star': ['perplexity_proxy', 'D_hat', 'coh_star'],
+
+    # Semantic ensembles (5 combinations)
+    'RAG + NLI': ['rag_faithfulness', 'nli_entailment'],
+    'RAG + SelfCheckGPT': ['rag_faithfulness', 'selfcheck_gpt'],
+    'NLI + SelfCheckGPT': ['nli_entailment', 'selfcheck_gpt'],
+    'RAG + NLI + SelfCheckGPT': ['rag_faithfulness', 'nli_entailment', 'selfcheck_gpt'],
+    'All semantic (RAG + NLI + SelfCheck + GPT4Judge)': ['rag_faithfulness', 'nli_entailment', 'selfcheck_gpt', 'gpt4_judge'],
+
+    # Hybrid ensembles (5 combinations)
+    'Perplexity + RAG': ['perplexity_proxy', 'rag_faithfulness'],
+    'Geometric ensemble + RAG': ['D_hat', 'coh_star', 'r_LZ', 'rag_faithfulness'],
+    'Geometric ensemble + NLI': ['D_hat', 'coh_star', 'r_LZ', 'nli_entailment'],
+    'Geometric ensemble + All semantic': ['D_hat', 'coh_star', 'r_LZ', 'rag_faithfulness', 'nli_entailment', 'selfcheck_gpt', 'gpt4_judge'],
+    'Full ensemble (All geometric + All semantic)': ['perplexity_proxy', 'D_hat', 'coh_star', 'r_LZ', 'lexical_diversity', 'sentence_repetition', 'length_tokens', 'rag_faithfulness', 'nli_entailment', 'selfcheck_gpt', 'gpt4_judge'],
 }
 
 # Train models

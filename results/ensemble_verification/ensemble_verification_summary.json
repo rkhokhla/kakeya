@@ -18,63 +18,63 @@
       "recall": 0.7367563162184189,
       "f1": 0.6046822742474917
     },
-    "D_hat alone": {
+    "RAG faithfulness alone": {
       "features": [
-        "D_hat"
+        "rag_faithfulness"
       ],
-      "auroc": 0.49570268675853263,
+      "auroc": 0.5339215626097602,
       "auroc_ci": [
-        0.4912009230881761,
-        0.5002043042700687
+        0.5119426511804507,
+        0.5568979708776131
       ],
-      "accuracy": 0.5066061106523534,
-      "precision": 0.5066061106523534,
-      "recall": 1.0,
-      "f1": 0.6725130172650041
+      "accuracy": 0.5189925681255161,
+      "precision": 0.5224312590448625,
+      "recall": 0.5884270578647107,
+      "f1": 0.5534687619777693
     },
-    "coh_star alone": {
+    "NLI entailment alone": {
       "features": [
-        "coh_star"
+        "nli_entailment"
       ],
-      "auroc": 0.5195953664583141,
+      "auroc": 0.5052067668531951,
       "auroc_ci": [
-        0.4972865157365528,
-        0.5427577164332146
+        0.48210780402063214,
+        0.5290144561466512
       ],
-      "accuracy": 0.5132122213047069,
-      "precision": 0.5136054421768708,
-      "recall": 0.7383863080684596,
-      "f1": 0.6058174523570712
+      "accuracy": 0.5037159372419489,
+      "precision": 0.5085091899251192,
+      "recall": 0.60880195599022,
+      "f1": 0.5541543026706232
     },
-    "r_LZ alone": {
+    "SelfCheckGPT alone": {
       "features": [
-        "r_LZ"
+        "selfcheck_gpt"
       ],
-      "auroc": 0.507329507285518,
+      "auroc": 0.4935854023658752,
       "auroc_ci": [
-        0.4848907326737364,
-        0.5299870279746971
+        0.46999625775407533,
+        0.5168731349882176
       ],
-      "accuracy": 0.5066061106523534,
-      "precision": 0.5066061106523534,
-      "recall": 1.0,
-      "f1": 0.6725130172650041
+      "accuracy": 0.5061932287365813,
+      "precision": 0.5089337175792508,
+      "recall": 0.7196414017929911,
+      "f1": 0.5962187711006077
     },
-    "Lexical diversity alone": {
+    "GPT-4-Judge alone": {
       "features": [
-        "lexical_diversity"
+        "gpt4_judge"
       ],
-      "auroc": 0.49886650775951136,
+      "auroc": 0.556169246350421,
       "auroc_ci": [
-        0.4749589472494414,
-        0.5208849239250288
+        0.5330176605790502,
+        0.5800510004497262
       ],
-      "accuracy": 0.5156895127993394,
-      "precision": 0.5175324675324675,
-      "recall": 0.6495517522412388,
-      "f1": 0.5760751716660644
+      "accuracy": 0.5470685383980182,
+      "precision": 0.5394896719319563,
+      "recall": 0.7237163814180929,
+      "f1": 0.6181691611555865
     },
-    "Geometric signals (D_hat + coh_star + r_LZ)": {
+    "D_hat + coh_star + r_LZ (geometric only)": {
       "features": [
         "D_hat",
         "coh_star",
@@ -90,36 +90,6 @@
       "recall": 0.7375713121434393,
       "f1": 0.6063651591289783
     },
-    "Perplexity + D_hat": {
-      "features": [
-        "perplexity_proxy",
-        "D_hat"
-      ],
-      "auroc": 0.5021660477471671,
-      "auroc_ci": [
-        0.48118084222699053,
-        0.5255130834475696
-      ],
-      "accuracy": 0.5099091659785301,
-      "precision": 0.511001100110011,
-      "recall": 0.7571312143439283,
-      "f1": 0.6101806239737274
-    },
-    "Perplexity + coh_star": {
-      "features": [
-        "perplexity_proxy",
-        "coh_star"
-      ],
-      "auroc": 0.5088984596918019,
-      "auroc_ci": [
-        0.48527743425931524,
-        0.5317435770154992
-      ],
-      "accuracy": 0.5086705202312138,
-      "precision": 0.5114835505896959,
-      "recall": 0.6715566422167889,
-      "f1": 0.5806906272022551
-    },
     "Perplexity + r_LZ": {
       "features": [
         "perplexity_proxy",
@@ -127,62 +97,178 @@
       ],
       "auroc": 0.5033271611884618,
       "auroc_ci": [
-        0.48174799972276844,
-        0.5271445502041984
+        0.482427189908873,
+        0.5267151131021374
       ],
       "accuracy": 0.5107349298100743,
       "precision": 0.5119318181818182,
       "recall": 0.7343113284433578,
       "f1": 0.6032808838299297
     },
-    "Perplexity + Geometric": {
+    "Perplexity + D_hat + coh_star": {
       "features": [
         "perplexity_proxy",
         "D_hat",
+        "coh_star"
+      ],
+      "auroc": 0.5098471285886248,
+      "auroc_ci": [
+        0.48672608310833465,
+        0.5331855997709285
+      ],
+      "accuracy": 0.509083402146986,
+      "precision": 0.5118159203980099,
+      "recall": 0.6707416462917686,
+      "f1": 0.580599647266314
+    },
+    "RAG + NLI": {
+      "features": [
+        "rag_faithfulness",
+        "nli_entailment"
+      ],
+      "auroc": 0.5352842085161958,
+      "auroc_ci": [
+        0.5115191509782068,
+        0.5568963652930272
+      ],
+      "accuracy": 0.5214698596201487,
+      "precision": 0.5268562401263823,
+      "recall": 0.5436022819885901,
+      "f1": 0.5350982751704774
+    },
+    "RAG + SelfCheckGPT": {
+      "features": [
+        "rag_faithfulness",
+        "selfcheck_gpt"
+      ],
+      "auroc": 0.5370100220628604,
+      "auroc_ci": [
+        0.5131051571731805,
+        0.5584212675678306
+      ],
+      "accuracy": 0.5202312138728323,
+      "precision": 0.5252133436772692,
+      "recall": 0.5517522412387939,
+      "f1": 0.5381558028616852
+    },
+    "NLI + SelfCheckGPT": {
+      "features": [
+        "nli_entailment",
+        "selfcheck_gpt"
+      ],
+      "auroc": 0.5053533979192029,
+      "auroc_ci": [
+        0.4824357458442433,
+        0.5291863689238158
+      ],
+      "accuracy": 0.5111478117258464,
+      "precision": 0.513738019169329,
+      "recall": 0.6552567237163814,
+      "f1": 0.5759312320916905
+    },
+    "RAG + NLI + SelfCheckGPT": {
+      "features": [
+        "rag_faithfulness",
+        "nli_entailment",
+        "selfcheck_gpt"
+      ],
+      "auroc": 0.5373851247898572,
+      "auroc_ci": [
+        0.5136792552164486,
+        0.5620050040926092
+      ],
+      "accuracy": 0.5227085053674649,
+      "precision": 0.5278868813825609,
+      "recall": 0.5476772616136919,
+      "f1": 0.5376
+    },
+    "All semantic (RAG + NLI + SelfCheck + GPT4Judge)": {
+      "features": [
+        "rag_faithfulness",
+        "nli_entailment",
+        "selfcheck_gpt",
+        "gpt4_judge"
+      ],
+      "auroc": 0.5483602895793052,
+      "auroc_ci": [
+        0.525023877320835,
+        0.5701611450862858
+      ],
+      "accuracy": 0.5425268373245252,
+      "precision": 0.5417543859649123,
+      "recall": 0.6291768541157294,
+      "f1": 0.5822021116138764
+    },
+    "Perplexity + RAG": {
+      "features": [
+        "perplexity_proxy",
+        "rag_faithfulness"
+      ],
+      "auroc": 0.5343034853863389,
+      "auroc_ci": [
+        0.5110007528946966,
+        0.555535870235133
+      ],
+      "accuracy": 0.5222956234516928,
+      "precision": 0.526080476900149,
+      "recall": 0.5753871230643847,
+      "f1": 0.5496302063059556
+    },
+    "Geometric ensemble + RAG": {
+      "features": [
+        "D_hat",
         "coh_star",
-        "r_LZ"
+        "r_LZ",
+        "rag_faithfulness"
       ],
-      "auroc": 0.5094051893757268,
+      "auroc": 0.5380572406761397,
       "auroc_ci": [
-        0.4850651247260264,
-        0.5309198468807824
+        0.5162140189262218,
+        0.5606099762220146
       ],
-      "accuracy": 0.509496284062758,
-      "precision": 0.5119705340699816,
-      "recall": 0.6797066014669927,
-      "f1": 0.5840336134453782
+      "accuracy": 0.523534269199009,
+      "precision": 0.5262024407753051,
+      "recall": 0.5973920130399348,
+      "f1": 0.5595419847328245
     },
-    "Perplexity + Lexical diversity": {
+    "Geometric ensemble + NLI": {
       "features": [
-        "perplexity_proxy",
-        "lexical_diversity"
+        "D_hat",
+        "coh_star",
+        "r_LZ",
+        "nli_entailment"
       ],
-      "auroc": 0.4946483070931925,
+      "auroc": 0.5197048282541015,
       "auroc_ci": [
-        0.47095182761294335,
-        0.5186047357894014
+        0.4953566080656717,
+        0.5428332674396473
       ],
-      "accuracy": 0.5020644095788604,
-      "precision": 0.5068852459016393,
-      "recall": 0.6299918500407498,
-      "f1": 0.5617732558139535
+      "accuracy": 0.5099091659785301,
+      "precision": 0.5135869565217391,
+      "recall": 0.6161369193154034,
+      "f1": 0.5602074842534271
     },
-    "Perplexity + Repetition": {
+    "Geometric ensemble + All semantic": {
       "features": [
-        "perplexity_proxy",
-        "sentence_repetition"
+        "D_hat",
+        "coh_star",
+        "r_LZ",
+        "rag_faithfulness",
+        "nli_entailment",
+        "selfcheck_gpt",
+        "gpt4_judge"
       ],
-      "auroc": 0.5053162286489823,
+      "auroc": 0.553024180485792,
       "auroc_ci": [
-        0.4831588289768647,
-        0.5293067072659656
+        0.5332472502294191,
+        0.5753377187147074
       ],
-      "accuracy": 0.5127993393889347,
-      "precision": 0.5154503616042078,
-      "recall": 0.6389568052159739,
-      "f1": 0.5705967976710334
+      "accuracy": 0.5379851362510322,
+      "precision": 0.5381895332390382,
+      "recall": 0.6202118989405053,
+      "f1": 0.5762968572510413
     },
-    "Full ensemble": {
+    "Full ensemble (All geometric + All semantic)": {
       "features": [
         "perplexity_proxy",
         "D_hat",
@@ -190,74 +276,62 @@
         "r_LZ",
         "lexical_diversity",
         "sentence_repetition",
-        "length_tokens"
+        "length_tokens",
+        "rag_faithfulness",
+        "nli_entailment",
+        "selfcheck_gpt",
+        "gpt4_judge"
       ],
-      "auroc": 0.5402986499711853,
+      "auroc": 0.5741615601545422,
       "auroc_ci": [
-        0.5165609356702713,
-        0.5632300793985529
+        0.5510747625765796,
+        0.5973454931764799
       ],
-      "accuracy": 0.5214698596201487,
-      "precision": 0.5254491017964071,
-      "recall": 0.5721271393643031,
-      "f1": 0.5477955520873976
+      "accuracy": 0.5470685383980182,
+      "precision": 0.545968882602546,
+      "recall": 0.6291768541157294,
+      "f1": 0.5846270352139341
     }
   },
   "mcnemar_tests": [
     {
-      "comparison": "Perplexity (baseline) vs D_hat alone",
-      "b": 336,
-      "c": 323,
-      "chi_squared": 0.21851289833080426,
-      "p_value": 0.6401753587414571,
+      "comparison": "Perplexity (baseline) vs RAG faithfulness alone",
+      "b": 583,
+      "c": 600,
+      "chi_squared": 0.21639898562975485,
+      "p_value": 0.6417975161904571,
       "significant": false
     },
     {
-      "comparison": "Perplexity (baseline) vs coh_star alone",
-      "b": 486,
-      "c": 489,
-      "chi_squared": 0.0041025641025641026,
-      "p_value": 0.9489294097784429,
+      "comparison": "Perplexity (baseline) vs NLI entailment alone",
+      "b": 534,
+      "c": 514,
+      "chi_squared": 0.34446564885496184,
+      "p_value": 0.5572628368465994,
       "significant": false
     },
     {
-      "comparison": "Perplexity (baseline) vs r_LZ alone",
-      "b": 336,
-      "c": 323,
-      "chi_squared": 0.21851289833080426,
-      "p_value": 0.6401753587414571,
+      "comparison": "Perplexity (baseline) vs SelfCheckGPT alone",
+      "b": 504,
+      "c": 490,
+      "chi_squared": 0.17002012072434608,
+      "p_value": 0.680093926376758,
       "significant": false
     },
     {
-      "comparison": "Perplexity (baseline) vs Lexical diversity alone",
-      "b": 500,
-      "c": 509,
-      "chi_squared": 0.06342913776015857,
-      "p_value": 0.8011559105757236,
-      "significant": false
+      "comparison": "Perplexity (baseline) vs GPT-4-Judge alone",
+      "b": 518,
+      "c": 603,
+      "chi_squared": 6.294380017841213,
+      "p_value": 0.012112137442476412,
+      "significant": true
     },
     {
-      "comparison": "Perplexity (baseline) vs Geometric signals (D_hat + coh_star + r_LZ)",
+      "comparison": "Perplexity (baseline) vs D_hat + coh_star + r_LZ (geometric only)",
       "b": 487,
       "c": 494,
       "chi_squared": 0.03669724770642202,
       "p_value": 0.8480827592882225,
-      "significant": false
-    },
-    {
-      "comparison": "Perplexity (baseline) vs Perplexity + D_hat",
-      "b": 30,
-      "c": 25,
-      "chi_squared": 0.2909090909090909,
-      "p_value": 0.5896385516265671,
-      "significant": false
-    },
-    {
-      "comparison": "Perplexity (baseline) vs Perplexity + coh_star",
-      "b": 305,
-      "c": 297,
-      "chi_squared": 0.08139534883720931,
-      "p_value": 0.7754153079124984,
       "significant": false
     },
     {
@@ -269,36 +343,92 @@
       "significant": false
     },
     {
-      "comparison": "Perplexity (baseline) vs Perplexity + Geometric",
-      "b": 307,
-      "c": 301,
-      "chi_squared": 0.04111842105263158,
-      "p_value": 0.839309510567166,
+      "comparison": "Perplexity (baseline) vs Perplexity + D_hat + coh_star",
+      "b": 335,
+      "c": 328,
+      "chi_squared": 0.05429864253393665,
+      "p_value": 0.8157453387131137,
       "significant": false
     },
     {
-      "comparison": "Perplexity (baseline) vs Perplexity + Lexical diversity",
-      "b": 331,
-      "c": 307,
-      "chi_squared": 0.829153605015674,
-      "p_value": 0.36251738715156445,
+      "comparison": "Perplexity (baseline) vs RAG + NLI",
+      "b": 591,
+      "c": 614,
+      "chi_squared": 0.4016597510373444,
+      "p_value": 0.5262333348869614,
       "significant": false
     },
     {
-      "comparison": "Perplexity (baseline) vs Perplexity + Repetition",
-      "b": 404,
-      "c": 406,
-      "chi_squared": 0.0012345679012345679,
-      "p_value": 0.9719709616102559,
+      "comparison": "Perplexity (baseline) vs RAG + SelfCheckGPT",
+      "b": 619,
+      "c": 639,
+      "chi_squared": 0.28696343402225755,
+      "p_value": 0.592173036675067,
       "significant": false
     },
     {
-      "comparison": "Perplexity (baseline) vs Full ensemble",
-      "b": 519,
-      "c": 542,
-      "chi_squared": 0.45617342130065974,
-      "p_value": 0.49941778096778877,
+      "comparison": "Perplexity (baseline) vs NLI + SelfCheckGPT",
+      "b": 516,
+      "c": 514,
+      "chi_squared": 0.000970873786407767,
+      "p_value": 0.975142858789852,
       "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs RAG + NLI + SelfCheckGPT",
+      "b": 607,
+      "c": 633,
+      "chi_squared": 0.5040322580645161,
+      "p_value": 0.4777337208915725,
+      "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs All semantic (RAG + NLI + SelfCheck + GPT4Judge)",
+      "b": 557,
+      "c": 631,
+      "chi_squared": 4.485690235690235,
+      "p_value": 0.03417974167001858,
+      "significant": true
+    },
+    {
+      "comparison": "Perplexity (baseline) vs Perplexity + RAG",
+      "b": 493,
+      "c": 518,
+      "chi_squared": 0.56973293768546,
+      "p_value": 0.45036505934220883,
+      "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs Geometric ensemble + RAG",
+      "b": 582,
+      "c": 610,
+      "chi_squared": 0.6115771812080537,
+      "p_value": 0.43419459082721856,
+      "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs Geometric ensemble + NLI",
+      "b": 544,
+      "c": 539,
+      "chi_squared": 0.014773776546629732,
+      "p_value": 0.903257453334987,
+      "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs Geometric ensemble + All semantic",
+      "b": 569,
+      "c": 632,
+      "chi_squared": 3.2006661115736885,
+      "p_value": 0.07360828429769639,
+      "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs Full ensemble (All geometric + All semantic)",
+      "b": 484,
+      "c": 569,
+      "chi_squared": 6.700854700854701,
+      "p_value": 0.009636670578809348,
+      "significant": true
     }
   ]
 }
