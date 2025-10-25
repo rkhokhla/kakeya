@@ -78,28 +78,36 @@
 \newlabel{fig:ablation-visualizations}{{9}{12}{Signal Ablation Visualizations: Comprehensive comparison showing $r_{\text {LZ}}$ dominance on structural degeneracy and perplexity dominance on factuality benchmarks}{figure.caption.14}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Coverage Guarantee Validation (400 test samples)}}{12}{table.caption.15}\protected@file@percent }
 \newlabel{tab:coverage-results}{{6}{12}{Coverage Guarantee Validation (400 test samples)}{table.caption.15}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Scale Sensitivity Analysis}{12}{subsection.7.3}\protected@file@percent }
-\newlabel{sec:validation-scales}{{7.3}{12}{Scale Sensitivity Analysis}{subsection.7.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Scale Configuration Sensitivity (Degeneracy Benchmark)}}{12}{table.caption.17}\protected@file@percent }
-\newlabel{tab:scale-results}{{7}{12}{Scale Configuration Sensitivity (Degeneracy Benchmark)}{table.caption.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Scale Sensitivity Analysis (Negative Result)}{12}{subsection.7.3}\protected@file@percent }
+\newlabel{sec:validation-scales}{{7.3}{12}{Scale Sensitivity Analysis (Negative Result)}{subsection.7.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Scale Configuration Sensitivity (Degeneracy Benchmark, 937 samples)}}{12}{table.caption.17}\protected@file@percent }
+\newlabel{tab:scale-results}{{7}{12}{Scale Configuration Sensitivity (Degeneracy Benchmark, 937 samples)}{table.caption.17}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Coverage Calibration Curve: Empirical miscoverage (blue, with 95\% CI) vs. target $\delta $ (black diagonal). Points below the diagonal indicate guarantee compliance. Green markers show where $\text  {empirical} \le \delta $.}}{13}{figure.caption.16}\protected@file@percent }
 \newlabel{fig:coverage-calibration}{{10}{13}{Coverage Calibration Curve: Empirical miscoverage (blue, with 95\% CI) vs. target $\delta $ (black diagonal). Points below the diagonal indicate guarantee compliance. Green markers show where $\text {empirical} \le \delta $}{figure.caption.16}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Scale Configuration Comparison: AUROC vs. number of scales (left) and horizontal bar chart of all configurations (right). Current default $k=5$ highlighted in green.}}{13}{figure.caption.18}\protected@file@percent }
-\newlabel{fig:scale-sensitivity}{{11}{13}{Scale Configuration Comparison: AUROC vs. number of scales (left) and horizontal bar chart of all configurations (right). Current default $k=5$ highlighted in green}{figure.caption.18}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}ROI and Operational Impact}{13}{section.8}\protected@file@percent }
-\newlabel{sec:roi}{{8}{13}{ROI and Operational Impact}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Performance Characteristics}{13}{subsection.7.4}\protected@file@percent }
+\newlabel{sec:validation-performance}{{7.4}{13}{Performance Characteristics}{subsection.7.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Scale Configuration Comparison: AUROC vs. number of scales (left) and horizontal bar chart of all configurations (right). Current default $k=5$ highlighted in green. Note: $k=2$ achieves highest $\hat  {D}$ AUROC but produces negative values.}}{14}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:scale-sensitivity}{{11}{14}{Scale Configuration Comparison: AUROC vs. number of scales (left) and horizontal bar chart of all configurations (right). Current default $k=5$ highlighted in green. Note: $k=2$ achieves highest $\hat {D}$ AUROC but produces negative values}{figure.caption.18}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Component Latency Breakdown (100 samples)}}{14}{table.caption.19}\protected@file@percent }
+\newlabel{tab:latency-results}{{8}{14}{Component Latency Breakdown (100 samples)}{table.caption.19}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Cost Comparison: ASV vs. GPT-4 Judge}}{14}{table.caption.20}\protected@file@percent }
+\newlabel{tab:cost-comparison}{{9}{14}{Cost Comparison: ASV vs. GPT-4 Judge}{table.caption.20}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Left: Component latency breakdown (p95 percentiles). r-LZ (compressibility) dominates at 49ms. Right: Cost comparison showing ASV is 13,303x cheaper than GPT-4 judge baseline (log scale).}}{15}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:latency-breakdown}{{12}{15}{Left: Component latency breakdown (p95 percentiles). r-LZ (compressibility) dominates at 49ms. Right: Cost comparison showing ASV is 13,303x cheaper than GPT-4 judge baseline (log scale)}{figure.caption.21}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}ROI and Operational Impact}{15}{section.8}\protected@file@percent }
+\newlabel{sec:roi}{{8}{15}{ROI and Operational Impact}{section.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Threat Model and Limitations}{15}{section.9}\protected@file@percent }
+\newlabel{sec:limitations}{{9}{15}{Threat Model and Limitations}{section.9}{}}
 \bibstyle{plain}
 \bibcite{angelopoulos2023gentle}{1}
 \bibcite{vovk2005algorithmic}{2}
 \bibcite{lei2018distribution}{3}
 \bibcite{lin2022truthfulqa}{4}
 \bibcite{thorne2018fever}{5}
-\@writefile{toc}{\contentsline {section}{\numberline {9}Threat Model and Limitations}{14}{section.9}\protected@file@percent }
-\newlabel{sec:limitations}{{9}{14}{Threat Model and Limitations}{section.9}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion}{14}{section.10}\protected@file@percent }
-\newlabel{sec:conclusion}{{10}{14}{Conclusion}{section.10}{}}
 \bibcite{jegou2011product}{6}
 \bibcite{sen1968estimates}{7}
 \bibcite{ziv1978compression}{8}
 \bibcite{manakul2023selfcheckgpt}{9}
-\gdef \@abspage@last{15}
+\@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion}{16}{section.10}\protected@file@percent }
+\newlabel{sec:conclusion}{{10}{16}{Conclusion}{section.10}{}}
+\gdef \@abspage@last{16}
