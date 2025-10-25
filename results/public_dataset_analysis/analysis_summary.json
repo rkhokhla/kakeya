@@ -1,0 +1,20 @@
+{
+  "n_samples": 1000,
+  "distribution_stats": {
+    "mean": 0.32262553060052945,
+    "std": 0.03146368026392253,
+    "median": 0.3163705065359477,
+    "q25": 0.2983187134502924,
+    "q75": 0.34053819444444444,
+    "threshold_outlier": 0.283596717711301,
+    "n_outliers": 50,
+    "bimodal": true,
+    "n_peaks": 2
+  },
+  "outlier_inspection": {
+    "n_inspected": 50,
+    "degeneracy_counts": {
+      "severe_repetition": 50
+    }
+  }
+}
