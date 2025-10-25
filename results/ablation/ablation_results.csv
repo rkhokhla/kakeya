@@ -1,0 +1,33 @@
+Benchmark,Combination,AUROC,AUPRC
+truthfulqa,D̂ only,,1.0
+truthfulqa,coh★ only,,1.0
+truthfulqa,r_LZ only,,1.0
+truthfulqa,Perplexity only,,1.0
+truthfulqa,D̂ + r_LZ,,1.0
+truthfulqa,r_LZ + Perplexity,,1.0
+truthfulqa,ASV (D̂+coh★+r_LZ),,1.0
+truthfulqa,Full Ensemble,,1.0
+fever,D̂ only,0.5080516906885153,0.2501533224458931
+fever,coh★ only,0.491452884703453,0.08991732245154302
+fever,r_LZ only,0.468983921598015,0.017686770532633084
+fever,Perplexity only,0.5612453059559197,0.023765873034196937
+fever,D̂ + r_LZ,0.4972647565758249,0.01899808911086503
+fever,r_LZ + Perplexity,0.4977560179518564,0.022186225576254996
+fever,ASV (D̂+coh★+r_LZ),0.49659031299178186,0.018904755947719527
+fever,Full Ensemble,0.5116778657607473,0.02195045045202232
+halueval,D̂ only,,0.5
+halueval,coh★ only,,0.5
+halueval,r_LZ only,,0.5
+halueval,Perplexity only,,0.5
+halueval,D̂ + r_LZ,,0.5
+halueval,r_LZ + Perplexity,,0.5
+halueval,ASV (D̂+coh★+r_LZ),,0.5
+halueval,Full Ensemble,,0.5
+degeneracy,D̂ only,0.20885125858123568,0.45677747035687377
+degeneracy,coh★ only,0.8613821510297484,0.8736810850628798
+degeneracy,r_LZ only,0.9999977116704806,0.9999973877516901
+degeneracy,Perplexity only,0.01816475972540046,0.2826721674612056
+degeneracy,D̂ + r_LZ,0.9950846681922196,0.9948819970568219
+degeneracy,r_LZ + Perplexity,0.6268466819221968,0.6137280402484
+degeneracy,ASV (D̂+coh★+r_LZ),0.9959405034324943,0.9956927331820383
+degeneracy,Full Ensemble,0.7282700228832952,0.7815478350799607
