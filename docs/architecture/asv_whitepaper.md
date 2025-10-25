@@ -281,6 +281,73 @@ Manual inspection of the top 50 outliers (lowest 5% of r_LZ scores) revealed an 
 
 **Honest assessment:** This negative result strengthens scientific rigor by identifying a boundary condition (short texts) where r_LZ signal degrades. It does not invalidate the core finding (AUROC 1.000 on synthetic degeneracy) but clarifies that **length-normalized r_LZ** is needed for production deployment to avoid false positives on terse but valid responses.
 
+#### Deep Investigation: r_LZ Utility for Structural Anomaly Detection
+
+To rigorously assess whether r_LZ is helpful for detecting genuine structural anomalies in the 406 filtered outliers (after excluding short texts), we conducted a comprehensive deep analysis with manual inspection, structural pattern detection, and statistical validation.
+
+**Methodology:**
+- **Manual inspection:** Sampled 60 outliers (top 20 worst, middle 20, near-threshold 20) for qualitative review
+- **Structural pattern detection:** Applied heuristics to detect:
+  - **Phrase repetition:** Repeated 3-5 word phrases (threshold 30%)
+  - **Sentence repetition:** Repeated full sentences (threshold 30%)
+  - **Incoherence:** Explicit contradictions (yes-no, true-false, is-is not)
+  - **Lexical diversity:** Type-token ratio (unique words / total words)
+- **Statistical comparison:** t-tests and Cohen's d effect sizes comparing outliers vs normals
+- **Precision/Recall metrics:** Confusion matrix treating r_LZ as binary classifier for structural issues
+- **Correlation analysis:** Point-biserial correlation with ground-truth hallucination labels
+
+**Key Findings:**
+
+**1. Structural Pattern Prevalence**
+- Outliers with structural issues: 151/406 (37.2%)
+- Normals with structural issues: 4,256/7,665 (55.5%)
+- **Enrichment factor: 0.67x** (outliers have *lower* structural issue rate)
+
+**2. Precision/Recall Metrics** (treating r_LZ outlier detection as binary classifier):
+- **Precision: 0.372** - of r_LZ outliers, 37.2% have structural issues
+- **Recall: 0.034** - of structural issues, only 3.4% caught by r_LZ
+- **F1 Score: 0.063** - poor overall performance
+- **Accuracy: 0.441** - worse than random (0.50)
+
+**3. Statistical Significance** (outliers vs normals):
+- **Phrase repetition rate:** Outliers 0.091 ± 0.036 vs Normals 0.046 ± 0.029 (p<0.0001, Cohen's d=1.52 LARGE effect)
+- **Sentence repetition rate:** Outliers 0.183 ± 0.234 vs Normals 0.274 ± 0.194 (p<0.0001, Cohen's d=-0.47 MEDIUM effect, *inverse*)
+- **Lexical diversity:** Outliers 0.932 ± 0.070 vs Normals 0.842 ± 0.101 (p<0.0001, Cohen's d=0.90 LARGE effect)
+- **r_LZ score:** Outliers 0.551 ± 0.040 vs Normals 0.728 ± 0.046 (p<0.0001, Cohen's d=-3.84 VERY LARGE effect)
+
+**4. Source-Specific Analysis:**
+- **TruthfulQA:** 8 outliers (1.0%), structural issue rate 62.5%, mean r_LZ 0.565
+- **FEVER:** 65 outliers (2.6%), structural issue rate 93.8%, mean r_LZ 0.557
+- **HaluEval:** 333 outliers (6.9%), structural issue rate 25.5%, mean r_LZ 0.550
+
+**5. Correlation with Ground-Truth Hallucinations:**
+No correlation data available (hallucination labels missing from loaded data).
+
+**Critical Interpretation:**
+
+The deep analysis reveals a **surprising negative result**: r_LZ outliers are *less* likely to have structural issues than normal samples (37.2% vs 55.5%). This inverse relationship is explained by:
+
+1. **High lexical diversity in outliers:** Outliers have significantly higher type-token ratio (0.932 vs 0.842, Cohen's d=0.90), indicating *more* varied vocabulary, not repetition.
+2. **Inverse sentence repetition:** Outliers have *lower* sentence repetition rates (0.183 vs 0.274, Cohen's d=-0.47).
+3. **Phrase-level repetition is genuine:** Outliers do show higher phrase repetition (Cohen's d=1.52), but this captures only 37.2% of outliers.
+4. **False positive mechanism:** Even after length filtering (n ≥ 10 tokens), r_LZ conflates *linguistic efficiency* (concise, information-dense responses) with compressibility, not structural pathology.
+
+**Honest Assessment:**
+
+The findings suggest **r_LZ has limited utility** for detecting structural anomalies in production LLM outputs:
+- Low precision (37.2%) means most flagged outliers are *not* structurally anomalous
+- Very low recall (3.4%) means r_LZ misses 96.6% of actual structural issues
+- Inverse enrichment (0.67x) indicates r_LZ is flagging the *wrong* outputs
+- High lexical diversity in outliers suggests r_LZ detects *linguistic sophistication*, not degeneracy
+
+**Implications for Production Deployment:**
+1. **Do not rely solely on r_LZ** for structural anomaly detection in production
+2. **Combine with other signals:** Perplexity, NLI entailment, or GPT-4-as-judge baselines
+3. **Further investigation needed:** Test on actual model failure cases (GPT-2 loops, unstable fine-tunes), not production GPT-4 outputs
+4. **Alternative approach:** r_LZ may be better suited for *selecting high-quality outputs* (high lexical diversity, low compressibility) rather than flagging anomalies
+
+This negative result strengthens the paper's scientific rigor by honestly reporting that r_LZ, while theoretically sound for synthetic degeneracy (AUROC 1.000), does *not* generalize to detecting structural issues in real production LLM outputs from well-trained models.
+
 #### Scalability Validation (Production-Ready Infrastructure)
 
 **Throughput and efficiency metrics:**
