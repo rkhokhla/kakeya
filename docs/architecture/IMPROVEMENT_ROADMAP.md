@@ -139,13 +139,14 @@
 **Why**: Reviewers will ask "how does this compare to GPT-4 as judge?" Answer it.
 
 **What We Did**:
-1. ✅ Implemented 3 baselines on 1,000 synthetic degeneracy samples:
+1. ✅ Implemented 3 baselines on 100 real degeneracy samples with **ACTUAL OpenAI API calls**:
    - **ASV**: Geometric signals (D̂, coh★, r_LZ) with conformal prediction
-   - **GPT-4 judge**: Heuristic proxy for factuality assessment
-   - **SelfCheckGPT**: Consistency-based detection (heuristic proxy)
-2. ✅ Measured AUROC, latency, cost for each method
+   - **GPT-4 judge**: Real GPT-4-turbo-preview API calls ($0.287 total cost)
+   - **SelfCheckGPT**: Real GPT-3.5-turbo sampling (5 samples) + RoBERTa-large-MNLI ($0.061 total cost)
+2. ✅ Measured AUROC, latency, cost for each method with real production metrics
 3. ✅ Generated 4 comparison visualizations (ROC, performance, cost/latency)
 4. ✅ Created comprehensive comparison table with 10 metrics
+5. ✅ Total evaluation cost: **$0.35** for 100 samples
 
 **Key Findings** (Real OpenAI API calls, 100 samples, $0.35 total cost):
 - **ASV Performance**: AUROC=0.811, F1=0.797, Accuracy=0.710, Precision=0.838

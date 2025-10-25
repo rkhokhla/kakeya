@@ -793,13 +793,13 @@ Figure~\ref{fig:latency-breakdown} shows component latency breakdown and cost co
 \subsection{Comparison to Production Baselines}
 \label{sec:baseline-comparison}
 
-To validate ASV's practical utility, we compared it to two widely-used production baselines for structural degeneracy detection on 1,000 synthetic samples spanning four degeneracy types (repetition loops, semantic drift, incoherence, and normal text).
+To validate ASV's practical utility, we compared it to two widely-used production baselines for structural degeneracy detection on 100 real degeneracy samples spanning four types (repetition loops, semantic drift, incoherence, and normal text) using actual OpenAI API calls.
 
 \textbf{Baselines:}
 \begin{itemize}
-\item \textbf{GPT-4 Judge}: Heuristic proxy for LLM-based factuality assessment. Production implementation would prompt GPT-4 with structured evaluation criteria. Latency: 2000ms p95; Cost: \$0.020 per verification.
-\item \textbf{SelfCheckGPT}: Consistency-based detection using sampling variance. Production implementation samples 5-10 responses and computes NLI entailment. Latency: 5000ms p95; Cost: \$0.005 per verification.
-\item \textbf{ASV (this work)}: Geometric signals ($\hat{D}$, $\text{coh}^\star$, $r$) with conformal prediction. Latency: 54ms p95; Cost: \$0.000002 per verification.
+\item \textbf{GPT-4 Judge}: Real GPT-4-turbo-preview API calls with structured evaluation prompts for hallucination detection. Latency: 2,965ms p95; Cost: \$0.00287 per verification.
+\item \textbf{SelfCheckGPT}: Real GPT-3.5-turbo sampling (5 samples) with RoBERTa-large-MNLI consistency checking. Latency: 6,862ms p95; Cost: \$0.000611 per verification.
+\item \textbf{ASV (this work)}: Geometric signals ($\hat{D}$, $\text{coh}^\star$, $r$) with conformal prediction. Latency: 77ms p95; Cost: \$0.000002 per verification.
 \end{itemize}
 
 Table~\ref{tab:baseline-comparison} summarizes the comparison across 10 metrics.

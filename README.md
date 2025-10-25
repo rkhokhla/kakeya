@@ -558,13 +558,13 @@ We compare ASV against 5 strong baselines:
 
 ### Real Baseline Comparison (Priority 2.1 - Production API Validation)
 
-**✅ COMPLETE** - Validated ASV against production baselines using actual OpenAI API calls (not heuristic proxies).
+**✅ COMPLETE** - Validated ASV against production baselines using **ACTUAL OpenAI API calls** (not heuristic proxies).
 
 **Setup:**
-- 100 degeneracy samples (4 types: repetition loops, semantic drift, incoherence, normal)
-- Real GPT-4-turbo-preview for judge baseline
-- Real GPT-3.5-turbo sampling (5 samples) + RoBERTa-large-MNLI for SelfCheckGPT
-- Total cost: $0.35
+- 100 real degeneracy samples (4 types: repetition loops, semantic drift, incoherence, normal text)
+- **Real GPT-4-turbo-preview** API calls for judge baseline ($0.287 cost)
+- **Real GPT-3.5-turbo** sampling (5 samples/output) + **RoBERTa-large-MNLI** for SelfCheckGPT ($0.061 cost)
+- **Total evaluation cost: $0.35** (production API validation)
 
 **Results:**
 
@@ -575,20 +575,20 @@ We compare ASV against 5 strong baselines:
 | SelfCheckGPT | 0.772 | **0.760** | **0.964** | 0.707 | 0.815 | 6,862ms | $0.000611 |
 
 **Key Findings:**
-- ✅ **ASV achieves highest AUROC (0.811)** for structural degeneracy detection
-- ✅ **38x-89x faster latency** enables real-time synchronous verification
-- ✅ **306x-1,435x cost advantage** vs production baselines
+- ✅ **ASV achieves highest AUROC (0.811)** for structural degeneracy detection on real API validation
+- ✅ **38x-89x faster latency** enables real-time synchronous verification (77ms vs 2,965ms/6,862ms)
+- ✅ **306x-1,435x cost advantage** vs production baselines measured with actual API costs
   - At 100K verifications/day: ASV $0.20/day vs GPT-4 $287/day vs SelfCheckGPT $61/day
-- ✅ **No external API dependencies** (lower latency variance, no rate limits)
+- ✅ **No external API dependencies** (lower latency variance, no rate limits, full control)
 - ✅ **Interpretable failure modes** via geometric signals (low D̂ = clustering, high coh★ = drift, low r = repetition)
 
-**Note:** GPT-4 Judge performs at random chance (AUROC=0.500) on structural degeneracy, demonstrating that factuality-focused methods don't detect geometric anomalies well.
+**Key Insight:** GPT-4 Judge performs at random chance (AUROC=0.500) on structural degeneracy with real API calls, demonstrating that factuality-focused LLM methods don't detect geometric anomalies effectively. This validates ASV's complementary value.
 
 **Implementation:**
-- Script: `scripts/compare_baselines_real.py` (800 lines, production API integration)
-- Results: `results/baseline_comparison/` (raw data + metrics + summary JSON)
+- Script: `scripts/compare_baselines_real.py` (800 lines, **REAL OpenAI API integration**)
+- Results: `results/baseline_comparison/` (100 samples, $0.35 total cost, raw data + metrics + summary JSON)
 - Visualizations: 4 plots (ROC curves, performance comparison, cost-performance Pareto, latency)
-- Documentation: LaTeX whitepaper Section 7.5 "Comparison to Production Baselines"
+- Documentation: LaTeX whitepaper Section 7.5 "Comparison to Production Baselines" (with real API results)
 
 ### Real Embedding Validation (Priority 2.2 - Ecological Validity)
 
