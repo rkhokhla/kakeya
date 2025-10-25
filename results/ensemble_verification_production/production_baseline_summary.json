@@ -1,0 +1,240 @@
+{
+  "n_train": 5649,
+  "n_test": 2422,
+  "hallucination_rate_train": 0.5064613205877146,
+  "hallucination_rate_test": 0.5066061106523534,
+  "models": {
+    "GPT-2 perplexity (baseline)": {
+      "features": [
+        "gpt2_perplexity"
+      ],
+      "auroc": 0.4986035948481345,
+      "auroc_ci": [
+        0.4742200563444842,
+        0.5218010260785997
+      ],
+      "accuracy": 0.509083402146986,
+      "precision": 0.5080236486486487,
+      "recall": 0.980440097799511,
+      "f1": 0.6692628650904033
+    },
+    "RoBERTa-NLI alone": {
+      "features": [
+        "roberta_nli_entailment"
+      ],
+      "auroc": 0.5012119228106788,
+      "auroc_ci": [
+        0.47792880995327275,
+        0.5236237067973976
+      ],
+      "accuracy": 0.5066061106523534,
+      "precision": 0.5066061106523534,
+      "recall": 1.0,
+      "f1": 0.6725130172650041
+    },
+    "RAG faithfulness (real)": {
+      "features": [
+        "rag_faithfulness_real"
+      ],
+      "auroc": 0.587378475241515,
+      "auroc_ci": [
+        0.5653521978577543,
+        0.6104825809679033
+      ],
+      "accuracy": 0.564822460776218,
+      "precision": 0.6011695906432749,
+      "recall": 0.4189079054604727,
+      "f1": 0.49375600384245916
+    },
+    "SelfCheckGPT (real)": {
+      "features": [
+        "selfcheck_gpt_real"
+      ],
+      "auroc": 0.5588853310963571,
+      "auroc_ci": [
+        0.5382659006849195,
+        0.5770143757897106
+      ],
+      "accuracy": 0.5383980181668043,
+      "precision": 0.5897858319604613,
+      "recall": 0.2917685411572942,
+      "f1": 0.3904034896401309
+    },
+    "Geometric signals (D_hat + coh_star + r_LZ)": {
+      "features": [
+        "D_hat",
+        "coh_star",
+        "r_LZ"
+      ],
+      "auroc": 0.5198180410771587,
+      "auroc_ci": [
+        0.4966797232219824,
+        0.5421305785396903
+      ],
+      "accuracy": 0.5148637489677952,
+      "precision": 0.5147895335608647,
+      "recall": 0.7375713121434393,
+      "f1": 0.6063651591289783
+    },
+    "RAG + NLI (production)": {
+      "features": [
+        "rag_faithfulness_real",
+        "roberta_nli_entailment"
+      ],
+      "auroc": 0.587413257494382,
+      "auroc_ci": [
+        0.566815580114476,
+        0.609736074434349
+      ],
+      "accuracy": 0.564409578860446,
+      "precision": 0.6,
+      "recall": 0.42053789731051344,
+      "f1": 0.49448969813128896
+    },
+    "RAG + SelfCheckGPT (production)": {
+      "features": [
+        "rag_faithfulness_real",
+        "selfcheck_gpt_real"
+      ],
+      "auroc": 0.5822388858767003,
+      "auroc_ci": [
+        0.5574663174084501,
+        0.6038143836046371
+      ],
+      "accuracy": 0.5474814203137902,
+      "precision": 0.5753739930955121,
+      "recall": 0.40749796251018744,
+      "f1": 0.4770992366412214
+    },
+    "All semantic (production)": {
+      "features": [
+        "roberta_nli_entailment",
+        "rag_faithfulness_real",
+        "selfcheck_gpt_real"
+      ],
+      "auroc": 0.5810317371007288,
+      "auroc_ci": [
+        0.5579092830449031,
+        0.604400829178829
+      ],
+      "accuracy": 0.5511973575557391,
+      "precision": 0.5802752293577982,
+      "recall": 0.4123879380603097,
+      "f1": 0.4821343496903287
+    },
+    "Geometric + All semantic (production)": {
+      "features": [
+        "D_hat",
+        "coh_star",
+        "r_LZ",
+        "roberta_nli_entailment",
+        "rag_faithfulness_real",
+        "selfcheck_gpt_real"
+      ],
+      "auroc": 0.5856772138733448,
+      "auroc_ci": [
+        0.5628543631079133,
+        0.6069166275071267
+      ],
+      "accuracy": 0.5528488852188275,
+      "precision": 0.5825688073394495,
+      "recall": 0.41401792991035047,
+      "f1": 0.48404001905669364
+    },
+    "Full ensemble (production)": {
+      "features": [
+        "gpt2_perplexity",
+        "D_hat",
+        "coh_star",
+        "r_LZ",
+        "roberta_nli_entailment",
+        "rag_faithfulness_real",
+        "selfcheck_gpt_real",
+        "length_tokens"
+      ],
+      "auroc": 0.5957040507684491,
+      "auroc_ci": [
+        0.574697633120757,
+        0.6172667193293196
+      ],
+      "accuracy": 0.5627580511973576,
+      "precision": 0.5909090909090909,
+      "recall": 0.4449877750611247,
+      "f1": 0.5076708507670851
+    }
+  },
+  "mcnemar_tests": [
+    {
+      "comparison": "GPT-2 perplexity (baseline) vs RoBERTa-NLI alone",
+      "b": 30,
+      "c": 24,
+      "chi_squared": 0.46296296296296297,
+      "p_value": 0.49624247444426284,
+      "significant": false
+    },
+    {
+      "comparison": "GPT-2 perplexity (baseline) vs RAG faithfulness (real)",
+      "b": 697,
+      "c": 832,
+      "chi_squared": 11.743623283191628,
+      "p_value": 0.000610520521972524,
+      "significant": true
+    },
+    {
+      "comparison": "GPT-2 perplexity (baseline) vs SelfCheckGPT (real)",
+      "b": 846,
+      "c": 917,
+      "chi_squared": 2.779353374929098,
+      "p_value": 0.0954867133655588,
+      "significant": false
+    },
+    {
+      "comparison": "GPT-2 perplexity (baseline) vs Geometric signals (D_hat + coh_star + r_LZ)",
+      "b": 329,
+      "c": 343,
+      "chi_squared": 0.25148809523809523,
+      "p_value": 0.6160292075465357,
+      "significant": false
+    },
+    {
+      "comparison": "GPT-2 perplexity (baseline) vs RAG + NLI (production)",
+      "b": 695,
+      "c": 829,
+      "chi_squared": 11.606955380577428,
+      "p_value": 0.0006570562734790064,
+      "significant": true
+    },
+    {
+      "comparison": "GPT-2 perplexity (baseline) vs RAG + SelfCheckGPT (production)",
+      "b": 705,
+      "c": 798,
+      "chi_squared": 5.631403858948769,
+      "p_value": 0.01764149759888678,
+      "significant": true
+    },
+    {
+      "comparison": "GPT-2 perplexity (baseline) vs All semantic (production)",
+      "b": 699,
+      "c": 801,
+      "chi_squared": 6.800666666666666,
+      "p_value": 0.009112384110374072,
+      "significant": true
+    },
+    {
+      "comparison": "GPT-2 perplexity (baseline) vs Geometric + All semantic (production)",
+      "b": 697,
+      "c": 803,
+      "chi_squared": 7.35,
+      "p_value": 0.006706275607805567,
+      "significant": true
+    },
+    {
+      "comparison": "GPT-2 perplexity (baseline) vs Full ensemble (production)",
+      "b": 685,
+      "c": 815,
+      "chi_squared": 11.094,
+      "p_value": 0.0008660747305333505,
+      "significant": true
+    }
+  ]
+}
