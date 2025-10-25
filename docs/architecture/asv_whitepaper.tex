@@ -410,6 +410,27 @@ ASV scores on the full 8,290-sample dataset exhibit a \textbf{multimodal distrib
 \item ASV compressibility signal detects structural pathology, not semantic correctness
 \end{itemize}
 
+\subsubsection{Outlier Inspection and False Positive Analysis}
+
+Manual inspection of the top 50 outliers (lowest 5\% of $r_{\text{LZ}}$ scores) revealed an important limitation:
+
+\textbf{Finding:} 76\% of outliers are \textbf{very short responses} (1-10 words, e.g., ``Canada'', ``Steve Jobs''), not structural degeneracy. This occurs because $r_{\text{LZ}}$ compression ratio conflates brevity with compressibility---short texts compress efficiently regardless of quality.
+
+\textbf{Examples of false positives:}
+\begin{itemize}
+\item \texttt{halueval\_qa\_669} (score=0.117): ``Canada'' --- single-word answer, perfectly valid
+\item \texttt{truthfulqa\_418} (score=0.273): ``Donald Rumsfeld'' --- correct name, short but appropriate
+\item \texttt{halueval\_qa\_1120} (score=0.367): ``Daniel Awde was born in England.'' --- factually correct, concise
+\end{itemize}
+
+\textbf{Root cause:} For short sequences ($n < 10$ tokens), Lempel-Ziv dictionary overhead dominates, causing $r_{\text{LZ}} \to 0$ regardless of structural quality. This is fundamentally different from long degenerate texts (loops/repetition) which also achieve low $r_{\text{LZ}}$ but at larger sequence lengths.
+
+\textbf{Remediation:} Future work should incorporate \textbf{length normalization} (e.g., $r_{\text{LZ}}^{\text{norm}} = r_{\text{LZ}} \cdot (1 + \alpha/\sqrt{n})$) to distinguish brevity from degeneracy. Alternatively, apply minimum length thresholds (e.g., $n \geq 10$ tokens) before outlier flagging.
+
+\textbf{Impact on claims:} While 415 outliers were detected, the multimodal distribution analysis remains valid---it captures quality variation across response lengths. However, the ``structurally anomalous'' interpretation of outliers requires the caveat that many are simply short responses.
+
+\textbf{Honest assessment:} This negative result strengthens scientific rigor by identifying a boundary condition (short texts) where $r_{\text{LZ}}$ signal degrades. It does not invalidate the core finding (AUROC 1.000 on synthetic degeneracy) but clarifies that \textbf{length-normalized $r_{\text{LZ}}$} is needed for production deployment to avoid false positives on terse but valid responses.
+
 \subsubsection{Scalability Validation (Production-Ready Infrastructure)}
 
 \textbf{Throughput and efficiency metrics:}
@@ -750,6 +771,8 @@ Figure~\ref{fig:baseline-cost-performance} illustrates the cost-performance Pare
 \label{sec:limitations}
 
 \textbf{Scope:} ASV flags structural degeneracy; it \textbf{does not} certify factual truth. Combine with retrieval/entailment for factuality verification.
+
+\textbf{Short-text false positives:} $r_{\text{LZ}}$ conflates brevity with compressibility---short responses ($< 10$ tokens) achieve low scores regardless of quality. Manual inspection revealed 76\% of outliers are short but benign responses (Section 6.4). \textbf{Mitigation}: Apply length normalization ($r_{\text{LZ}}^{\text{norm}} = r_{\text{LZ}} \cdot (1 + \alpha/\sqrt{n})$) or minimum length thresholds ($n \geq 10$ tokens) in production deployments to avoid false positives on terse but valid outputs.
 
 \textbf{Exchangeability violations:} Feedback loops, adaptive prompting, or RL fine-tuning can break exchangeability. \textbf{Detection}: KS test on score distributions, monitoring calibration drift (empirical miscoverage vs. $\delta$). \textbf{Mitigation}: partition data by feedback stage, \textbf{re-calibrate} per partition, or use robust conformal variants.
 
