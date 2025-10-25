@@ -60,26 +60,46 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces AUROC Comparison: Conformal Ensemble vs. Individual Signals. Degeneracy task achieves near-perfect detection (0.9997) with learned weights.}}{9}{figure.caption.9}\protected@file@percent }
 \newlabel{fig:conformal-auroc}{{5}{9}{AUROC Comparison: Conformal Ensemble vs. Individual Signals. Degeneracy task achieves near-perfect detection (0.9997) with learned weights}{figure.caption.9}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {6.3.3}Production Deployment Recommendations}{9}{subsubsection.6.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}ROI and Operational Impact}{9}{section.7}\protected@file@percent }
-\newlabel{sec:roi}{{7}{9}{ROI and Operational Impact}{section.7}{}}
-\bibstyle{plain}
-\bibcite{angelopoulos2023gentle}{1}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Validation Experiments}{9}{section.7}\protected@file@percent }
+\newlabel{sec:validation}{{7}{9}{Validation Experiments}{section.7}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces AUPRC Comparison: Conformal Ensemble Performance. AUPRC is particularly important for imbalanced datasets, providing complementary information to AUROC.}}{10}{figure.caption.10}\protected@file@percent }
 \newlabel{fig:conformal-auprc}{{6}{10}{AUPRC Comparison: Conformal Ensemble Performance. AUPRC is particularly important for imbalanced datasets, providing complementary information to AUROC}{figure.caption.10}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Threat Model and Limitations}{10}{section.8}\protected@file@percent }
-\newlabel{sec:limitations}{{8}{10}{Threat Model and Limitations}{section.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {9}Conclusion}{10}{section.9}\protected@file@percent }
-\newlabel{sec:conclusion}{{9}{10}{Conclusion}{section.9}{}}
-\bibcite{vovk2005algorithmic}{2}
-\bibcite{lei2018distribution}{3}
-\bibcite{lin2022truthfulqa}{4}
-\bibcite{thorne2018fever}{5}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Signal Ablation Study}{10}{subsection.7.1}\protected@file@percent }
+\newlabel{sec:validation-ablation}{{7.1}{10}{Signal Ablation Study}{subsection.7.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Signal Ablation Results on Structural Degeneracy Detection}}{10}{table.caption.13}\protected@file@percent }
+\newlabel{tab:ablation-results}{{5}{10}{Signal Ablation Results on Structural Degeneracy Detection}{table.caption.13}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Comprehensive Performance Comparison: All methods across all benchmarks. This grouped visualization shows the full landscape of conformal prediction performance with learned ensemble weights.}}{11}{figure.caption.11}\protected@file@percent }
 \newlabel{fig:conformal-performance}{{7}{11}{Comprehensive Performance Comparison: All methods across all benchmarks. This grouped visualization shows the full landscape of conformal prediction performance with learned ensemble weights}{figure.caption.11}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Calibration Quality: Set sizes (left) and threshold values (right) vary by task complexity.}}{11}{figure.caption.12}\protected@file@percent }
 \newlabel{fig:calibration-quality}{{8}{11}{Calibration Quality: Set sizes (left) and threshold values (right) vary by task complexity}{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Coverage Calibration Validation}{11}{subsection.7.2}\protected@file@percent }
+\newlabel{sec:validation-coverage}{{7.2}{11}{Coverage Calibration Validation}{subsection.7.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Signal Ablation Visualizations: Comprehensive comparison showing $r_{\text  {LZ}}$ dominance on structural degeneracy and perplexity dominance on factuality benchmarks.}}{12}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:ablation-visualizations}{{9}{12}{Signal Ablation Visualizations: Comprehensive comparison showing $r_{\text {LZ}}$ dominance on structural degeneracy and perplexity dominance on factuality benchmarks}{figure.caption.14}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Coverage Guarantee Validation (400 test samples)}}{12}{table.caption.15}\protected@file@percent }
+\newlabel{tab:coverage-results}{{6}{12}{Coverage Guarantee Validation (400 test samples)}{table.caption.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Scale Sensitivity Analysis}{12}{subsection.7.3}\protected@file@percent }
+\newlabel{sec:validation-scales}{{7.3}{12}{Scale Sensitivity Analysis}{subsection.7.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Scale Configuration Sensitivity (Degeneracy Benchmark)}}{12}{table.caption.17}\protected@file@percent }
+\newlabel{tab:scale-results}{{7}{12}{Scale Configuration Sensitivity (Degeneracy Benchmark)}{table.caption.17}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Coverage Calibration Curve: Empirical miscoverage (blue, with 95\% CI) vs. target $\delta $ (black diagonal). Points below the diagonal indicate guarantee compliance. Green markers show where $\text  {empirical} \le \delta $.}}{13}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:coverage-calibration}{{10}{13}{Coverage Calibration Curve: Empirical miscoverage (blue, with 95\% CI) vs. target $\delta $ (black diagonal). Points below the diagonal indicate guarantee compliance. Green markers show where $\text {empirical} \le \delta $}{figure.caption.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Scale Configuration Comparison: AUROC vs. number of scales (left) and horizontal bar chart of all configurations (right). Current default $k=5$ highlighted in green.}}{13}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:scale-sensitivity}{{11}{13}{Scale Configuration Comparison: AUROC vs. number of scales (left) and horizontal bar chart of all configurations (right). Current default $k=5$ highlighted in green}{figure.caption.18}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}ROI and Operational Impact}{13}{section.8}\protected@file@percent }
+\newlabel{sec:roi}{{8}{13}{ROI and Operational Impact}{section.8}{}}
+\bibstyle{plain}
+\bibcite{angelopoulos2023gentle}{1}
+\bibcite{vovk2005algorithmic}{2}
+\bibcite{lei2018distribution}{3}
+\bibcite{lin2022truthfulqa}{4}
+\bibcite{thorne2018fever}{5}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Threat Model and Limitations}{14}{section.9}\protected@file@percent }
+\newlabel{sec:limitations}{{9}{14}{Threat Model and Limitations}{section.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10}Conclusion}{14}{section.10}\protected@file@percent }
+\newlabel{sec:conclusion}{{10}{14}{Conclusion}{section.10}{}}
 \bibcite{jegou2011product}{6}
 \bibcite{sen1968estimates}{7}
 \bibcite{ziv1978compression}{8}
 \bibcite{manakul2023selfcheckgpt}{9}
-\gdef \@abspage@last{12}
+\gdef \@abspage@last{15}
