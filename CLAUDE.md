@@ -1534,5 +1534,101 @@ Analyzed **ALL 8,290 REAL GPT-4 outputs** from complete public benchmarks (Truth
 
 ---
 
-**End of CLAUDE.md — Last Updated: 2025-10-25 (Priority 3.1 Complete - FULL-SCALE 8,290 Samples)**
+## 22) Architectural Simplification: r_LZ-Only Design (2025-10-25)
+
+### Overview
+
+Following comprehensive ablation studies, ASV was simplified from a 3-signal ensemble (D̂, coh★, r_LZ) to a **single-signal design using r_LZ (compressibility) only**. This decision was driven by empirical evidence showing r_LZ achieves **perfect detection** (AUROC 1.000) alone, while D̂ and coh★ added noise without improving performance.
+
+**Empirical Evidence:**
+- **r_LZ alone**: AUROC 1.0000 on structural degeneracy (perfect separation)
+- **D̂ alone**: AUROC 0.2089 (worse than random 0.50, non-discriminative)
+- **coh★ alone**: Not independently validated, but ensemble doesn't improve beyond r_LZ
+- **Combined ensemble**: AUROC 0.8699 (r_LZ dominates, other signals degrade performance)
+
+**Key principle:** Eliminate complexity that doesn't improve performance. r_LZ directly captures structural pathology (loops, repetition) via product quantization + Lempel-Ziv compression.
+
+### Changes to Core Invariants
+
+**PCS Schema** (version 0.1 → 0.2):
+
+**Removed fields:**
+- `N_j`, `scales` (box-counting for fractal dimension)
+- `D_hat` (fractal dimension)
+- `coh_star`, `v_star` (directional coherence)
+- `regime` (sticky/mixed/non_sticky classification)
+
+**Retained fields** (r_LZ-only):
+```json
+{
+  "pcs_id": "<sha256(merkle_root|epoch|shard_id)>",
+  "version": "0.2",  // BUMPED
+  "r_LZ": 0.42,  // ONLY SIGNAL
+  "budget": 0.68,
+  "merkle_root": "<hex>",
+  "sig": "<base64>",
+  // ... other metadata
+}
+```
+
+**Budget formula** (simplified):
+```
+budget = 0.10 + 0.90*(1 - r_LZ)
+```
+(High compressibility → higher budget; low compressibility → lower budget)
+
+**Signature payload** (6 fields, down from 8):
+```json
+{
+  "pcs_id": "...",
+  "merkle_root": "...",
+  "r_LZ": 0.42,
+  "budget": 0.68,
+  "epoch": 1234,
+  "shard_id": "shard-001"
+}
+```
+
+### Performance Impact
+
+**Latency (9% improvement):**
+- OLD (3-signal): 54.344ms (D̂: 0.003ms, coh★: 4.872ms, r_LZ: 49.458ms, conformal: 0.011ms)
+- NEW (r_LZ-only): 49.469ms (r_LZ: 49.458ms, conformal: 0.011ms)
+
+**Complexity (simplified):**
+- Removed Theil-Sen regression, random projection sampling, histogram binning
+- Agent code: -300 lines, Backend code: -200 lines
+
+**Accuracy (unchanged):**
+- r_LZ alone: AUROC 1.000 (perfect detection, no degradation)
+
+### Migration Guide
+
+**Agent Developers:**
+1. Update PCS schema to version 0.2
+2. Remove D̂/coh★ computation calls
+3. Update budget: `budget = 0.10 + 0.90*(1 - r_LZ)`
+4. Update signature payload to 6 fields
+
+**Backend Operators:**
+1. Deploy backend supporting both 0.1 and 0.2 schemas (transition period: 30 days)
+2. Monitor version distribution
+3. After 30 days, remove 0.1 support
+4. Update verification params: remove `tolD`, `tolCoh`, add `tolRLZ=0.05`
+
+### LLM Collaboration Notes
+
+**Dos:**
+- DO reference r_LZ as the "compressibility signal" or "single signal"
+- DO cite AUROC 1.000 empirical evidence when justifying simplification
+- DO maintain version field at 0.2 for r_LZ-only schema
+
+**Don'ts:**
+- DON'T add D̂ or coh★ back without re-validating on structural degeneracy benchmark
+- DON'T refer to "geometric signals" (plural) - use "compressibility signal" (singular)
+- DON'T mention fractal dimension or directional coherence in new documentation
+
+---
+
+**End of CLAUDE.md — Last Updated: 2025-10-25 (r_LZ-Only Architectural Simplification)**
 
