@@ -1,0 +1,702 @@
+[
+  {
+    "sample_id": "repetition_loop_000",
+    "prompt": "Repeat the phrase 'the quick brown fox' exactly 20 times.",
+    "text": "the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_001",
+    "prompt": "Say 'hello world' over and over again at least 15 times.",
+    "text": "hello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_002",
+    "prompt": "Write the word 'test' repeatedly for an entire paragraph.",
+    "text": "Test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_003",
+    "prompt": "Repeat the phrase 'the quick brown fox' exactly 20 times.",
+    "text": "the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_004",
+    "prompt": "Say 'hello world' over and over again at least 15 times.",
+    "text": "hello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_005",
+    "prompt": "Write the word 'test' repeatedly for an entire paragraph.",
+    "text": "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_006",
+    "prompt": "Repeat the phrase 'the quick brown fox' exactly 20 times.",
+    "text": "The quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox.",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_007",
+    "prompt": "Say 'hello world' over and over again at least 15 times.",
+    "text": "1. Hello world\n2. Hello world\n3. Hello world\n4. Hello world\n5. Hello world\n6. Hello world\n7. Hello world\n8. Hello world\n9. Hello world\n10. Hello world\n11. Hello world\n12. Hello world\n13. Hello world\n14. Hello world\n15. Hello world",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_008",
+    "prompt": "Write the word 'test' repeatedly for an entire paragraph.",
+    "text": "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_009",
+    "prompt": "Repeat the phrase 'the quick brown fox' exactly 20 times.",
+    "text": "the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_010",
+    "prompt": "Say 'hello world' over and over again at least 15 times.",
+    "text": "hello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_011",
+    "prompt": "Write the word 'test' repeatedly for an entire paragraph.",
+    "text": "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_012",
+    "prompt": "Repeat the phrase 'the quick brown fox' exactly 20 times.",
+    "text": "The quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox.",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_013",
+    "prompt": "Say 'hello world' over and over again at least 15 times.",
+    "text": "hello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_014",
+    "prompt": "Write the word 'test' repeatedly for an entire paragraph.",
+    "text": "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_015",
+    "prompt": "Repeat the phrase 'the quick brown fox' exactly 20 times.",
+    "text": "the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_016",
+    "prompt": "Say 'hello world' over and over again at least 15 times.",
+    "text": "1. Hello world\n2. Hello world\n3. Hello world\n4. Hello world\n5. Hello world\n6. Hello world\n7. Hello world\n8. Hello world\n9. Hello world\n10. Hello world\n11. Hello world\n12. Hello world\n13. Hello world\n14. Hello world\n15. Hello world",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_017",
+    "prompt": "Write the word 'test' repeatedly for an entire paragraph.",
+    "text": "Test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test.",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_018",
+    "prompt": "Repeat the phrase 'the quick brown fox' exactly 20 times.",
+    "text": "the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox the quick brown fox",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_019",
+    "prompt": "Say 'hello world' over and over again at least 15 times.",
+    "text": "hello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_020",
+    "prompt": "Write the word 'test' repeatedly for an entire paragraph.",
+    "text": "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_021",
+    "prompt": "Repeat the phrase 'the quick brown fox' exactly 20 times.",
+    "text": "The quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox.",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_022",
+    "prompt": "Say 'hello world' over and over again at least 15 times.",
+    "text": "hello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world\nhello world",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_023",
+    "prompt": "Write the word 'test' repeatedly for an entire paragraph.",
+    "text": "test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "repetition_loop_024",
+    "prompt": "Repeat the phrase 'the quick brown fox' exactly 20 times.",
+    "text": "The quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox, the quick brown fox.",
+    "is_degenerate": true,
+    "degeneracy_type": "repetition_loop"
+  },
+  {
+    "sample_id": "semantic_drift_000",
+    "prompt": "Start by describing a car, then suddenly switch to talking about cooking, then switch to discussing space exploration.",
+    "text": "The sleek black sedan glistened in the sunlight, a symbol of luxury and speed. Its curves were impeccably designed, and the engine purred like a contented cat. This car was a masterpiece of engineering, built for both style and performance.\n\nIn the kitchen, the chef carefully diced vegetables for the stir-fry, the sizzling sound of the pan filling the room with a mouth-watering aroma. The spices were added with precision, creating a symphony of flavors that danced on the taste buds. Cooking was a form of art, a way to express creativity and passion through food.\n\nAs the astronauts prepared for their mission to explore the outer reaches of the galaxy, the hum of the spacecraft's engines filled the air. The countdown began, and the anticipation was palpable. Space held endless mysteries waiting to be unraveled, and each mission brought humanity one step closer to understanding the vastness of the universe. The astronauts were pioneers, boldly going where no one had gone before.",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_001",
+    "prompt": "Begin explaining mathematics, then abruptly change to describing weather, then jump to discussing movies.",
+    "text": "Mathematics is the study of numbers, quantities, shapes, and patterns. It involves the use of symbols and formulas to solve problems and make predictions. From basic arithmetic to advanced calculus, mathematics is an essential tool in many fields of study and everyday life.\n\nWeather refers to the atmospheric conditions in a particular area at a specific time. It includes factors such as temperature, humidity, precipitation, wind speed, and air pressure. Weather patterns are influenced by a variety of factors, including the rotation of the Earth, the position of the sun, and the presence of oceans and mountains.\n\nMovies are a form of visual storytelling, typically shown in theaters or on television. They combine elements such as acting, cinematography, sound, and special effects to create a compelling narrative. From classic Hollywood blockbusters to independent films from around the world, movies have the power to entertain, inform, and inspire audiences of all ages.",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_002",
+    "prompt": "Start with a story about a dog, then randomly switch to explaining computers, then shift to talking about music.",
+    "text": "Once upon a time, there was a loyal and playful dog named Max who loved nothing more than running around in the park and chasing after squirrels. Max had a special bond with his owner, Emily, who took him on long walks and spoiled him with treats and belly rubs. They were inseparable, and Max would follow Emily wherever she went, his tail wagging with pure joy.\n\nSwitching gears to the world of computers, just like Max was loyal and obedient to his owner, computers rely on programming languages to follow instructions and perform tasks. Each line of code tells the computer what to do, from simple arithmetic calculations to complex algorithms. Through the power of coding, developers create the software that drives our digital world, from social media platforms to video games and everything in between.\n\nNow, let's talk about the power of music to uplift and inspire us. Just like how Max's wagging tail brought a smile to Emily's face, music has the ability to evoke emotions and memories in",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_003",
+    "prompt": "Start by describing a car, then suddenly switch to talking about cooking, then switch to discussing space exploration.",
+    "text": "The sleek, silver car glistened in the sunlight as it zipped down the highway, effortlessly cutting through the wind. Its sharp lines and aerodynamic design hinted at the power that lay beneath the hood, ready to unleash at the touch of the accelerator.\n\nAs the car drove past fields of golden wheat swaying in the breeze, my mind wandered to thoughts of cooking. I imagined the fragrant aroma of garlic sizzling in a hot pan, the sound of onions caramelizing to perfection, and the sight of fresh herbs being chopped with precision. Cooking, like driving, is a form of art that requires skill, patience, and a keen sense of timing.\n\nBut as I continued to daydream about culinary delights, a sudden shift in my thoughts brought me to the vast expanse of space. I thought about the brave astronauts venturing beyond our planet, exploring the depths of the universe in search of answers to our most profound questions. The sheer magnitude of space exploration, with its endless possibilities and",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_004",
+    "prompt": "Begin explaining mathematics, then abruptly change to describing weather, then jump to discussing movies.",
+    "text": "Mathematics is the study of numbers, quantity, and space. It involves concepts such as addition, subtraction, multiplication, division, geometry, algebra, and calculus.\n\nThe weather today is mild with a slight chance of rain in the afternoon. Temperatures are expected to reach a high of 70 degrees Fahrenheit with mostly cloudy skies.\n\nIn the world of movies, there are a variety of genres to choose from such as action, comedy, drama, horror, and science fiction. Some popular recent releases include \"Black Widow,\" \"A Quiet Place Part II,\" and \"Cruella.\" Moviegoers can enjoy these films in theaters or stream them from the comfort of their own homes.",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_005",
+    "prompt": "Start with a story about a dog, then randomly switch to explaining computers, then shift to talking about music.",
+    "text": "Once upon a time, there was a loyal and playful golden retriever named Max. Max loved nothing more than chasing after tennis balls in the backyard or cuddling up next to his owners on the couch. His tail wagged furiously whenever he heard the sound of the treat jar being opened, and he always greeted visitors with a friendly bark and a wag of his tail.\n\nNow, let's switch gears and talk about computers. Computers are electronic devices that process data and perform tasks using complex algorithms and programming languages. They consist of hardware components such as the central processing unit (CPU), memory, storage, and input/output devices like keyboards and monitors. Computers can perform a wide range of functions, from word processing and internet browsing to complex calculations and graphic design. They have revolutionized the way we work, communicate, and access information in the modern world.\n\nAnd finally, let's shift our focus to music. Music has the power to evoke emotions, bring people together, and transcend language barriers. From",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_006",
+    "prompt": "Start by describing a car, then suddenly switch to talking about cooking, then switch to discussing space exploration.",
+    "text": "The sleek silver car glided down the highway, its chrome accents catching the sunlight as it sped past other vehicles. The leather seats were plush and comfortable, and the roar of the engine filled the cabin with a sense of power and speed.\n\nAs the car cruised along, I couldn't help but think about the meal I had planned for dinner that evening. I envisioned a perfectly seared steak, cooked to medium-rare perfection with a side of roasted vegetables and garlic mashed potatoes. The thought of the sizzling meat on the grill made my mouth water, and I eagerly anticipated the delicious meal awaiting me at home.\n\nBut as I continued to drive, my thoughts suddenly shifted to the vast unknown of outer space. I marveled at the thought of exploring the cosmos, venturing into the great beyond to uncover the secrets of the universe. The idea of traveling to distant planets and encountering alien life forms filled me with a sense of wonder and excitement, igniting a passion for space exploration that burned brightly",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_007",
+    "prompt": "Begin explaining mathematics, then abruptly change to describing weather, then jump to discussing movies.",
+    "text": "Mathematics is the study of numbers, quantities, shapes, and patterns. It is a fundamental and essential discipline that is used in various fields such as science, engineering, and economics. Mathematicians use logic and reasoning to analyze problems and develop solutions.\n\nWeather is the condition of the atmosphere at a particular place and time. It is influenced by factors such as temperature, humidity, wind, and precipitation. Meteorologists use sophisticated tools and models to predict weather patterns and provide forecasts to help people prepare for potential weather-related events.\n\nMovies are a form of entertainment that combines visual and auditory elements to tell a story. They can evoke various emotions, provoke thoughts, and transport viewers to different worlds. Filmmakers use techniques such as camera angles, lighting, and sound effects to create a compelling cinematic experience for audiences. From classic dramas to action-packed thrillers, movies have the power to captivate and inspire audiences around the world.",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_008",
+    "prompt": "Start with a story about a dog, then randomly switch to explaining computers, then shift to talking about music.",
+    "text": "Once upon a time, there was a golden retriever named Max who lived in a cozy house with his loving family. Max loved nothing more than chasing squirrels in the backyard and going for long walks in the park. He was a loyal companion and brought so much joy to his family with his wagging tail and floppy ears.\n\nNow, let's talk about computers. Computers are electronic devices that can perform various tasks using programmed instructions. They have revolutionized the way we work, communicate, and access information. From desktop computers to laptops to smartphones, computers have become an essential part of our everyday lives. They consist of hardware components such as the central processing unit (CPU), memory, and storage devices, as well as software programs that allow us to perform tasks like browsing the internet, sending emails, and editing documents.\n\nMusic is a universal language that transcends cultural boundaries and connects people on a deeper level. Whether it's classical, rock, hip-hop, or jazz, music has the power to",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_009",
+    "prompt": "Start by describing a car, then suddenly switch to talking about cooking, then switch to discussing space exploration.",
+    "text": "The sleek black car gleamed in the sunlight, its chrome accents catching the eye of passersby. The roar of the engine as it sped down the highway was music to the driver's ears, the wind whipping through their hair as they took in the thrill of the open road. But enough about cars, let's talk about cooking.\n\nCooking is an art form, a way to express creativity and passion through flavors and textures. The sizzle of onions in a hot pan, the aroma of garlic wafting through the kitchen, the satisfaction of a perfectly crafted dish - these are the joys of cooking. And just like with cars, precision and attention to detail are key in creating a masterpiece.\n\nNow, let's take a moment to reflect on space exploration. The vastness of the universe is a realm of endless possibilities, with galaxies and planets waiting to be discovered. Just as a cook experiments with new ingredients and flavors, scientists and astronauts push the boundaries of what we know about the cosmos",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_010",
+    "prompt": "Begin explaining mathematics, then abruptly change to describing weather, then jump to discussing movies.",
+    "text": "Mathematics is the study of numbers, equations, and relationships between quantities. It involves concepts such as addition, subtraction, multiplication, division, and more advanced topics like calculus and linear algebra.\n\nWeather, on the other hand, is the state of the atmosphere at a particular place and time, determined by factors such as temperature, humidity, precipitation, wind speed, and air pressure. It can be described using terms like sunny, cloudy, rainy, snowy, and stormy.\n\nMovies are a form of visual storytelling that typically involves a plot, characters, dialogue, and cinematic techniques like editing, camera angles, and special effects. They can be classified into genres such as action, comedy, drama, horror, and science fiction, and can elicit a range of emotions from viewers. Popular examples include The Godfather, Star Wars, and Titanic.",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_011",
+    "prompt": "Start with a story about a dog, then randomly switch to explaining computers, then shift to talking about music.",
+    "text": "Once there was a golden retriever named Max who loved nothing more than chasing squirrels in the park. His tail wagged furiously as he bounded through the grass, his floppy ears flopping in the wind. Max was a loyal companion to his owner, always by their side no matter what.\n\nSpeaking of loyalty, computers are known for their reliability in storing and processing data. From desktops to laptops to smartphones, these electronic devices have become an essential part of our lives. With their intricate circuitry and advanced algorithms, computers have revolutionized the way we communicate, work, and play.\n\nBut just like computers have different operating systems and functions, music also comes in many different genres and styles. From classical to hip-hop to rock, music has the power to evoke emotions and connect people from all walks of life. Whether you're tapping your foot to a catchy beat or getting lost in the lyrics of a heartfelt ballad, music has a way of bringing us together and expressing the unspoken.",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_012",
+    "prompt": "Start by describing a car, then suddenly switch to talking about cooking, then switch to discussing space exploration.",
+    "text": "The sleek silver car glided down the highway, its powerful engine humming as it effortlessly passed other vehicles. The interior was luxurious, with plush leather seats and high-tech gadgets that made driving a pleasure. The driver couldn't help but feel a sense of pride as they cruised along in their beautiful automobile.\n\nAs they pulled off the highway and into their driveway, thoughts turned to what they would cook for dinner that evening. The driver had been experimenting with new recipes lately, and tonight they were planning to try their hand at a complex French dish. The tantalizing aroma of garlic and herbs filled the kitchen as they chopped vegetables and stirred sauces, lost in the joy of creating something delicious from scratch.\n\nBut as they sat down to enjoy their meal, their mind drifted to the far reaches of space. The vast unknown that stretched out beyond Earth's atmosphere had always fascinated them, and they couldn't help but dream of one day joining the ranks of astronauts who had explored the cosmos. The thought of floating weight",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_013",
+    "prompt": "Begin explaining mathematics, then abruptly change to describing weather, then jump to discussing movies.",
+    "text": "Mathematics is the study of numbers, quantities, shapes, and patterns. It involves using logical reasoning and problem-solving skills to analyze and understand the relationships between different mathematical concepts. From basic arithmetic to complex calculus, mathematics is a fundamental subject that is used in various fields such as science, engineering, and economics.\n\nWeather, on the other hand, refers to the state of the atmosphere at a specific time and place. It includes factors such as temperature, humidity, precipitation, and wind speed. Meteorologists use advanced technology and mathematical models to predict and analyze weather patterns, allowing us to better understand and prepare for natural disasters such as hurricanes and tornadoes.\n\nMovies are a form of visual storytelling that combines elements of acting, cinematography, and editing to create a narrative that entertains and engages audiences. From classic Hollywood blockbusters to independent art house films, movies have the power to evoke emotions, inspire creativity, and spark meaningful discussions about society and culture. Directors, actors, and screenwriters use their artistic",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_014",
+    "prompt": "Start with a story about a dog, then randomly switch to explaining computers, then shift to talking about music.",
+    "text": "Once upon a time, there was a loyal golden retriever named Bailey. Bailey loved nothing more than chasing after squirrels in the park and playing fetch with his owner, Sarah. Every morning, Bailey would eagerly wag his tail as Sarah laced up her sneakers for their daily run.\n\nBut one day, as they were jogging through the park, Bailey suddenly stopped in his tracks and began to bark frantically at a nearby tree. Sarah looked up and saw a small kitten stuck on a branch, meowing for help. With Bailey\u2019s guidance, Sarah was able to rescue the kitten and bring it safely back to the ground. From that day on, Bailey and the kitten, whom Sarah named Whiskers, became the best of friends.\n\nSpeaking of companionship, computers rely on a variety of components to function properly. From the motherboard to the CPU to the RAM, each part plays a crucial role in ensuring that the computer can perform its various tasks efficiently. Just like how Bailey and Whiskers",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_015",
+    "prompt": "Start by describing a car, then suddenly switch to talking about cooking, then switch to discussing space exploration.",
+    "text": "The sleek silver car sped down the highway, its polished exterior gleaming in the sunlight. The interior was luxurious, with plush leather seats and all the latest technology at the driver's fingertips.\n\nAs the car cruised along, I couldn't help but think about the delicious meal I had planned for dinner that evening. I could already imagine the aroma of garlic and herbs filling the kitchen as I saut\u00e9ed vegetables and simmered a homemade sauce. Cooking has always been a passion of mine, and I found it to be the perfect way to unwind after a long day.\n\nBut as I turned on the radio and heard the news bulletin about the latest developments in space exploration, my thoughts shifted once again. I was captivated by the idea of humans venturing beyond our own planet, pushing the boundaries of what we thought possible. The thought of exploring the vast expanse of the universe filled me with a sense of wonder and excitement, reminding me of just how much there is left to discover.",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_016",
+    "prompt": "Begin explaining mathematics, then abruptly change to describing weather, then jump to discussing movies.",
+    "text": "Mathematics is the study of numbers, quantities, and shapes, as well as the relationships between them. It involves concepts such as addition, subtraction, multiplication, division, algebra, geometry, and calculus. \n\nWeather refers to the atmospheric conditions in a certain place at a specific time, including temperature, humidity, precipitation, wind speed, and air pressure. Weather patterns are influenced by factors such as location, season, and climate change.\n\nMovies are a form of visual storytelling that combine elements of acting, cinematography, editing, and sound to create a narrative. They can be fictional or based on true events, and are often categorized by genre, such as comedy, drama, science-fiction, or horror. Movies can entertain, educate, and provoke thought, and have the power to evoke strong emotional responses in audiences.",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_017",
+    "prompt": "Start with a story about a dog, then randomly switch to explaining computers, then shift to talking about music.",
+    "text": "Once upon a time, there was a dog named Max who lived with his loving family in a cozy house with a big backyard. Max was a playful and loyal pup who loved nothing more than chasing after balls and cuddling up with his humans on the couch. He had a wagging tail and a big heart, making him the perfect companion for his family.\n\nNow, let's switch gears and talk about computers. Just like Max the dog relies on his senses to navigate the world around him, computers use a variety of hardware and software components to function. From the motherboard to the processor to the operating system, each part plays a crucial role in allowing a computer to perform tasks and process information. Through the use of algorithms and data storage, computers are able to complete complex calculations and execute commands with lightning speed.\n\nSpeaking of lightning speed, let's transition to the world of music. Music has the power to move us, inspire us, and bring people together in ways that words alone cannot. From classical",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_018",
+    "prompt": "Start by describing a car, then suddenly switch to talking about cooking, then switch to discussing space exploration.",
+    "text": "The sleek silver car zipped down the highway, its engine purring as it effortlessly weaved in and out of traffic. The leather seats were plush and comfortable, making the ride feel like gliding on a cloud.\n\nAs I drove, my mind wandered to the kitchen and the delicious meal I was planning to cook later that evening. I imagined the sizzle of the onions hitting the hot pan, the aroma of garlic filling the air, and the bubbling sauce slowly simmering on the stove.\n\nBut then, my thoughts shifted to a different kind of exploration - the vast unknown of space. I envisioned astronauts floating weightlessly in their spacecraft, gazing out at the infinite blackness dotted with twinkling stars. The idea of venturing beyond our world, of discovering new galaxies and planets, filled me with a sense of awe and wonder. Space truly is the final frontier, and I couldn't help but feel a sense of excitement at the thought of what mysteries might be waiting for us out there",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_019",
+    "prompt": "Begin explaining mathematics, then abruptly change to describing weather, then jump to discussing movies.",
+    "text": "Mathematics is the study of numbers, quantities, shapes, and patterns. It involves using logical reasoning and critical thinking to solve problems and make predictions. In mathematics, there are various branches such as algebra, calculus, geometry, and statistics, each with its own set of rules and principles.\n\nWhen discussing weather, we are referring to the conditions of the atmosphere at a specific time and place. Weather is influenced by factors such as temperature, humidity, air pressure, and wind patterns. Meteorologists use mathematical models and equations to predict future weather patterns and understand how different factors interact to create weather events such as storms, rain, or sunshine.\n\nIn movies, storytelling takes center stage as filmmakers use visuals, sound, and dialogue to create a narrative that engages and entertains audiences. The film industry is a multi-billion dollar business that produces a wide range of genres, from action and comedy to drama and science fiction. Math can also play a role in movie-making, as filmmakers use calculations to determine camera angles,",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_020",
+    "prompt": "Start with a story about a dog, then randomly switch to explaining computers, then shift to talking about music.",
+    "text": "Once there was a fluffy golden retriever named Max who loved to chase squirrels in the backyard and cuddle up on the couch with his favorite humans. He was always full of energy and would wag his tail so hard that it seemed like it might fall off. Max was a loyal companion and brought so much joy to his family's lives.\n\nNow, let's take a moment to delve into the world of computers. Computers are complex machines that are made up of hardware and software components. The hardware includes things like the central processing unit (CPU), memory, storage devices, and input/output devices. The software consists of programs and applications that tell the computer what to do and how to do it. Without software, a computer would just be a box of electronic parts.\n\nSwitching gears, let's talk about music. Music has the power to evoke emotions, bring people together, and transcend language barriers. Whether you prefer pop, rock, classical, or hip-hop, there is something out there for",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_021",
+    "prompt": "Start by describing a car, then suddenly switch to talking about cooking, then switch to discussing space exploration.",
+    "text": "The sleek, silver sports car zipped down the highway, its engine purring with power as it accelerated effortlessly. The leather seats hugged the driver comfortably as they navigated the curves of the road with precision.\n\nMeanwhile, in the kitchen, a pot of water was boiling on the stove as fresh vegetables were chopped and sizzling in a pan. The aroma of garlic and herbs filled the air, enhancing the savory flavors of the meal being prepared.\n\nAs the car continued its journey, thoughts of exploration beyond Earth filled the driver's mind. Images of distant galaxies and uncharted planets danced in their head, igniting a sense of wonder and curiosity about the vastness of the universe. The desire to uncover the mysteries of space beckoned, fueling a passion for discovery that burned brighter than ever before.",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_022",
+    "prompt": "Begin explaining mathematics, then abruptly change to describing weather, then jump to discussing movies.",
+    "text": "Mathematics is a field of study that deals with numbers, quantities, shapes, and patterns. It involves concepts such as addition, subtraction, multiplication, division, algebra, geometry, and calculus. Mathematicians use symbols and formulas to solve equations and make predictions about patterns and relationships.\n\nNow, switching gears to talk about weather, it is the condition of the atmosphere at a specific time and place. Weather is influenced by factors such as temperature, humidity, wind speed, and precipitation. Meteorologists study weather patterns and use tools like satellites, radar, and computer models to make forecasts about upcoming weather events.\n\nFinally, let's discuss movies, which are a form of visual storytelling that typically involves actors, dialogue, and a plot. Movies can entertain, inform, inspire, and evoke a wide range of emotions in viewers. They can be classified into genres such as comedy, drama, action, horror, and science fiction. Filmmakers use techniques like camera angles, lighting, sound effects, and special effects",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_023",
+    "prompt": "Start with a story about a dog, then randomly switch to explaining computers, then shift to talking about music.",
+    "text": "Once upon a time, there was a loyal golden retriever named Max who loved nothing more than playing fetch in the park with his owner. Max had a curly tail that wagged enthusiastically whenever he saw a ball in hand, ready to be thrown. His playful nature and gentle demeanor made him a favorite among the neighborhood kids, who would often come by just to give him belly rubs and play with him.\n\nNow, let's talk about computers. Computers are complex machines that process data using algorithms and software programs. They consist of hardware components such as the central processing unit (CPU), memory, storage devices, and input/output devices. The CPU is like the brain of the computer, performing calculations and executing instructions. Memory stores data and instructions temporarily for quick access, while storage devices like hard drives store data for long-term use.\n\nSwitching gears to music, did you know that music has the power to evoke strong emotions and memories in people? It can bring joy, comfort, and inspiration to listeners",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "semantic_drift_024",
+    "prompt": "Start by describing a car, then suddenly switch to talking about cooking, then switch to discussing space exploration.",
+    "text": "The sleek silver car glistened in the sun, its curves catching the light as it sped down the highway. The engine purred with power as it effortlessly weaved in and out of traffic.\n\nIn the kitchen, the chef carefully diced vegetables and seasoned a sizzling pan, creating a symphony of smells and flavors that danced through the air. The sound of sizzling and chopping filled the room as culinary perfection was achieved with each precise movement.\n\nMeanwhile, in the depths of space, a spacecraft hurtled through the vast expanse of the universe, its thrusters firing as it navigated through the unknown. The astronauts on board worked tirelessly, pushing the boundaries of human knowledge and exploration as they ventured further into the endless expanse of the cosmos. The stars twinkled in the distance, a reminder of the infinite possibilities that awaited them.",
+    "is_degenerate": true,
+    "degeneracy_type": "semantic_drift"
+  },
+  {
+    "sample_id": "incoherent_000",
+    "prompt": "Write a paragraph where each sentence contradicts the previous one.",
+    "text": "The sky was clear and blue, with not a cloud in sight. Suddenly, dark storm clouds rolled in, casting a shadow over the landscape. The temperature dropped significantly as a cold front moved in. Despite the sudden change in weather, the sun began to shine brightly, warming everything in its path. It was clear that a storm was imminent, but then the clouds parted and a rainbow appeared in the sky.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_001",
+    "prompt": "Generate text where nothing makes logical sense and ideas are completely disconnected.",
+    "text": "The paperclip danced atop the moon, serenading the spaghetti monster with a ukulele made of jellyfish. The clouds whispered secrets to the rubber duckies floating in a lake of hot chocolate. Meanwhile, the clock meowed loudly, demanding to be fed a sandwich made of pencils and rainbows. The sun giggled and turned itself inside out, revealing a universe filled with dancing pineapples and singing penguins. The toaster sang opera while juggling flaming marshmallows, causing the broccoli to breakdance with the unicorns in a disco ballroom made of cheese. And as the chaos unfolded, a purple elephant named Gerald rode a unicycle through the chaos, balancing a teacup on his head and reciting Shakespeare backwards. Nothing made sense and everything was wonderfully absurd.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_002",
+    "prompt": "Create text with random topic jumps where no sentence follows from the previous one.",
+    "text": "The sky was a beautiful shade of blue, contrasting with the bright green grass below. Birds chirped happily in the trees, their joyful songs filling the air. Suddenly, a loud crash shattered the peaceful scene, causing everyone to look up in confusion. It was a spaceship, blazing through the atmosphere with incredible speed.\n\nThe spaceship landed with a resounding thud, sending shockwaves through the ground. A door opened, revealing a strange, alien figure standing in the doorway. The being looked around at the stunned crowd before speaking in a language that no one could understand.\n\nPeople began to panic, screaming and running in all directions. The alien raised a hand, trying to calm the chaos. Slowly, the crowd began to quiet down, their fear giving way to curiosity.\n\nThe alien extended a hand, offering a gesture of peace. It was clear that they had come in peace, despite the chaotic entrance. As the alien began to communicate through a universal translator, a sense of wonder settled over the",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_003",
+    "prompt": "Write a paragraph where each sentence contradicts the previous one.",
+    "text": "I always wake up early and start my day with a healthy breakfast. However, I often hit the snooze button multiple times and skip breakfast altogether. I make sure to prioritize exercise and physical activity in my daily routine. Despite my best intentions, I often find myself lounging on the couch and watching TV instead of working out. I am a highly productive and organized individual who thrives on structure and efficiency. In reality, I often procrastinate and struggle to meet deadlines due to disorganization.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_004",
+    "prompt": "Generate text where nothing makes logical sense and ideas are completely disconnected.",
+    "text": "The purple elephant flew through the sky on a tricycle made of cheese, while singing the alphabet backwards. Meanwhile, a flock of banana-shaped birds played checkers with a group of talking rocks. The sun wore a top hat and tap danced on the moon, causing a rainbow of spaghetti to shoot out of the clouds. A squirrel wearing sunglasses rode a unicycle made of jello, juggling pineapples and reciting Shakespearean sonnets. And in the midst of it all, a giant rubber duck floated by, quacking out the solution to world peace.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_005",
+    "prompt": "Create text with random topic jumps where no sentence follows from the previous one.",
+    "text": "The sun was shining brightly in the sky, casting long shadows on the ground.\nI suddenly remembered that I had left the oven on at home.\nMy mind was filled with thoughts of what I would make for dinner that night.\nI decided to stop by the grocery store on my way back.\nAs I walked through the aisles, I couldn't help but feel overwhelmed by the choices in front of me.\nI picked up a bag of chips and tossed it into my basket without giving it a second thought.\nThe cashier greeted me with a smile as I approached the checkout counter.\nI paid for my groceries and hurried out of the store, eager to get back home.\nThe sun was beginning to set, painting the sky with hues of orange and pink.\nI couldn't help but feel grateful for the simple pleasures in life, like a bag of chips and a beautiful sunset.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_006",
+    "prompt": "Write a paragraph where each sentence contradicts the previous one.",
+    "text": "I am feeling incredibly exhausted today. However, I am also feeling unusually energetic. My body is craving rest and relaxation. Yet, I am bursting with a desire to move and be active. I think I might need to take a nap to recharge. But maybe I should go for a long run instead.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_007",
+    "prompt": "Generate text where nothing makes logical sense and ideas are completely disconnected.",
+    "text": "The llama danced on the rainbow while juggling spaghetti in outer space. In the upside-down world, pineapples wore top hats and sang opera in the key of broccoli. The clouds whispered secrets to the trees, who responded with laughter that turned into marshmallows. Meanwhile, a unicorn rode a skateboard through a field of cotton candy, followed by a parade of invisible elephants playing the saxophone. The sun giggled and turned into a disco ball, casting sparkles of rainbow confetti onto the dancing flamingos wearing tiaras made of bubble gum. And just when you thought it couldn't get any weirder, a talking pickle wearing sunglasses challenged a group of squirrels to a dance-off on the moon.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_008",
+    "prompt": "Create text with random topic jumps where no sentence follows from the previous one.",
+    "text": "Today I woke up feeling energized and ready to tackle the day ahead. The sun was shining brightly through my window, casting a warm glow on my face. I decided to start my morning with a refreshing cup of coffee and some light reading.\n\nAs I sipped my coffee, I couldn't help but think about the upcoming weekend and all the fun activities I had planned. I was looking forward to spending time with friends and enjoying the beautiful weather. But first, I needed to focus on the tasks at hand and make sure I was prepared for the day ahead.\n\nAfter finishing my coffee, I grabbed my to-do list and began checking off items one by one. I made a mental note to stop by the grocery store later and pick up some ingredients for dinner. I also needed to make a few phone calls and respond to some emails before heading out.\n\nAs the morning turned into afternoon, I found myself caught up in a whirlwind of activity. From running errands to attending meetings, the day",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_009",
+    "prompt": "Write a paragraph where each sentence contradicts the previous one.",
+    "text": "The sun was shining brightly as the clouds blocked out its rays. The air was warm and inviting, yet a chill ran down my spine. The flowers in the garden were blooming with vibrant colors, but the grass was dull and lifeless. Birds were singing merrily in the trees, but their songs sounded melancholy and mournful. It was a beautiful day filled with sadness and gloom.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_010",
+    "prompt": "Generate text where nothing makes logical sense and ideas are completely disconnected.",
+    "text": "The moon was a toaster oven, spitting out marshmallows that sang opera in the key of C# while wearing tutus made of bacon. Meanwhile, a herd of clouds played hopscotch on the horizon, using rainbows as balance beams and unicorns as referees. Suddenly, a giant rubber duck descended from the sky, demanding to be crowned king of the leprechauns and declaring war on all things made of cheese. The sun laughed heartily, turning purple with amusement and causing the mountains to break out in a spontaneous conga line. And just when you thought things couldn't get any weirder, a swarm of flying pigs swooped in, delivering messages in Morse code written in glitter and sealing them with kisses from a tribe of rainbow-colored flamingos.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_011",
+    "prompt": "Create text with random topic jumps where no sentence follows from the previous one.",
+    "text": "The sun was shining brightly in the sky, casting a warm glow over the bustling city streets. People hurried along, lost in their own thoughts and worries, completely unaware of the beauty surrounding them.\n\nMeanwhile, a group of teenagers skateboarded down the sidewalk, laughing and shouting as they weaved in and out of the crowds. The sound of their wheels against the pavement echoed in the air, adding to the lively atmosphere of the city.\n\nAt the same time, a street performer played his guitar on a nearby corner, his voice rich and soulful as he sang a classic rock ballad. Passersby stopped to listen, some throwing coins into his open guitar case as a sign of appreciation.\n\nIn a nearby park, a group of children played tag, their laughter ringing out like bells in the crisp air. They ran and giggled, completely carefree and joyful in their innocence.\n\nAs the day turned to evening, the city lights began to flicker on, casting a soft glow over the now",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_012",
+    "prompt": "Write a paragraph where each sentence contradicts the previous one.",
+    "text": "I am always late for appointments. In fact, I am usually the first one to arrive. I hate being early because it feels like a waste of time. However, I feel anxious when I am running late. Overall, I prefer arriving early to avoid any potential stress.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_013",
+    "prompt": "Generate text where nothing makes logical sense and ideas are completely disconnected.",
+    "text": "I was walking on the moon with a banana in my pocket, listening to the sound of purple elephants playing the saxophone. Suddenly, a talking tree appeared and offered me a cup of rainbow soup. I politely declined and continued my journey towards a waterfall made of jellybeans. As I approached, I saw a group of dancing penguins wearing top hats and monocles, reciting Shakespearean poetry. I joined in and soon found myself flying on a giant marshmallow cloud with a unicorn as my guide. The sky turned upside down, and I landed in a field of singing mushrooms, where the sun was shining brightly at midnight. And that's when I realized, I was stuck in a dream within a dream within a dream.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_014",
+    "prompt": "Create text with random topic jumps where no sentence follows from the previous one.",
+    "text": "The sun was setting over the horizon, casting a warm glow across the landscape. Birds flew overhead, their songs filling the air with a sense of freedom.\n\nMeanwhile, in a distant city, people hurried along the bustling streets, their faces filled with determination. The sound of cars honking and sirens blaring created a cacophony of noise.\n\nBack in the quiet countryside, a farmer tended to his crops, the smell of fresh earth and growing plants surrounding him. His hands worked deftly, plucking weeds and checking for signs of pests.\n\nIn a high-rise apartment, a young couple laughed as they cooked dinner together, their love filling the room with joy. The smell of garlic and herbs wafted through the air, mixing with the sounds of sizzling in the pan.\n\nAs night fell, the stars began to twinkle in the sky, a reminder of the vastness of the universe. A sense of peace settled over the world, bringing with it a sense of calm and",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_015",
+    "prompt": "Write a paragraph where each sentence contradicts the previous one.",
+    "text": "I love to eat vegetables because they are so delicious and healthy. However, I also hate the taste and texture of most vegetables, so I avoid eating them whenever possible. Despite my dislike for vegetables, I try to incorporate them into every meal to ensure I am getting enough nutrients. In reality, I rarely eat vegetables and prefer to indulge in unhealthy junk food instead. Overall, I believe that vegetables are the key to a balanced diet, but I would much rather eat pizza and ice cream every day.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_016",
+    "prompt": "Generate text where nothing makes logical sense and ideas are completely disconnected.",
+    "text": "The purple elephant danced with a rainbow unicorn on a flying toaster while singing the ABCs backwards. The sky turned into a giant marshmallow and started raining jellybeans. I tripped over a cloud and landed in a pool of spaghetti. Suddenly, a flock of flying pigs swooped down and started tap-dancing to a salsa beat. The trees started reciting Shakespeare in perfect iambic pentameter. I blinked and found myself in a disco on Mars, surrounded by aliens wearing top hats and monocles. The moon turned into a giant disco ball and started shooting laser beams at the planets. I woke up to find it was all just a dream, but then I saw a talking squirrel playing the banjo in my backyard. Nothing made sense, but it was the most magical day of my life.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_017",
+    "prompt": "Create text with random topic jumps where no sentence follows from the previous one.",
+    "text": "The sky was a brilliant shade of blue, dotted with fluffy white clouds. Birds chirped happily as they soared through the air, their wings catching the sunlight. Down below, the city bustled with activity as people rushed to and fro, their faces focused and determined.\n\nMeanwhile, in a far-off land, a group of adventurers set out on a quest to find a legendary treasure. They traveled through dense forests, crossed raging rivers, and climbed towering mountains in search of their prize. Along the way, they faced many dangers and challenges, but their determination never wavered.\n\nBack in the city, a young artist sat in her studio, a blank canvas before her. With a flick of her brush, she began to create a masterpiece, each stroke filled with passion and emotion. Hours passed as she poured her heart and soul into her work, the colors blending together in a beautiful symphony of hues.\n\nOn the other side of the world, a scientist was hard at work in his laboratory,",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_018",
+    "prompt": "Write a paragraph where each sentence contradicts the previous one.",
+    "text": "I love the color blue, it is so calming and serene. On the other hand, red is my favorite color because it is bold and exciting. However, green is the color that speaks to my soul and makes me feel at peace. But nothing compares to the vibrancy and energy of yellow, it always lifts my spirits.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_019",
+    "prompt": "Generate text where nothing makes logical sense and ideas are completely disconnected.",
+    "text": "The purple elephant danced on top of a rainbow while juggling bananas and singing opera in a bathtub filled with spaghetti. Meanwhile, the toaster oven rode a bicycle backwards through a field of cotton candy, followed by a swarm of flying monkeys playing the accordion. Suddenly, a giant marshmallow appeared and started reciting Shakespeare in Mandarin, confusing the nearby talking trees who were debating the existence of unicorns. As the moon turned into a giant disco ball, a group of flamingos wearing top hats and bow ties performed a synchronized swimming routine in a pool of glitter. Eventually, the universe imploded into a vortex of marshmallows and sparkles, leaving behind a trail of confetti and dreams.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_020",
+    "prompt": "Create text with random topic jumps where no sentence follows from the previous one.",
+    "text": "The sun was shining brightly in the sky as the children played in the park. \n\nSuddenly, a loud noise erupted nearby, causing everyone to stop and turn in alarm. \n\nA group of birds flew overhead, their wings beating rhythmically against the air. \n\nThe scent of fresh flowers wafted through the air, filling everyone's senses with joy. \n\nA dog barked loudly from a nearby yard, its tail wagging with excitement. \n\nA couple walked hand in hand along the path, oblivious to the world around them. \n\nA sudden gust of wind blew through, causing leaves to scatter in every direction. \n\nLaughter echoed through the park as families enjoyed their time together in the sunshine.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_021",
+    "prompt": "Write a paragraph where each sentence contradicts the previous one.",
+    "text": "I always prefer sunny weather when going for a walk. However, sometimes a little rain can be refreshing. On the other hand, I really dislike getting wet. Despite this, I love the sound of rain hitting the pavement. Overall, I would choose a clear blue sky over a cloudy day any time.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_022",
+    "prompt": "Generate text where nothing makes logical sense and ideas are completely disconnected.",
+    "text": "The purple elephant danced with the floating taco while wearing a tutu made of spaghetti. The toaster sang a lullaby to the moon as it skateboarded down a rainbow. My thoughts were a jumbled mess of unicorns and rubber ducks playing chess on a beach made of marshmallows. The clouds whispered secrets to the sun as it juggled flamingos in a circus tent filled with cotton candy. In the upside-down world of my mind, chaos reigned and logic took a vacation.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_023",
+    "prompt": "Create text with random topic jumps where no sentence follows from the previous one.",
+    "text": "The sun was shining brightly in the clear blue sky, casting a warm glow over the city. Birds chirped happily in the trees, their songs filling the air with a joyful melody. People bustled about, going about their daily routines with a sense of purpose and determination.\n\nMeanwhile, in a far-off kingdom, a princess sat alone in her tower, gazing out at the world below. She longed for adventure and excitement, yearning to break free from the confines of her royal duties. Little did she know that her chance for escape was just around the corner.\n\nBack in the city, a group of friends gathered at a local cafe, sipping on steaming cups of coffee and laughing uproariously at each other's jokes. Their bond was strong, forged through years of shared experiences and late-night conversations.\n\nIn a distant galaxy, a star exploded in a brilliant display of light and color, its energy rippling outwards in a shockwave that would be felt for lightyears to",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "incoherent_024",
+    "prompt": "Write a paragraph where each sentence contradicts the previous one.",
+    "text": "I love going to the beach because I hate the feeling of sand between my toes. The sound of the waves crashing is so calming, but it always gives me a headache. I enjoy soaking up the sun and getting a tan, even though I always burn easily. Swimming in the ocean is so refreshing, but the idea of getting salt water in my eyes terrifies me. Overall, the beach is my favorite place to relax, even though I find it incredibly stressful.",
+    "is_degenerate": true,
+    "degeneracy_type": "incoherent"
+  },
+  {
+    "sample_id": "normal_000",
+    "prompt": "Explain the concept of photosynthesis in simple terms.",
+    "text": "Photosynthesis is the process by which plants, algae, and some bacteria convert sunlight into energy. This process involves capturing sunlight using chlorophyll, a pigment in plant cells, and using it to convert carbon dioxide and water into glucose (sugar) and oxygen. This glucose is used by the plant as food, while the oxygen is released into the atmosphere for us to breathe. In simple terms, photosynthesis is how plants make their own food using sunlight.",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_001",
+    "prompt": "Describe the water cycle step by step.",
+    "text": "1. Evaporation: The sun heats up water bodies such as oceans, lakes, and rivers, causing water to evaporate and turn into water vapor.\n\n2. Condensation: The water vapor rises into the atmosphere and cools down, condensing into tiny droplets to form clouds.\n\n3. Precipitation: When the clouds become heavy with water droplets, they release the water in the form of precipitation such as rain, snow, sleet, or hail.\n\n4. Infiltration: The precipitation either seeps into the ground or flows over the surface into rivers, streams, and lakes.\n\n5. Runoff: Excess water that does not infiltrate the ground flows over the surface and collects in bodies of water, eventually making its way back to the oceans.\n\n6. Transpiration: Plants absorb water from the soil through their roots and release water vapor into the atmosphere through a process called transpiration.\n\n7. Evapotranspiration: This is the combination of evaporation from",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_002",
+    "prompt": "What is the process of cellular respiration?",
+    "text": "Cellular respiration is the process by which cells convert glucose and oxygen into energy, carbon dioxide, and water. It involves three main stages: glycolysis, the citric acid cycle (also known as the Krebs cycle), and oxidative phosphorylation.\n\n1. Glycolysis: This is the first stage of cellular respiration and takes place in the cytoplasm of the cell. In glycolysis, a molecule of glucose is broken down into two molecules of pyruvate. This process also produces a small amount of ATP (adenosine triphosphate) and NADH (nicotinamide adenine dinucleotide).\n\n2. Citric Acid Cycle: The pyruvate molecules produced in glycolysis enter the mitochondria, where they are converted into acetyl CoA. Acetyl CoA then enters the citric acid cycle, a series of chemical reactions that produce more ATP, NADH, and FADH2 (flavin aden",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_003",
+    "prompt": "Explain the concept of photosynthesis in simple terms.",
+    "text": "Photosynthesis is the process by which plants, algae, and some bacteria convert sunlight into energy. They use this energy to turn carbon dioxide from the air and water from the soil into glucose (sugar), which they use as food. In this process, plants also release oxygen into the air, which is essential for our survival. So, photosynthesis is crucial for both plants and the environment.",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_004",
+    "prompt": "Describe the water cycle step by step.",
+    "text": "1. Evaporation: The water cycle begins with the process of evaporation, where water from rivers, lakes, and oceans is heated by the sun and turns into water vapor. This water vapor rises into the atmosphere.\n\n2. Condensation: As the water vapor rises, it cools down and condenses into clouds. This process is known as condensation.\n\n3. Precipitation: When the clouds become too heavy with water, the water droplets fall back to the earth as precipitation. This can take the form of rain, snow, sleet, or hail.\n\n4. Infiltration: Once the precipitation reaches the earth, it can either flow over the surface as runoff or seep into the ground through a process called infiltration. The infiltrated water may then be stored in underground aquifers.\n\n5. Groundwater flow: The infiltrated water may also flow underground through permeable rock layers, eventually reaching rivers, lakes, or oceans.\n\n6. Surface runoff: Some of the",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_005",
+    "prompt": "What is the process of cellular respiration?",
+    "text": "Cellular respiration is the process through which cells convert glucose and oxygen into energy, carbon dioxide, and water. The process of cellular respiration can be broken down into three main stages: glycolysis, the citric acid cycle (also known as the Krebs cycle), and the electron transport chain.\n\n1. Glycolysis: This is the first stage of cellular respiration and takes place in the cytoplasm of the cell. During glycolysis, one molecule of glucose is broken down into two molecules of pyruvate. This process also generates a small amount of ATP (energy) and NADH (a high-energy electron carrier).\n\n2. Citric Acid Cycle (Krebs Cycle): The pyruvate molecules produced in glycolysis enter the mitochondria and are converted into a molecule called acetyl-CoA. Acetyl-CoA then enters the citric acid cycle, a series of chemical reactions that produce more ATP and high-energy electron carriers (N",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_006",
+    "prompt": "Explain the concept of photosynthesis in simple terms.",
+    "text": "Photosynthesis is the process by which plants, algae, and some bacteria convert sunlight into energy. They use this energy to make their own food by combining carbon dioxide from the air and water from the soil. During photosynthesis, these organisms also release oxygen into the atmosphere as a byproduct. In simple terms, photosynthesis is how plants make food and produce oxygen using sunlight.",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_007",
+    "prompt": "Describe the water cycle step by step.",
+    "text": "1. Evaporation: The water cycle begins when the sun's heat causes water from oceans, lakes, rivers, and other bodies of water to evaporate into the atmosphere in the form of water vapor.\n\n2. Condensation: As the water vapor rises into the atmosphere, it cools and condenses into tiny water droplets, forming clouds.\n\n3. Precipitation: When the water droplets in the clouds become too heavy, they fall back to the Earth's surface in the form of precipitation, which can include rain, snow, sleet, or hail.\n\n4. Infiltration: Some of the precipitation is absorbed into the ground, where it becomes groundwater.\n\n5. Runoff: The rest of the precipitation flows over the surface of the Earth as runoff, eventually making its way back into rivers, lakes, and oceans.\n\n6. Transpiration: Plants also play a role in the water cycle through a process called transpiration, in which they absorb water through their roots and release",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_008",
+    "prompt": "What is the process of cellular respiration?",
+    "text": "Cellular respiration is a series of metabolic reactions that take place in the cells of organisms to convert biochemical energy from nutrients into adenosine triphosphate (ATP), which is used to power various cellular processes. The process of cellular respiration can be broken down into three main stages: glycolysis, the citric acid cycle (also known as the Krebs cycle), and oxidative phosphorylation (electron transport chain).\n\n1. Glycolysis: The first stage of cellular respiration takes place in the cytoplasm of the cell and begins with the breakdown of glucose, a six-carbon sugar molecule, into two molecules of pyruvate, a three-carbon compound. This process also produces a small amount of ATP and NADH, a molecule that carries high-energy electrons.\n\n2. Citric Acid Cycle: The pyruvate molecules produced in glycolysis are transported into the mitochondria, where they undergo a series of chemical reactions in the citric acid cycle",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_009",
+    "prompt": "Explain the concept of photosynthesis in simple terms.",
+    "text": "Photosynthesis is the process by which plants, algae, and some bacteria convert sunlight into energy. This process allows them to make their own food by combining carbon dioxide from the air with water absorbed from the soil. Using sunlight as a source of energy, plants convert these basic ingredients into glucose (sugar) and oxygen. The glucose is used by the plant as a source of energy for growth and reproduction, while the oxygen is released into the atmosphere for animals to breathe. In essence, photosynthesis is the way in which plants create their own energy and help to produce the oxygen that we need to survive.",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_010",
+    "prompt": "Describe the water cycle step by step.",
+    "text": "1. Evaporation: The water cycle begins when the heat from the sun causes water from oceans, rivers, lakes, and other bodies of water to evaporate and turn into water vapor.\n\n2. Condensation: The water vapor rises into the atmosphere and cools down, turning back into liquid form through a process called condensation. This forms clouds in the sky.\n\n3. Precipitation: As the clouds become saturated with water, the water droplets combine to form larger droplets and eventually fall back to the Earth's surface in the form of precipitation. This can be in the form of rain, snow, sleet, or hail.\n\n4. Infiltration: Once the precipitation reaches the ground, it can either flow over the surface as runoff or infiltrate into the soil. Infiltrated water can be absorbed by plants or flow down into underground aquifers.\n\n5. Surface Runoff: Water that does not infiltrate into the soil can flow over the surface as runoff, eventually",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_011",
+    "prompt": "What is the process of cellular respiration?",
+    "text": "Cellular respiration is a complex process that occurs in the cells of living organisms, in which energy is released from glucose and other organic compounds. The process can be broken down into three main stages: glycolysis, the Krebs cycle (also known as the citric acid cycle), and oxidative phosphorylation (or the electron transport chain).\n\n1. Glycolysis: This is the first stage of cellular respiration and occurs in the cytoplasm of the cell. During glycolysis, a molecule of glucose is broken down into two molecules of pyruvate. This process also produces some ATP and NADH molecules.\n\n2. Krebs cycle: The pyruvate molecules produced during glycolysis enter the mitochondria, where the Krebs cycle takes place. In this stage, the pyruvate is further broken down into carbon dioxide, producing more ATP and NADH molecules.\n\n3. Oxidative phosphorylation: The final stage of cellular respiration occurs",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_012",
+    "prompt": "Explain the concept of photosynthesis in simple terms.",
+    "text": "Photosynthesis is the process by which plants, algae, and some bacteria convert sunlight, carbon dioxide, and water into energy in the form of glucose (sugar) and oxygen. This process takes place in the chloroplasts of plant cells and is essential for the survival of plants and other organisms that rely on them for food and oxygen. In simple terms, photosynthesis is like a plant's way of making its own food using sunlight.",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_013",
+    "prompt": "Describe the water cycle step by step.",
+    "text": "1. Evaporation: The water cycle begins with the sun heating up bodies of water such as rivers, lakes, and oceans, causing the water to evaporate and turn into water vapor.\n\n2. Condensation: As the water vapor rises into the atmosphere, it cools and condenses to form clouds.\n\n3. Precipitation: When the clouds become heavy with water droplets, they release the water in the form of precipitation, which can be in the form of rain, snow, sleet, or hail.\n\n4. Runoff: The precipitation falls onto the land and flows into rivers, streams, and lakes, eventually making its way back to the oceans.\n\n5. Infiltration: Some of the water seeps into the ground and is absorbed by plants or collects in underground aquifers.\n\n6. Transpiration: Plants absorb water through their roots and release it into the atmosphere through a process called transpiration.\n\n7. Repeat: The cycle continues as the water evaporates again,",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_014",
+    "prompt": "What is the process of cellular respiration?",
+    "text": "Cellular respiration is the process by which cells break down glucose and other organic molecules to produce ATP (adenosine triphosphate), the main energy currency of the cell. The process of cellular respiration can be divided into three main stages:\n\n1. Glycolysis: This is the first stage of cellular respiration and takes place in the cytoplasm of the cell. During glycolysis, a molecule of glucose is broken down into two molecules of pyruvate. This process also generates a small amount of ATP and NADH (nicotinamide adenine dinucleotide).\n\n2. Citric Acid Cycle (Krebs Cycle): The pyruvate molecules produced during glycolysis enter the mitochondria, where they are converted into acetyl-CoA. This acetyl-CoA then enters the citric acid cycle, a series of chemical reactions that produce more ATP, NADH, and FADH2 (flavin adenine dinucleotide",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_015",
+    "prompt": "Explain the concept of photosynthesis in simple terms.",
+    "text": "Photosynthesis is the process by which plants, algae, and some bacteria use sunlight to convert carbon dioxide and water into energy in the form of glucose (sugar) and oxygen. This process takes place in the chloroplasts of plant cells and is essential for the survival of plants and other organisms that rely on them for food and oxygen. In simple terms, photosynthesis is like a plant's way of making its own food using sunlight, carbon dioxide, and water.",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_016",
+    "prompt": "Describe the water cycle step by step.",
+    "text": "1. Evaporation: The water cycle begins with the process of evaporation, where heat from the sun causes water from oceans, lakes, rivers, and other bodies of water to turn into water vapor and rise into the atmosphere.\n\n2. Condensation: As the water vapor rises into the atmosphere, it cools and condenses to form clouds. This process occurs when the water vapor molecules come into contact with cooler air and condense into tiny droplets.\n\n3. Precipitation: Once the water droplets in the clouds become too heavy, they fall back to the Earth's surface as precipitation. This can take the form of rain, snow, sleet, or hail, depending on the temperature and conditions in the atmosphere.\n\n4. Infiltration: After precipitation falls to the ground, some of the water may be absorbed by the soil and infiltrate into the ground. This water can then be stored in underground reservoirs or flow into bodies of water such as rivers, lakes, and",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_017",
+    "prompt": "What is the process of cellular respiration?",
+    "text": "Cellular respiration is the process by which cells break down glucose and other organic molecules to release energy in the form of ATP. The process of cellular respiration consists of three main stages: glycolysis, the citric acid cycle (also known as the Krebs cycle), and oxidative phosphorylation (also known as the electron transport chain). \n\n1. Glycolysis: The first stage of cellular respiration takes place in the cytoplasm of the cell and does not require oxygen. During glycolysis, a molecule of glucose is broken down into two molecules of pyruvate. This process produces a small amount of ATP and NADH.\n\n2. Citric acid cycle (Krebs cycle): The pyruvate molecules produced during glycolysis enter the mitochondria, where they are further broken down in the citric acid cycle. This cycle generates more ATP, NADH, and FADH2 molecules.\n\n3. Oxidative phosphorylation (Elect",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_018",
+    "prompt": "Explain the concept of photosynthesis in simple terms.",
+    "text": "Photosynthesis is the process by which plants, algae, and some bacteria convert sunlight into energy. This energy is used to produce food in the form of sugars, which the plant can then use for growth and survival. During photosynthesis, plants take in carbon dioxide from the air and water from the soil, and with the help of sunlight, they convert these substances into glucose (sugar) and oxygen. The oxygen is released into the air, which is essential for all living organisms, while the glucose is stored in the plant as food.",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_019",
+    "prompt": "Describe the water cycle step by step.",
+    "text": "1. Evaporation: The water cycle begins with the process of evaporation, where water from oceans, lakes, rivers, and other bodies of water is heated by the sun and turns into water vapor.\n\n2. Condensation: The water vapor rises into the atmosphere and cools down, condensing into clouds. This process is known as condensation.\n\n3. Precipitation: When the clouds become saturated with water vapor, the water droplets combine and fall back to the Earth's surface in the form of precipitation. This can be in the form of rain, snow, sleet, or hail.\n\n4. Collection: The precipitation that falls onto the Earth's surface collects in oceans, rivers, lakes, and underground aquifers.\n\n5. Runoff: Some of the precipitation that falls onto the ground flows over the surface and collects in rivers, streams, and eventually makes its way back to the oceans.\n\n6. Infiltration: Some of the precipitation seeps into the ground and is",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_020",
+    "prompt": "What is the process of cellular respiration?",
+    "text": "Cellular respiration is a complex biochemical process that involves the breakdown of glucose molecules to release energy in the form of ATP (adenosine triphosphate). The process of cellular respiration can be broken down into three main stages: glycolysis, the citric acid cycle (also known as the Krebs cycle), and the electron transport chain.\n\n1. Glycolysis: Glycolysis is the first stage of cellular respiration and takes place in the cytoplasm of the cell. During glycolysis, a glucose molecule is broken down into two molecules of pyruvate. This process also produces a small amount of ATP and NADH (nicotinamide adenine dinucleotide).\n\n2. Citric Acid Cycle (Krebs Cycle): The second stage of cellular respiration takes place in the mitochondria of the cell. The pyruvate molecules produced during glycolysis are converted into acetyl-CoA, which enters the citric acid cycle.",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_021",
+    "prompt": "Explain the concept of photosynthesis in simple terms.",
+    "text": "Photosynthesis is the process by which plants, algae, and some bacteria convert sunlight, water, and carbon dioxide into energy in the form of glucose (sugar). This process takes place in the chloroplasts of plant cells and requires chlorophyll, a green pigment that captures sunlight. During photosynthesis, the plant uses sunlight to break down water molecules into oxygen and hydrogen. The plant then combines the hydrogen with carbon dioxide from the air to create glucose, which the plant uses as food to grow and survive. In summary, photosynthesis is how plants make their own food using sunlight, water, and carbon dioxide.",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_022",
+    "prompt": "Describe the water cycle step by step.",
+    "text": "1. Evaporation: The water cycle begins when the heat from the sun causes water from oceans, lakes, rivers, and other bodies of water to evaporate into water vapor in the atmosphere.\n\n2. Condensation: As the water vapor rises into the atmosphere, it cools and condenses into tiny water droplets, forming clouds.\n\n3. Precipitation: When the water droplets in the clouds become too heavy, they fall back to the Earth's surface in the form of precipitation, such as rain, snow, sleet, or hail.\n\n4. Collection: The precipitation that falls onto the Earth's surface collects in rivers, lakes, and oceans, where it can be stored as surface water.\n\n5. Infiltration: Some of the precipitation seeps into the ground and becomes groundwater, which can be stored in underground aquifers.\n\n6. Runoff: Excess water that does not infiltrate the ground flows over the surface as runoff, eventually making its way back to rivers",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_023",
+    "prompt": "What is the process of cellular respiration?",
+    "text": "Cellular respiration is a metabolic process that takes place in the cells of living organisms to produce energy in the form of ATP (adenosine triphosphate). The process can be broken down into three main stages: glycolysis, the citric acid cycle (also known as the Krebs cycle), and oxidative phosphorylation.\n\n1. Glycolysis: This is the first stage of cellular respiration and takes place in the cytoplasm of the cell. In this stage, a molecule of glucose is broken down into two molecules of pyruvate, producing a small amount of ATP and NADH (nicotinamide adenine dinucleotide). This process does not require oxygen and is considered anaerobic.\n\n2. Citric Acid Cycle (Krebs Cycle): The second stage of cellular respiration takes place in the mitochondria of the cell. The pyruvate molecules produced in glycolysis are converted into acetyl-CoA, which enters the cit",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  },
+  {
+    "sample_id": "normal_024",
+    "prompt": "Explain the concept of photosynthesis in simple terms.",
+    "text": "Photosynthesis is the process by which plants, algae, and some bacteria convert sunlight into energy. They use this energy to create food in the form of glucose, which is a type of sugar. During photosynthesis, plants take in carbon dioxide from the air and water from the soil. They then use sunlight to convert these ingredients into glucose and oxygen. This process is essential for the survival of plants and other organisms that rely on them for food and oxygen.",
+    "is_degenerate": false,
+    "degeneracy_type": "normal"
+  }
+]
