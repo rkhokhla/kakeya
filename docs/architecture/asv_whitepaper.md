@@ -1,38 +1,45 @@
-# Auditable Statistical Verification for LLM Outputs: **Compressibility-Based Detection + Conformal Guarantees**
+# Why Compressibility-Based Methods Fail for LLM Output Verification: **A Rigorous Negative Result**
 
 **Roman Khokhla**
 *Independent Researcher*
 [rkhokhla@gmail.com](mailto:rkhokhla@gmail.com)
 
-**Abstract** — Large language models (LLMs) generate **structurally degenerate** outputs---loops, semantic drift, incoherence---that escape traditional guardrails like perplexity thresholds. We present an **auditable statistical verification (ASV)** layer that converts a single lightweight **compressibility signal** ($r_{\text{LZ}}$) computed on token-embedding trajectories into **distribution-free accept/flag decisions** using **split-conformal calibration**. ASV is designed to detect **structural pathologies in generation**, not factual hallucinations (where perplexity-based methods excel). The result is a deployment-ready control that: (i) yields **miscoverage** $\leq \delta$ under exchangeability; (ii) produces **proof-of-computation summaries (PCS)** for audit; and (iii) runs with **sub-50ms latency** on commodity hardware.
+**Abstract** — **Negative Result.** Compressibility-based methods for detecting structural pathologies in LLM outputs---while theoretically sound and effective on synthetic degeneracy (AUROC 1.000)---**fail to generalize** to production LLM outputs from well-trained models. Through rigorous empirical validation on 8,290 real GPT-4 outputs, we demonstrate that compression ratio ($r_{\text{LZ}}$) exhibits **inverse enrichment**: flagged outliers have *lower* structural issue rates (37.2%) than normal outputs (55.5%), with precision 37.2%, recall 3.4%, and accuracy worse than random (44.1% vs 50%).
 
-**Key result:** ASV achieves **perfect detection** of structural degeneracy (AUROC 1.000) using compression ratio alone, with 38x-89x faster latency and 306x-1,435x lower cost than LLM-based baselines (GPT-4 Judge, SelfCheckGPT). On 8,290 real GPT-4 outputs from production benchmarks, ASV identifies a multimodal quality distribution with 415 structural outliers (5%), validated with actual OpenAI API calls totaling $0.35.
+**Why compressibility fails.** Deep statistical analysis reveals the failure mechanism: $r_{\text{LZ}}$ conflates *linguistic efficiency* (high lexical diversity, information-dense responses) with structural pathology. Outliers exhibit **higher** lexical diversity (0.932 vs 0.842, Cohen's d=0.90 large effect) and **lower** sentence repetition (0.183 vs 0.274, d=-0.47), indicating the signal detects linguistic sophistication, not degeneracy.
 
----
+**Methodological contributions.** We present a rigorous multi-stage validation methodology: (i) synthetic degeneracy testing (AUROC 1.000 baseline); (ii) production-scale deployment (8,290 samples); (iii) false positive analysis (76% short-text failures); (iv) deep outlier investigation (60-sample manual inspection, structural pattern detection, confusion matrix analysis); (v) statistical validation (t-tests, effect sizes, precision/recall metrics). This framework exposes the **generalization gap** between controlled synthetic experiments and real deployment conditions.
 
-## 1. Problem and Scope
-
-LLMs often generate **structurally degenerate** outputs: repetitive loops (same phrase/sentence repeated), semantic drift (topic jumping mid-response), incoherence (contradictory statements within output), and token-level anomalies that escape perplexity-based guardrails. These structural pathologies differ fundamentally from **factual hallucinations** (incorrect claims/facts), which are better caught by perplexity thresholds, retrieval-augmented verification, or entailment checkers.
-
-Most deployed defenses are empirical (perplexity thresholds, self-consistency, or RAG heuristics) and rarely come with **finite-sample guarantees**. **Conformal prediction** wraps arbitrary scoring functions with **distribution-free coverage** after a one-time calibration step---precisely what is needed to turn simple geometry into **auditable accept sets**.
-
-**Scope.** We target **structural pathologies in generation**---loops, drift, incoherence---detectable via embedding trajectory geometry. We explicitly **do not** claim to certify factual truth from geometry alone. For factuality, use perplexity-based baselines (which consistently outperform geometric signals on benchmarks like TruthfulQA and FEVER). ASV is a **complementary control** for structural anomalies, not a replacement for fact-checking.
+**Implications.** Single geometric signals are insufficient for production LLM verification. Effective systems require *ensemble approaches* combining compressibility with perplexity (AUROC 0.615 on factuality), NLI entailment, and LLM-as-judge baselines. We provide a replicable methodology for rigorous evaluation that the community can apply to other proposed verification signals, preventing premature deployment of methods that work in controlled settings but fail in production.
 
 ---
 
-## 2. Positioning and Contributions
+## 1. Motivation: The Promise and Failure of Geometric Signals
 
-**Positioning.** ASV is a **complementary control** for detecting structural anomalies that perplexity-based methods miss (loops, drift, incoherence). It does **not** replace perplexity thresholds for factuality checking---baseline perplexity consistently outperforms ASV on factuality benchmarks (TruthfulQA: 0.615 vs 0.535 AUROC). Instead, ASV catches **geometry-of-generation** pathologies early and logs **PCS artifacts** for compliance audits. Think of it as a **structural smoke detector** that complements factual verification, not a general hallucination oracle.
+**The hypothesis.** LLMs sometimes generate **structurally degenerate** outputs: repetitive loops, semantic drift, and incoherence that escape perplexity-based guardrails. We hypothesized that **geometric signals** over token-embedding trajectories could detect these pathologies. Specifically, we proposed that **compressibility** ($r_{\text{LZ}}$) via product quantization + Lempel-Ziv compression would capture structural redundancy, distinguishing degenerate outputs from normal ones.
 
-ASV is **not** a policy/audit framework (e.g., SOC 2); PCS are **auditable artifacts** of individual decisions, while SOC 2/ISO are **process attestations** outside the guarantees of this method.
+**The intuition seemed sound.** Repetitive loops exhibit high redundancy in embedding space, compressing efficiently (low $r_{\text{LZ}}$). Normal text, with varied vocabulary and unpredictable transitions, compresses poorly (high $r_{\text{LZ}}$). On synthetic degeneracy benchmarks, this worked perfectly: AUROC 1.000, flawless separation.
 
-**Contributions.**
-1. **Signal.** A single cheap, model-agnostic **compressibility signal** ($r_{\text{LZ}}$) over token-embedding trajectories via **product quantization** (finite-alphabet encoding) followed by **Lempel-Ziv compression**, achieving perfect structural degeneracy detection (AUROC 1.000).
-2. **Guarantees.** A **split-conformal** wrapper turns compression ratios into **accept/escalate/reject** decisions with **finite-sample miscoverage control** ($P(\text{escalate} \mid \text{benign}) \leq \delta$).
-3. **Theory.** Avoid compressing raw floats; use **finite-alphabet universal coding** via product quantization (8 subspaces, 256-symbol codebook), ensuring compression ratio approaches entropy rate for ergodic sources (Shannon-McMillan-Breiman theorem).
-4. **Auditability.** **PCS** include seed commitments, model/embedding attestation, calibration hashes, and decisions; logs are **tamper-evident**.
-5. **Empirical validation.** Real OpenAI API baseline comparison ($0.35 cost), 8,290 real GPT-4 outputs from production benchmarks, transparent cost-aware metrics, and unified latency profiling (sub-50ms p95).
-6. **Operational impact.** Define measurable **accept/escalate/reject** outcomes; quantify **time-to-decision**, **escalation rate**, and **cost avoidance** (306x-1,435x cheaper than LLM baselines); describe integration patterns for batch/online.
+**The generalization failure.** When deployed on 8,290 real GPT-4 outputs from production benchmarks (TruthfulQA, FEVER, HaluEval), the method exhibited **inverse enrichment**: flagged outliers had *lower* structural issue rates (37.2%) than normal outputs (55.5%). Precision was 37.2%, recall was 3.4%, accuracy was worse than random (44.1% vs 50%). The signal detected *linguistic sophistication* (high lexical diversity, information density), not structural pathology.
+
+**Why this matters.** This is not a failed experiment---it is a **methodological contribution** exposing the **generalization gap** between controlled synthetic experiments and real deployment conditions. We present a rigorous multi-stage validation framework that prevented premature deployment of a method that works in lab settings but fails in production.
+
+---
+
+## 2. Contributions: Lessons from a Rigorous Negative Result
+
+**What we built.** We implemented a theoretically sound compressibility-based verification system: product quantization (finite-alphabet encoding) + Lempel-Ziv compression to compute $r_{\text{LZ}}$, wrapped with split-conformal prediction for distribution-free coverage guarantees. The implementation is production-grade: 54ms p95 latency, ~$0.000002 per verification, 37x faster and 13,303x cheaper than GPT-4 judge baselines.
+
+**What we learned (the hard way).** The method works perfectly on synthetic degeneracy (AUROC 1.000) but *inverts* on real production data: outliers have *lower* structural issue rates than normals (37.2% vs 55.5%). Deep statistical analysis (60-sample manual inspection, t-tests, Cohen's d effect sizes, confusion matrices) revealed the failure mechanism: $r_{\text{LZ}}$ conflates *linguistic efficiency* with structural pathology. High lexical diversity (information-dense, concise responses) compresses well, triggering false positives.
+
+**Methodological contributions.**
+1. **Multi-stage validation framework.** A replicable evaluation methodology: (i) synthetic baseline (establish perfect-case AUROC), (ii) production deployment (8,290 real samples), (iii) false positive analysis (identify 76% short-text failures), (iv) deep investigation (structural pattern detection, statistical tests), (v) honest assessment (precision/recall metrics). This framework *caught the failure* before production deployment.
+
+2. **Generalization gap exposure.** We demonstrate that methods achieving AUROC 1.000 on synthetic benchmarks can exhibit *worse-than-random accuracy* (44.1%) on real data. This gap is not obvious without systematic validation at production scale.
+
+3. **Failure mechanism taxonomy.** We document *why* compressibility fails: not implementation bugs, but fundamental conflation of two distinct phenomena (linguistic sophistication vs structural pathology) that happen to share the same compression profile.
+
+4. **Implications for verification research.** Single geometric signals are insufficient. Effective systems require *ensemble approaches* combining compressibility (structural detection) with perplexity (factual detection, AUROC 0.615), NLI entailment, and LLM-as-judge methods. Our methodology prevents premature deployment of methods that work in controlled settings but fail in production.
 
 ---
 
@@ -540,25 +547,45 @@ To validate ASV's practical utility, we compared it to two widely-used productio
 
 ---
 
-## 9. Threat Model and Limitations
+## 9. Key Findings on Why Compressibility-Based Methods Fail
 
-**Scope:** ASV flags structural degeneracy; it **does not** certify factual truth. Combine with retrieval/entailment for factuality verification.
+**Finding 1: Linguistic sophistication masquerades as pathology.** $r_{\text{LZ}}$ conflates *linguistic efficiency* (high lexical diversity, information-dense responses) with structural pathology (loops, repetition). Statistical evidence:
+- Outliers have **higher** lexical diversity than normals (0.932 vs 0.842, Cohen's d=0.90 large effect)
+- Outliers have **lower** sentence repetition than normals (0.183 vs 0.274, Cohen's d=-0.47 medium effect, *inverse*)
+- 76% of outliers are short but benign responses (Section 6.4.3)
+- Precision: 37.2%, Recall: 3.4%, Accuracy: 44.1% (worse than random 50%)
 
-**Short-text false positives:** r_LZ conflates brevity with compressibility—short responses (< 10 tokens) achieve low scores regardless of quality. Manual inspection revealed 76% of outliers are short but benign responses (Section 6.4). **Mitigation**: Apply length normalization ($r_{\text{LZ}}^{norm} = r_{\text{LZ}} \cdot (1 + \alpha/\sqrt{n})$) or minimum length thresholds ($n \geq 10$ tokens) in production deployments to avoid false positives on terse but valid outputs.
+**Why this happens:** Both linguistic sophistication and structural pathology compress well, but for opposite reasons. Information-dense text compresses because it uses each token efficiently. Degenerate text compresses because it repeats patterns. $r_{\text{LZ}}$ cannot distinguish between these.
 
-**Exchangeability violations:** Feedback loops, adaptive prompting, or RL fine-tuning can break exchangeability. **Detection**: KS test on score distributions, monitoring calibration drift (empirical miscoverage vs. $\delta$). **Mitigation**: partition data by feedback stage, **re-calibrate** per partition, or use robust conformal variants.
+**Finding 2: Well-trained models avoid obvious structural pathologies.** Modern LLMs (GPT-3.5, GPT-4) are trained to avoid repetitive loops and semantic drift. When prompted for "intentional degeneracy" (e.g., "repeat this phrase 20 times"), they produce varied token-level structure (paraphrasing, slight variations). This explains why $r_{\text{LZ}}$ achieves AUROC 1.000 on synthetic degeneracy but 0.583 on prompted real degeneracy (Section 6.3).
 
-**Adaptive evasion:** Attackers may inject noise to evade complexity tests. **Defenses**: seed commitments (prevent replay), model/version attestation (prevent substitution), adversarial training with synthetic attacks.
+**Implication:** $r_{\text{LZ}}$ may work for *actual model failures* (GPT-2 loops, unstable fine-tunes) but not for outputs from well-trained production models. The method detects training instabilities, not general "badness."
 
-**Calibration debt:** Periodic refresh is mandatory (e.g., weekly or after 10k decisions). Log calibration data scope, time windows, and quantile values in PCS for audit trails.
+**Finding 3: Short-text false positives persist even with filtering.** Length filtering ($n \geq 10$ tokens) reduces outliers from 415 to 406 (2% reduction), but the *inverse enrichment* persists (37.2% vs 55.5%). The false positive mechanism is not solely about brevity---it is a fundamental confounding of linguistic properties.
+
+**Finding 4: Conformal prediction cannot fix bad signals.** Split-conformal prediction provides distribution-free coverage guarantees, but garbage-in-garbage-out applies: if the underlying score ($r_{\text{LZ}}$) is non-discriminative (AUROC ≈ 0.5), conformal calibration cannot salvage it. The guarantee holds ($P(\text{escalate} \mid \text{benign}) \leq \delta$), but the decision boundary is meaningless.
+
+**Scope note:** This paper focuses on compressibility-based geometric signals for structural pathology detection. We do **not** claim these methods should certify factual truth (perplexity-based methods dominate for factuality, AUROC 0.615 on TruthfulQA). The negative result is specific to the hypothesis that $r_{\text{LZ}}$ alone can discriminate structural degeneracy in production LLM outputs.
 
 ---
 
-## 10. Conclusion
+## 10. Conclusion: Lessons from a Rigorous Failure
 
-By **reframing verification as auditable statistical guarantees**, ASV offers a practical, honest control for LLM deployments: cheap compressibility signal → conformal calibration → **accept/flag** decisions with **finite-sample coverage** and **PCS for audit**. This paper adopts a **problem-first** structure, replaces informal claims with **standard theory**, and specifies a **transparent evaluation** against public baselines.
+**What we built.** A theoretically sound, production-grade compressibility-based verification system: finite-alphabet universal coding (product quantization) + Lempel-Ziv compression wrapped with split-conformal prediction for distribution-free coverage guarantees. Implementation quality was high: 54ms p95 latency, ~$0.000002 per verification, 37x-13,303x advantages over LLM baselines. On synthetic degeneracy benchmarks, performance was perfect: AUROC 1.000.
 
-**Honest takeaway:** ASV compressibility signal achieves **perfect detection** (AUROC 1.000) of structural degeneracy but is outperformed by perplexity (0.615 vs 0.535) on factuality tasks. The two approaches are **complementary**, not competing. Production systems should deploy both in a layered verification architecture.
+**Why it failed.** The method exhibits **inverse enrichment** on real production data: flagged outliers have *lower* structural issue rates (37.2%) than normal outputs (55.5%). Precision is 37.2%, recall is 3.4%, accuracy is worse than random (44.1%). Deep statistical analysis revealed the mechanism: $r_{\text{LZ}}$ conflates *linguistic efficiency* (high lexical diversity, information density) with structural pathology (repetition, loops). Both compress well, but for opposite reasons. Well-trained production models (GPT-4) produce linguistically sophisticated outputs that trigger false positives.
+
+**The generalization gap.** This negative result exposes a critical gap: methods achieving AUROC 1.000 on synthetic benchmarks can exhibit worse-than-random accuracy on real data. The gap is not obvious without systematic validation at production scale (8,290 samples). Controlled experiments with synthetic degeneracy (loops, repetition) do not capture the *distributional reality* of production LLM outputs.
+
+**Methodological contribution.** We present a replicable multi-stage validation framework that *caught this failure before production deployment*: (i) synthetic baseline (establish perfect-case AUROC), (ii) production deployment (thousands of real samples), (iii) false positive analysis (identify failure modes), (iv) deep investigation (manual inspection, statistical tests), (v) honest assessment (precision/recall, confusion matrices). This framework can be applied to other proposed verification signals to prevent premature deployment.
+
+**Implications for verification research.** Single geometric signals over embedding trajectories are insufficient for production LLM verification. Effective systems require *ensemble approaches* that combine:
+- **Compressibility** ($r_{\text{LZ}}$): Detects actual model failures (GPT-2 loops, unstable fine-tunes), not intentional degeneracy from well-trained models
+- **Perplexity**: AUROC 0.615 on factuality tasks (TruthfulQA, FEVER)---outperforms geometric signals for semantic correctness
+- **NLI entailment**: Checks logical consistency between prompt and response
+- **LLM-as-judge**: Expensive but effective (GPT-4 judge) for high-stakes verification
+
+**Call to action.** The machine learning community should adopt systematic production validation before claiming deployment readiness. Synthetic benchmarks are necessary but insufficient. Methods that work in controlled lab settings often fail in production, and the failure modes are not always predictable. Rigorous negative results like this one---honestly reported with comprehensive statistical evidence---are as valuable as positive results, preventing wasted deployment effort and guiding future research toward more robust approaches.
 
 ---
 
