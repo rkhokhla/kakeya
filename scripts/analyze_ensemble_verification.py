@@ -33,6 +33,7 @@ JSONL_FILES = {
     'truthfulqa': Path("/Users/roman.khokhla/my_stuff/kakeya/data/llm_outputs/truthfulqa_outputs.jsonl"),
     'fever': Path("/Users/roman.khokhla/my_stuff/kakeya/data/llm_outputs/fever_outputs.jsonl"),
     'halueval': Path("/Users/roman.khokhla/my_stuff/kakeya/data/llm_outputs/halueval_outputs.jsonl"),
+    'halubench': Path("/Users/roman.khokhla/my_stuff/kakeya/data/llm_outputs/halubench_outputs.jsonl"),
 }
 OUTPUT_DIR = Path("/Users/roman.khokhla/my_stuff/kakeya/results/ensemble_verification/")
 OUTPUT_DIR.mkdir(exist_ok=True)
@@ -59,7 +60,18 @@ for source, jsonl_path in JSONL_FILES.items():
                 record = json.loads(line)
                 sample_id = record['id']
                 text = record.get('llm_response', '')
-                is_hallucination = record.get('hallucination', False) or record.get('is_hallucination', False)
+
+                # Determine hallucination label based on source
+                if source == 'halubench':
+                    # HaluBench has is_hallucination field
+                    is_hallucination = record.get('is_hallucination', False)
+                elif source in ['fever', 'halueval']:
+                    # FEVER and HaluEval: ground_truth=False means hallucination
+                    is_hallucination = not record.get('ground_truth', True)
+                else:
+                    # TruthfulQA and others: try both fields
+                    is_hallucination = record.get('hallucination', False) or record.get('is_hallucination', False)
+
                 text_data[sample_id] = {
                     'text': text,
                     'source': source,
@@ -261,8 +273,8 @@ for source in ['truthfulqa', 'fever', 'halueval']:
 # Save results summary
 print(f"\n[9/10] Saving results...")
 summary = {
-    'n_train': len(train_df),
-    'n_test': len(test_df),
+    'n_train': int(len(train_df)),
+    'n_test': int(len(test_df)),
     'hallucination_rate_train': float(train_df['is_hallucination'].sum() / len(train_df)),
     'hallucination_rate_test': float(test_df['is_hallucination'].sum() / len(test_df)),
     'models': {name: {
@@ -274,7 +286,7 @@ summary = {
         'recall': float(res['recall']),
         'f1': float(res['f1'])
     } for name, res in results.items()},
-    'mcnemar_tests': mcnemar_results
+    'mcnemar_tests': [{k: int(v) if isinstance(v, (np.integer, np.int64)) else float(v) if isinstance(v, (np.floating, np.float64)) else bool(v) if isinstance(v, np.bool_) else v for k, v in test.items()} for test in mcnemar_results]
 }
 
 summary_output = OUTPUT_DIR / "ensemble_verification_summary.json"

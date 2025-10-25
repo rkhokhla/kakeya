@@ -1,0 +1,186 @@
+{
+  "n_train": 5649,
+  "n_test": 2422,
+  "hallucination_rate_train": 0.5064613205877146,
+  "hallucination_rate_test": 0.5066061106523534,
+  "models": {
+    "Perplexity (baseline)": {
+      "features": [
+        "perplexity_proxy"
+      ],
+      "auroc": 0.5030260559994271,
+      "auroc_ci": [
+        0.47982054457066997,
+        0.5249608816644423
+      ],
+      "accuracy": 0.5119735755573905,
+      "precision": 0.5127623369256948,
+      "recall": 0.7367563162184189,
+      "f1": 0.6046822742474917
+    },
+    "r_LZ (compressibility)": {
+      "features": [
+        "asv_score"
+      ],
+      "auroc": 0.507329507285518,
+      "auroc_ci": [
+        0.485594182164039,
+        0.5290154509844766
+      ],
+      "accuracy": 0.5066061106523534,
+      "precision": 0.5066061106523534,
+      "recall": 1.0,
+      "f1": 0.6725130172650041
+    },
+    "Lexical diversity": {
+      "features": [
+        "lexical_diversity"
+      ],
+      "auroc": 0.49886650775951136,
+      "auroc_ci": [
+        0.4749860035545754,
+        0.5229750641314318
+      ],
+      "accuracy": 0.5156895127993394,
+      "precision": 0.5175324675324675,
+      "recall": 0.6495517522412388,
+      "f1": 0.5760751716660644
+    },
+    "Perplexity + r_LZ": {
+      "features": [
+        "perplexity_proxy",
+        "asv_score"
+      ],
+      "auroc": 0.5033271611884618,
+      "auroc_ci": [
+        0.48105223650308065,
+        0.5258058333364232
+      ],
+      "accuracy": 0.5107349298100743,
+      "precision": 0.5119318181818182,
+      "recall": 0.7343113284433578,
+      "f1": 0.6032808838299297
+    },
+    "Perplexity + Lexical diversity": {
+      "features": [
+        "perplexity_proxy",
+        "lexical_diversity"
+      ],
+      "auroc": 0.4946483070931925,
+      "auroc_ci": [
+        0.4721289644911709,
+        0.5183758154064632
+      ],
+      "accuracy": 0.5020644095788604,
+      "precision": 0.5068852459016393,
+      "recall": 0.6299918500407498,
+      "f1": 0.5617732558139535
+    },
+    "Perplexity + Repetition": {
+      "features": [
+        "perplexity_proxy",
+        "sentence_repetition"
+      ],
+      "auroc": 0.5053162286489823,
+      "auroc_ci": [
+        0.4821692282700421,
+        0.5269005459828419
+      ],
+      "accuracy": 0.5127993393889347,
+      "precision": 0.5154503616042078,
+      "recall": 0.6389568052159739,
+      "f1": 0.5705967976710334
+    },
+    "Perplexity + Length": {
+      "features": [
+        "perplexity_proxy",
+        "length_tokens"
+      ],
+      "auroc": 0.49899949872635574,
+      "auroc_ci": [
+        0.4766183134481882,
+        0.5227605755180407
+      ],
+      "accuracy": 0.5107349298100743,
+      "precision": 0.5122520420070011,
+      "recall": 0.7155664221678891,
+      "f1": 0.5970758245494729
+    },
+    "Full ensemble": {
+      "features": [
+        "perplexity_proxy",
+        "asv_score",
+        "lexical_diversity",
+        "sentence_repetition",
+        "length_tokens"
+      ],
+      "auroc": 0.5402229474208278,
+      "auroc_ci": [
+        0.5175779783296692,
+        0.5626884341922379
+      ],
+      "accuracy": 0.523534269199009,
+      "precision": 0.527588813303099,
+      "recall": 0.5688671556642216,
+      "f1": 0.5474509803921569
+    }
+  },
+  "mcnemar_tests": [
+    {
+      "comparison": "Perplexity (baseline) vs r_LZ (compressibility)",
+      "b": 336,
+      "c": 323,
+      "chi_squared": 0.21851289833080426,
+      "p_value": 0.6401753587414571,
+      "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs Lexical diversity",
+      "b": 500,
+      "c": 509,
+      "chi_squared": 0.06342913776015857,
+      "p_value": 0.8011559105757236,
+      "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs Perplexity + r_LZ",
+      "b": 10,
+      "c": 7,
+      "chi_squared": 0.23529411764705882,
+      "p_value": 0.6276258050283593,
+      "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs Perplexity + Lexical diversity",
+      "b": 331,
+      "c": 307,
+      "chi_squared": 0.829153605015674,
+      "p_value": 0.36251738715156445,
+      "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs Perplexity + Repetition",
+      "b": 404,
+      "c": 406,
+      "chi_squared": 0.0012345679012345679,
+      "p_value": 0.9719709616102559,
+      "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs Perplexity + Length",
+      "b": 471,
+      "c": 468,
+      "chi_squared": 0.004259850905218318,
+      "p_value": 0.9479609918679172,
+      "significant": false
+    },
+    {
+      "comparison": "Perplexity (baseline) vs Full ensemble",
+      "b": 513,
+      "c": 541,
+      "chi_squared": 0.6916508538899431,
+      "p_value": 0.40560343112160624,
+      "significant": false
+    }
+  ]
+}
