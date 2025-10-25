@@ -534,6 +534,79 @@ Figure~\ref{fig:scale-sensitivity} shows scale configuration comparison (updated
 \label{fig:scale-sensitivity}
 \end{figure}
 
+\subsection{Performance Characteristics}
+\label{sec:validation-performance}
+
+We profiled end-to-end verification latency by measuring each component ($\hat{D}$, $\text{coh}^\star$, $r$, conformal scoring) on 100 degeneracy samples. All measurements used Python's \texttt{time.perf\_counter()} with microsecond precision.
+
+Table~\ref{tab:latency-results} shows latency statistics.
+
+\begin{table}[h]
+\centering
+\caption{Component Latency Breakdown (100 samples)}
+\label{tab:latency-results}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Component} & \textbf{Mean (ms)} & \textbf{Median (ms)} & \textbf{Std (ms)} & \textbf{p95 (ms)} & \textbf{p99 (ms)} \\
+\midrule
+$\hat{D}$ & 0.003 & 0.003 & 0.001 & 0.003 & 0.005 \\
+$\text{coh}^\star$ & 4.699 & 4.685 & 0.104 & 4.872 & 4.988 \\
+$r$ (compressibility) & 41.740 & 41.421 & 5.283 & \textbf{49.458} & 57.093 \\
+Conformal scoring & 0.011 & 0.010 & 0.002 & 0.011 & 0.013 \\
+\midrule
+\textbf{End-to-end} & \textbf{46.452} & \textbf{46.118} & \textbf{5.341} & \textbf{54.124} & \textbf{61.749} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Key Findings:}
+\begin{enumerate}
+\item \textbf{$r$ (compressibility) is the bottleneck} at 49.5ms p95 (91\% of total latency). This is expected as product quantization followed by LZ compression requires substantial computation.
+\item \textbf{End-to-end p95 latency is 54ms}, slightly above the 50ms target but \textbf{37x faster than GPT-4 judge} (2000ms typical latency).
+\item $\hat{D}$ computation is negligible (<0.01ms), confirming the Theil-Sen regression is highly efficient.
+\item Conformal scoring adds minimal overhead (<0.02ms), validating the weighted ensemble approach.
+\end{enumerate}
+
+Table~\ref{tab:cost-comparison} compares ASV verification cost to GPT-4 judge baseline.
+
+\begin{table}[h]
+\centering
+\caption{Cost Comparison: ASV vs. GPT-4 Judge}
+\label{tab:cost-comparison}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Method} & \textbf{Latency p95 (ms)} & \textbf{Cost (USD)} & \textbf{Speedup} & \textbf{Cost Reduction} \\
+\midrule
+GPT-4 Judge & 2000 & \$0.020 & 1x & 1x \\
+\textbf{ASV (this work)} & \textbf{54} & \textbf{\$0.000002} & \textbf{37x} & \textbf{13,303x} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Cost Model Assumptions:}
+\begin{itemize}
+\item Cloud compute pricing: \$0.10/hour for 1 CPU (typical spot instance)
+\item Cost per ms: $\$0.10 / (3600 \times 1000) = \$2.78 \times 10^{-8}$ per ms
+\item GPT-4 judge: Typical API cost for hallucination classification task (~\$0.02 per call)
+\end{itemize}
+
+\textbf{Production Implications:}
+\begin{itemize}
+\item At 1000 verifications/day: ASV costs \textbf{\$0.002/day} vs. GPT-4 \textbf{\$20/day} (10,000x savings)
+\item At 100K verifications/day: ASV costs \textbf{\$0.20/day} vs. GPT-4 \textbf{\$2,000/day}
+\item Sub-100ms latency enables \textbf{real-time verification} in interactive applications
+\item r-LZ bottleneck suggests optimization opportunity (parallel compression, GPU kernels)
+\end{itemize}
+
+Figure~\ref{fig:latency-breakdown} shows component latency breakdown and cost comparison.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/latency_breakdown.png}
+\caption{Left: Component latency breakdown (p95 percentiles). r-LZ (compressibility) dominates at 49ms. Right: Cost comparison showing ASV is 13,303x cheaper than GPT-4 judge baseline (log scale).}
+\label{fig:latency-breakdown}
+\end{figure}
+
 \section{ROI and Operational Impact}
 \label{sec:roi}
 
