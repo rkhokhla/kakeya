@@ -1,0 +1,47 @@
+{
+  "metadata": {
+    "total_samples": 8290,
+    "filtered_samples": 8071,
+    "normalization_alpha": 5,
+    "min_length_tokens": 10,
+    "original_outliers": 415,
+    "original_outliers_pct": 5.0060313630880575,
+    "finding": "76% of original outliers were short texts (< 10 tokens)"
+  },
+  "approaches": {
+    "Original (raw r_LZ)": {
+      "n_samples": 8290,
+      "mean": 0.7143364243955368,
+      "std": 0.06844934978584351,
+      "median": 0.7396376609491935,
+      "q25": 0.6866666666666665,
+      "q75": 0.7666666666666666,
+      "outlier_threshold": 0.5764846743295019,
+      "n_outliers": 415,
+      "outlier_pct": 5.0060313630880575
+    },
+    "Filtered (n >= 10)": {
+      "n_samples": 8071,
+      "mean": 0.7191499347903727,
+      "std": 0.06014532422246256,
+      "median": 0.7416666666666667,
+      "q25": 0.6922647527910686,
+      "q75": 0.7666666666666666,
+      "outlier_threshold": 0.5939393939393938,
+      "n_outliers": 406,
+      "outlier_pct": 5.030355594102342
+    },
+    "Normalized (r_LZ_norm)": {
+      "n_samples": 8290,
+      "mean": 0.9999335339247442,
+      "std": 0.0035331535163007034,
+      "median": 1.0,
+      "q25": 1.0,
+      "q75": 1.0,
+      "outlier_threshold": 1.0,
+      "n_outliers": 8290,
+      "outlier_pct": 100.0
+    }
+  },
+  "recommendation": "Use filtered approach (n >= 10 tokens) for production deployment to avoid false positives"
+}
