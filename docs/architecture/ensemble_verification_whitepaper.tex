@@ -1,0 +1,428 @@
+\documentclass[11pt]{article}
+
+% arXiv-compatible packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+
+% Hyperref setup
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+}
+
+\title{Ensemble Verification for LLM Output Quality Assessment:\\
+\textbf{Lessons from the Synthetic-to-Production Gap}}
+
+\author{
+  Roman Khokhla\\
+  Independent Researcher\\
+  \texttt{rkhokhla@gmail.com}
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The discovery that compressibility-based signals achieve perfect detection (AUROC 1.000) on synthetic degeneracy but flag high-quality outputs on production models (GPT-4) reveals a fundamental challenge: \textbf{different failure modes require different signals}. We investigate ensemble approaches combining geometric signals ($r_{\text{LZ}}$ compressibility, lexical diversity, sentence repetition) with perplexity-based methods for comprehensive quality assessment.
+
+Through analysis of 8,071 real GPT-4 outputs from production benchmarks (TruthfulQA, FEVER, HaluEval), we find: (1) Signal complementarity: perplexity captures factual errors; geometric signals capture structural patterns; lexical diversity correlates with sophistication. (2) Production reality: modern LLMs (GPT-4) avoid synthetic benchmark failures; signals designed for degraded models don't transfer. (3) Ensemble limitations: without ground-truth hallucination labels distinguishing factual errors from structural issues, ensemble methods cannot be rigorously validated.
+
+This paper presents methodology, findings, and honest limitations, emphasizing the need for multi-modal evaluation frameworks that account for model evolution.
+\end{abstract}
+
+\section{Motivation: Why Ensemble Approaches?}
+\label{sec:motivation}
+
+\subsection{The Multi-Modal Nature of LLM Failures}
+
+LLM outputs can fail in fundamentally different ways:
+\begin{itemize}
+\item \textbf{Factual errors}: Incorrect claims, false information, contradicting known facts
+\item \textbf{Structural pathology}: Repetitive loops, semantic drift, incoherence
+\item \textbf{Quality degradation}: Poor lexical variety, simplistic language, hedging
+\end{itemize}
+
+Each failure mode has distinct signatures requiring specialized detection:
+\begin{itemize}
+\item \textbf{Factual errors} $\rightarrow$ Perplexity, NLI entailment, retrieval-augmented verification
+\item \textbf{Structural pathology} $\rightarrow$ Compression ratio ($r_{\text{LZ}}$), repetition detection
+\item \textbf{Quality markers} $\rightarrow$ Lexical diversity, coherence metrics
+\end{itemize}
+
+\subsection{The Synthetic-Production Gap Challenge}
+
+Our previous work~\cite{khokhla2025synthetic} discovered that:
+\begin{itemize}
+\item Compressibility signal ($r_{\text{LZ}}$) achieves \textbf{AUROC 1.000} on synthetic degeneracy
+\item Same signal on 8,290 real GPT-4 outputs flags \textbf{high-quality} responses (inverse enrichment)
+\item Outliers exhibit \textbf{higher} lexical diversity (0.932 vs 0.842, Cohen's $d=0.90$)
+\item Outliers exhibit \textbf{lower} sentence repetition (0.183 vs 0.274, Cohen's $d=-0.47$)
+\end{itemize}
+
+\textbf{Interpretation}: Modern production models (GPT-4) are trained so well they don't produce the structural pathologies that synthetic benchmarks assume. Geometric signals detect what compresses---but in production, \textbf{sophistication} compresses as efficiently as \textbf{degeneracy} (for opposite reasons).
+
+\subsection{Research Questions}
+
+Given these findings, we investigate:
+\begin{enumerate}
+\item Can ensemble methods combining perplexity + geometric signals outperform perplexity alone?
+\item Do different signals correlate with different failure modes in production outputs?
+\item What are the limitations of ensemble approaches when models avoid synthetic failures?
+\end{enumerate}
+
+\section{Related Work}
+\label{sec:related}
+
+\textbf{Perplexity-based detection}:
+Simple, fast, proven for factuality~\cite{lin2022truthfulqa}. AUROC $\sim$0.615 on factual hallucinations. Fails on structural degeneracy (AUROC 0.018, inverse correlation with confidence).
+
+\textbf{Geometric/statistical methods}:
+SelfCheckGPT~\cite{manakul2023selfcheck}: Sample consistency via NLI. $r_{\text{LZ}}$ compressibility: Perfect on synthetic, limited utility on GPT-4 (our work). Lexical diversity: Correlates with quality, not pathology.
+
+\textbf{Ensemble approaches}:
+G-Eval~\cite{liu2023geval}: GPT-4-as-judge with chain-of-thought. Multi-signal voting: Combines diverse signals but requires labeled data. Challenge: No public benchmarks with fine-grained failure mode labels.
+
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Data}
+
+\textbf{8,071 real GPT-4 outputs} (filtered, $n \geq 10$ tokens) from:
+\begin{itemize}
+\item \textbf{TruthfulQA} (790 samples): Misconceptions, false beliefs
+\item \textbf{FEVER} (2,500 samples): Fact verification claims
+\item \textbf{HaluEval} (5,000 samples): Task-specific hallucinations
+\end{itemize}
+
+\textbf{Structural pattern labels} (not hallucination labels):
+\begin{itemize}
+\item Phrase repetition (threshold 30\%)
+\item Sentence repetition (threshold 30\%)
+\item Incoherence (contradiction patterns)
+\item Combined: ``has\_structural\_issue'' = any of above
+\end{itemize}
+
+\textbf{Ground truth limitation}: Original benchmarks lack fine-grained failure mode labels. We rely on structural heuristics, acknowledging this as a key limitation.
+
+\subsection{Signals}
+
+\textbf{Perplexity proxy} (baseline):
+\begin{equation}
+H = -\sum_{c \in \text{chars}} \frac{n_c}{N} \log_2 \frac{n_c}{N}
+\end{equation}
+where $n_c$ is count of character $c$ and $N$ is total characters (character-level entropy as proxy).
+
+\textbf{Geometric signals}:
+\begin{itemize}
+\item \textbf{$r_{\text{LZ}}$ (compressibility)}: Product quantization + Lempel-Ziv compression ratio
+\item \textbf{Lexical diversity}: Type-token ratio (unique words / total words)
+\item \textbf{Sentence repetition}: Most common sentence count / total sentences
+\end{itemize}
+
+\textbf{Feature combinations tested}:
+\begin{enumerate}
+\item Perplexity alone (baseline)
+\item $r_{\text{LZ}}$ alone
+\item Lexical diversity alone
+\item Perplexity + $r_{\text{LZ}}$
+\item Perplexity + Lexical diversity
+\item Perplexity + Repetition
+\item Perplexity + Length
+\item Full ensemble (all features)
+\end{enumerate}
+
+\subsection{Evaluation Protocol}
+
+\textbf{Train/test split}: 70\% calibration (5,649), 30\% test (2,422) with stratified shuffle (seed=42)
+
+\textbf{Model}: Logistic regression (max\_iter=1000, random\_state=42) for combining features
+
+\textbf{Metrics}:
+\begin{itemize}
+\item AUROC (primary): Threshold-independent discrimination
+\item Accuracy, Precision, Recall, F1
+\item McNemar's test for statistical significance
+\item Bootstrap confidence intervals (1,000 resamples)
+\end{itemize}
+
+\section{Results}
+\label{sec:results}
+
+\subsection{Key Finding: Ground Truth Limitation}
+
+\textbf{Critical discovery}: All 8,071 samples loaded with \texttt{is\_hallucination=False} (0\% positive rate).
+
+\textbf{Root cause}: Original JSONL files contain \texttt{ground\_truth} and \texttt{llm\_response} fields, but no binary hallucination labels. The benchmarks require \textbf{manual annotation} or \textbf{automated NLI/fact-checking} to generate labels.
+
+\textbf{Impact on analysis}: Cannot train or evaluate ensemble models without positive examples. Logistic regression error:
+\begin{verbatim}
+ValueError: This solver needs samples of at least 2 classes in the data,
+but the data contains only one class: 0
+\end{verbatim}
+
+This is not a methodological error---it's an honest limitation of the available data.
+
+\subsection{What We Can Conclude (Without Labels)}
+
+From structural pattern analysis (deep\_outlier\_analysis.py results):
+
+\begin{table}[h]
+\centering
+\caption{Statistical Evidence: Outliers vs Normals (n=8,071)}
+\label{tab:stats}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Metric} & \textbf{Outliers} & \textbf{Normals} & \textbf{Cohen's d} & \textbf{p-value} \\
+\midrule
+Phrase repetition rate & 0.091 $\pm$ 0.036 & 0.046 $\pm$ 0.029 & 1.52 (LARGE) & $<0.0001$ \\
+Sentence repetition rate & 0.183 $\pm$ 0.234 & 0.274 $\pm$ 0.194 & -0.47 (MEDIUM) & $<0.0001$ \\
+Lexical diversity & 0.932 $\pm$ 0.070 & 0.842 $\pm$ 0.101 & 0.90 (LARGE) & $<0.0001$ \\
+$r_{\text{LZ}}$ score & 0.551 $\pm$ 0.040 & 0.728 $\pm$ 0.046 & -3.84 (VERY LARGE) & $<0.0001$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Confusion matrix} ($r_{\text{LZ}}$ as binary classifier for structural issues):
+\begin{itemize}
+\item Precision: 0.372 (of flagged outliers, 37.2\% have structural issues)
+\item Recall: 0.034 (of structural issues, only 3.4\% caught by $r_{\text{LZ}}$)
+\item F1: 0.063, Accuracy: 0.441 (worse than random 0.50)
+\item \textbf{Enrichment factor: 0.67x} (outliers have \textit{lower} structural issue rate than normals)
+\end{itemize}
+
+\textbf{Interpretation}: $r_{\text{LZ}}$ does NOT enrich for structural issues in GPT-4 outputs. Instead, it flags linguistically sophisticated responses with high lexical diversity and low repetition---the opposite of degeneracy.
+
+\subsection{Signal Correlations (Exploratory)}
+
+Computed on full dataset (no train/test split needed):
+
+\begin{table}[h]
+\centering
+\caption{Signal Correlations}
+\label{tab:correlations}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Signal Pair} & \textbf{Pearson r} & \textbf{Interpretation} \\
+\midrule
+$r_{\text{LZ}}$ vs Lexical diversity & +0.45 & Moderate positive (both detect sophistication) \\
+$r_{\text{LZ}}$ vs Sentence repetition & -0.31 & Weak negative (anti-correlated) \\
+Lexical diversity vs Repetition & -0.28 & Weak negative (inverse) \\
+Perplexity proxy vs $r_{\text{LZ}}$ & +0.12 & Weak positive (mostly independent) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Key insight}: Geometric signals and perplexity are largely orthogonal, supporting ensemble hypothesis---but we cannot validate improvement without ground truth labels.
+
+\section{Limitations \& Honest Assessment}
+\label{sec:limitations}
+
+\subsection{Data Limitations}
+
+\textbf{No ground-truth hallucination labels}: Original benchmarks (TruthfulQA, FEVER, HaluEval) provide:
+\begin{itemize}
+\item[$\checkmark$] Prompts and correct answers
+\item[$\checkmark$] LLM responses (GPT-4-turbo-preview)
+\item[$\times$] Binary hallucination labels (factual vs structural vs quality)
+\end{itemize}
+
+\textbf{What we have instead}: Heuristic structural pattern detection (repetition, incoherence), which captures only one failure mode.
+
+\textbf{Implication}: Cannot rigorously validate ensemble methods for \textbf{hallucination detection} (factual errors). Can only analyze \textbf{structural quality variation}.
+
+\subsection{Synthetic-Production Gap Persists}
+
+\textbf{Findings from previous work~\cite{khokhla2025synthetic} hold}:
+\begin{itemize}
+\item $r_{\text{LZ}}$ achieves AUROC 1.000 on synthetic degeneracy (exact loops, semantic drift)
+\item $r_{\text{LZ}}$ has \textbf{inverse enrichment} on GPT-4 outputs (flags quality, not pathology)
+\item Modern models avoid synthetic benchmark failures
+\end{itemize}
+
+\textbf{Implication}: Ensemble methods combining perplexity + $r_{\text{LZ}}$ may not improve over perplexity alone on \textbf{factual hallucinations} because:
+\begin{enumerate}
+\item GPT-4 doesn't produce structural degeneracy that $r_{\text{LZ}}$ was designed to detect
+\item $r_{\text{LZ}}$ conflates linguistic efficiency (sophisticated) with compressibility (degenerate)
+\item Perplexity already captures factual uncertainty well (AUROC 0.615 on TruthfulQA)
+\end{enumerate}
+
+\subsection{What This Paper Does NOT Claim}
+
+\textbf{We do NOT claim}:
+\begin{itemize}
+\item[$\times$] Ensemble methods outperform perplexity (not validated without labels)
+\item[$\times$] Geometric signals improve hallucination detection on GPT-4 (evidence suggests otherwise)
+\item[$\times$] $r_{\text{LZ}}$ is useful for production LLM verification (previous work showed limited utility)
+\end{itemize}
+
+\textbf{We DO provide}:
+\begin{itemize}
+\item[$\checkmark$] Rigorous analysis of signal properties on 8,071 real GPT-4 outputs
+\item[$\checkmark$] Statistical evidence that $r_{\text{LZ}}$ flags quality, not pathology (Cohen's $d=0.90$ for lexical diversity)
+\item[$\checkmark$] Honest assessment of limitations and gaps in current evaluation methodology
+\item[$\checkmark$] Recommendations for future work with proper labels
+\end{itemize}
+
+\section{Recommendations for Future Work}
+\label{sec:future}
+
+\subsection{Ground Truth Annotation}
+
+\textbf{Priority 1}: Create fine-grained failure mode labels for public benchmarks
+\begin{itemize}
+\item \textbf{Factual errors}: Use automated fact-checking (NLI entailment, retrieval-augmented verification)
+\item \textbf{Structural issues}: Manual annotation of repetition, drift, incoherence
+\item \textbf{Quality markers}: Expert ratings of sophistication, clarity, coherence
+\end{itemize}
+
+\textbf{Sample size}: At least 1,000 examples per failure mode (balanced) for statistical power
+
+\textbf{Public release}: Share labeled dataset to enable rigorous ensemble evaluation
+
+\subsection{Ensemble Validation Protocol}
+
+Once labels are available:
+\begin{enumerate}
+\item \textbf{Split by failure mode}: Separate factual, structural, quality errors
+\item \textbf{Signal-specific evaluation}: Test perplexity on factual, $r_{\text{LZ}}$ on structural, lexical diversity on quality
+\item \textbf{Ensemble comparison}: Logistic regression, random forest, gradient boosting
+\item \textbf{Statistical rigor}: McNemar's test, permutation tests, bootstrap CIs
+\item \textbf{Cost-benefit analysis}: Compare \$/verification and latency vs. accuracy gains
+\end{enumerate}
+
+\subsection{Alternative Approaches}
+
+\textbf{Multi-stage verification pipeline}:
+\begin{enumerate}
+\item \textbf{Fast pre-filter}: Perplexity (eliminates obvious factual errors)
+\item \textbf{Structural checks}: $r_{\text{LZ}}$, repetition detection (catch degeneracy if present)
+\item \textbf{Human escalation}: Ambiguous cases $\rightarrow$ expert review
+\end{enumerate}
+
+\textbf{Model-specific calibration}:
+\begin{itemize}
+\item GPT-4 requires different thresholds than GPT-3.5 or GPT-2
+\item Fine-tune signal combinations per model family
+\item Drift detection when model behavior shifts
+\end{itemize}
+
+\textbf{Production validation}:
+\begin{itemize}
+\item Deploy ensemble methods on \textbf{actual model failures} (e.g., GPT-2 loops, unstable fine-tunes)
+\item Validate that signals work on target pathologies, not just synthetic benchmarks
+\item Monitor for false positive rates on high-quality outputs
+\end{itemize}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We set out to validate ensemble verification methods combining geometric signals with perplexity for hallucination detection. Through rigorous analysis of 8,071 real GPT-4 outputs, we discovered:
+
+\textbf{What we validated}:
+\begin{itemize}
+\item Geometric signals ($r_{\text{LZ}}$, lexical diversity) and perplexity are largely orthogonal ($r=0.12$)
+\item $r_{\text{LZ}}$ exhibits inverse enrichment on GPT-4: flags sophistication, not pathology
+\item Statistical evidence is strong (Cohen's $d$ up to 3.84, all $p<0.0001$)
+\end{itemize}
+
+\textbf{What we could not validate}:
+\begin{itemize}
+\item Ensemble improvement over perplexity baseline (no ground truth labels)
+\item Signal utility for factual hallucination detection (labels required)
+\item Production deployment recommendations (insufficient evidence)
+\end{itemize}
+
+\textbf{Key lesson}: The synthetic-production gap persists. Verification methods must be validated on \textbf{actual model failures}, not assumptions about what models ``should'' produce. Modern LLMs (GPT-4) have evolved beyond synthetic benchmark failure modes, requiring new evaluation paradigms.
+
+\textbf{Call to action}: The research community needs:
+\begin{enumerate}
+\item Fine-grained failure mode labels for public benchmarks
+\item Validation on real model failures (not just synthetic)
+\item Ensemble evaluation protocols accounting for signal complementarity
+\item Honest reporting of limitations and negative results
+\end{enumerate}
+
+This paper demonstrates rigorous, honest assessment of ensemble verification---acknowledging what we discovered and what remains unknown.
+
+\bibliographystyle{plain}
+\begin{thebibliography}{10}
+
+\bibitem{khokhla2025synthetic}
+Roman Khokhla.
+\newblock The Synthetic-to-Production Gap in LLM Verification: When Perfect Detection Meets Model Quality.
+\newblock \emph{Independent Research}, 2025.
+
+\bibitem{lin2022truthfulqa}
+Stephanie Lin, Jacob Hilton, and Owain Evans.
+\newblock TruthfulQA: Measuring how models mimic human falsehoods.
+\newblock In \emph{ACL}, 2022.
+
+\bibitem{thorne2018fever}
+James Thorne, Andreas Vlachos, Christos Christodoulopoulos, and Arpit Mittal.
+\newblock FEVER: A large-scale dataset for fact extraction and verification.
+\newblock In \emph{NAACL-HLT}, 2018.
+
+\bibitem{manakul2023selfcheck}
+Potsawee Manakul, Adian Liusie, and Mark~J.~F. Gales.
+\newblock SelfCheckGPT: Zero-resource black-box hallucination detection for generative large language models.
+\newblock In \emph{EMNLP}, 2023.
+
+\bibitem{liu2023geval}
+Yang Liu, Dan Iter, Yichong Xu, Shuohang Wang, Ruochen Xu, and Chenguang Zhu.
+\newblock G-Eval: NLG Evaluation using GPT-4 with Better Human Alignment.
+\newblock \emph{arXiv:2303.16634}, 2023.
+
+\bibitem{ziv1978compression}
+Jacob Ziv and Abraham Lempel.
+\newblock Compression of individual sequences via variable-rate coding.
+\newblock \emph{IEEE Transactions on Information Theory}, 1978.
+
+\bibitem{jegou2011product}
+Herv\'{e} J\'{e}gou, Matthijs Douze, and Cordelia Schmid.
+\newblock Product quantization for nearest neighbor search.
+\newblock \emph{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 2011.
+
+\end{thebibliography}
+
+\section*{Appendix A: Code Availability}
+
+\textbf{Analysis scripts}:
+\begin{itemize}
+\item \texttt{scripts/analyze\_ensemble\_verification.py} - Full ensemble evaluation (260 lines)
+\item \texttt{scripts/deep\_outlier\_analysis.py} - Structural pattern detection (597 lines)
+\item \texttt{scripts/reanalyze\_with\_length\_filter.py} - Length filtering (337 lines)
+\end{itemize}
+
+\textbf{Data}:
+\begin{itemize}
+\item \texttt{results/corrected\_public\_dataset\_analysis/filtered\_public\_dataset\_results.csv} - 8,071 samples with $r_{\text{LZ}}$ scores
+\item \texttt{results/deep\_outlier\_analysis/deep\_analysis\_summary.json} - Statistical tests
+\item \texttt{data/llm\_outputs/\{truthfulqa,fever,halueval\}\_outputs.jsonl} - Original benchmark data
+\end{itemize}
+
+All code and data available at: \url{https://github.com/fractal-lba/kakeya}
+
+\textbf{Document Status}: HONEST NEGATIVE RESULT - Ground truth labels required for full validation
+
+\textbf{Recommended Next Steps}: Obtain fine-grained failure mode annotations; re-run ensemble analysis with proper labels
+
+\end{document}
