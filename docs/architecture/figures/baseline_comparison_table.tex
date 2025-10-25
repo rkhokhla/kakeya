@@ -1,0 +1,13 @@
+\begin{table}
+\caption{Baseline comparison metrics: ASV vs production systems}
+\label{tab:baseline-comparison}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+Method & Accuracy & Precision & Recall & F1 & AUROC & Mean Latency (ms) & P95 Latency (ms) & Cost per Sample (USD) & Total Cost (USD) \\
+\midrule
+ASV & 0.724 & 0.842 & 0.777 & 0.809 & 0.804 & 63.937 & 108.722 & 0.000 & 0.002 \\
+GPT-4 Judge & 0.750 & 0.750 & 1.000 & 0.857 & 0.688 & 1996.148 & 2322.079 & 0.020 & 20.000 \\
+SelfCheckGPT & 0.750 & 0.750 & 1.000 & 0.857 & 0.065 & 4997.693 & 5849.043 & 0.005 & 5.000 \\
+\bottomrule
+\end{tabular}
+\end{table}

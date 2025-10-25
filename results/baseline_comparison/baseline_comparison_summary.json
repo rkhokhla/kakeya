@@ -1,0 +1,58 @@
+{
+  "n_samples": 1000,
+  "methods": [
+    "ASV",
+    "GPT-4 Judge",
+    "SelfCheckGPT"
+  ],
+  "best_auroc": {
+    "method": "ASV",
+    "value": 0.8035493333333334
+  },
+  "fastest": {
+    "method": "ASV",
+    "value": 63.93677759170532
+  },
+  "cheapest": {
+    "method": "ASV",
+    "value": 2.0000000000000003e-06
+  },
+  "metrics": [
+    {
+      "Method": "ASV",
+      "Accuracy": 0.724,
+      "Precision": 0.8424855491329479,
+      "Recall": 0.7773333333333333,
+      "F1": 0.8085991678224688,
+      "AUROC": 0.8035493333333334,
+      "Mean Latency (ms)": 63.93677759170532,
+      "P95 Latency (ms)": 108.72180461883545,
+      "Cost per Sample (USD)": 2.0000000000000003e-06,
+      "Total Cost (USD)": 0.0020000000000000005
+    },
+    {
+      "Method": "GPT-4 Judge",
+      "Accuracy": 0.75,
+      "Precision": 0.75,
+      "Recall": 1.0,
+      "F1": 0.8571428571428571,
+      "AUROC": 0.687536,
+      "Mean Latency (ms)": 1996.1475416308115,
+      "P95 Latency (ms)": 2322.0787973600977,
+      "Cost per Sample (USD)": 0.02,
+      "Total Cost (USD)": 20.0
+    },
+    {
+      "Method": "SelfCheckGPT",
+      "Accuracy": 0.75,
+      "Precision": 0.75,
+      "Recall": 1.0,
+      "F1": 0.8571428571428571,
+      "AUROC": 0.06526933333333333,
+      "Mean Latency (ms)": 4997.69284261446,
+      "P95 Latency (ms)": 5849.042708646214,
+      "Cost per Sample (USD)": 0.005,
+      "Total Cost (USD)": 5.0
+    }
+  ]
+}
