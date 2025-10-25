@@ -1,12 +1,16 @@
-\documentclass[10pt]{article}
+\documentclass[11pt]{article}
 
-% arXiv-compatible packages
+% arXiv-compatible packages (full MacTeX now available)
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{booktabs}
 \usepackage[margin=1in]{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
 
 % Theorem environments
 \newtheorem{theorem}{Theorem}
@@ -226,15 +230,24 @@ HaluEval & Perplexity & 0.500 & 0.506 & 0.672 & 5000 & 50.6\% \\
 \item \textbf{Baseline dominance (expected):} Simple perplexity outperforms ASV on factuality tasks (TruthfulQA: 0.615 vs 0.535, FEVER: 0.598 vs 0.578). This is \textbf{expected behavior}---perplexity is optimized for detecting unlikely/incorrect facts, while geometric signals target structural anomalies.
 \end{enumerate}
 
-Figure~\ref{fig:factuality-roc} shows ROC curves for all benchmarks.
+Figures~\ref{fig:factuality-roc} and~\ref{fig:factuality-pr} show ROC and PR curves for all benchmarks.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.32\textwidth]{../../figures/truthfulqa_roc_curves.png}
-\includegraphics[width=0.32\textwidth]{../../figures/fever_roc_curves.png}
-\includegraphics[width=0.32\textwidth]{../../figures/halueval_roc_curves.png}
+\includegraphics[width=0.32\textwidth]{figures/truthfulqa_roc_curves.png}
+\includegraphics[width=0.32\textwidth]{figures/fever_roc_curves.png}
+\includegraphics[width=0.32\textwidth]{figures/halueval_roc_curves.png}
 \caption{ROC Curves for Factuality Benchmarks: TruthfulQA (left), FEVER (middle), HaluEval (right). Perplexity consistently outperforms ASV signals on factuality tasks.}
 \label{fig:factuality-roc}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.32\textwidth]{figures/truthfulqa_pr_curves.png}
+\includegraphics[width=0.32\textwidth]{figures/fever_pr_curves.png}
+\includegraphics[width=0.32\textwidth]{figures/halueval_pr_curves.png}
+\caption{Precision-Recall Curves for Factuality Benchmarks: TruthfulQA (left), FEVER (middle), HaluEval (right). PR curves are particularly informative for imbalanced datasets like TruthfulQA (4.4\% positive).}
+\label{fig:factuality-pr}
 \end{figure}
 
 \subsection{Structural Degeneracy Evaluation (Correct Task)}
@@ -282,7 +295,7 @@ Figure~\ref{fig:degeneracy-comparison} shows the comparison.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{../../figures/comparison_bars.png}
+\includegraphics[width=0.8\textwidth]{figures/comparison_bars.png}
 \caption{AUROC Comparison: Factuality vs. Structural Degeneracy. ASV and perplexity are complementary tools for different failure modes.}
 \label{fig:degeneracy-comparison}
 \end{figure}
@@ -333,25 +346,37 @@ Figure~\ref{fig:conformal-weights} shows the learned weights.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{../../figures/ensemble_weights_comparison.png}
+\includegraphics[width=0.7\textwidth]{figures/ensemble_weights_comparison.png}
 \caption{Learned Ensemble Weights Across Benchmarks. Task-adaptive weighting emerges automatically: factuality tasks learn perplexity-dominant weights (0.65), while degeneracy learns $r_{\text{LZ}}$-dominant weights (0.60).}
 \label{fig:conformal-weights}
 \end{figure}
 
-Figure~\ref{fig:conformal-performance} shows the AUROC comparison.
+Figures~\ref{fig:conformal-auroc} and~\ref{fig:conformal-auprc} show AUROC and AUPRC comparisons across all benchmarks.
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{../../figures/auroc_comparison_conformal.png}
+\includegraphics[width=0.8\textwidth]{figures/auroc_comparison_conformal.png}
 \caption{AUROC Comparison: Conformal Ensemble vs. Individual Signals. Degeneracy task achieves near-perfect detection (0.9997) with learned weights.}
+\label{fig:conformal-auroc}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{figures/auprc_comparison_conformal.png}
+\caption{AUPRC Comparison: Conformal Ensemble Performance. AUPRC is particularly important for imbalanced datasets, providing complementary information to AUROC.}
+\label{fig:conformal-auprc}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/performance_comparison_conformal.png}
+\caption{Comprehensive Performance Comparison: All methods across all benchmarks. This grouped visualization shows the full landscape of conformal prediction performance with learned ensemble weights.}
 \label{fig:conformal-performance}
 \end{figure}
 
-Figure~\ref{fig:calibration-quality} shows calibration details.
-
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{../../figures/calibration_quality.png}
+\includegraphics[width=0.8\textwidth]{figures/calibration_quality.png}
 \caption{Calibration Quality: Set sizes (left) and threshold values (right) vary by task complexity.}
 \label{fig:calibration-quality}
 \end{figure}
