@@ -623,25 +623,25 @@ Table~\ref{tab:baseline-comparison} summarizes the comparison across 10 metrics.
 
 \begin{table}[h]
 \centering
-\caption{Baseline Comparison: ASV vs. Production Systems (1,000 samples)}
+\caption{Baseline Comparison: ASV vs. Production Systems (100 samples, real API calls)}
 \label{tab:baseline-comparison}
 \begin{tabular}{lcccccc}
 \toprule
 \textbf{Method} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{AUROC} & \textbf{P95 Latency (ms)} \\
 \midrule
-\textbf{ASV} & \textbf{0.724} & \textbf{0.842} & 0.777 & \textbf{0.809} & \textbf{0.804} & \textbf{109} \\
-GPT-4 Judge & 0.750 & 0.750 & \textbf{1.000} & 0.857 & 0.688 & 2,323 \\
-SelfCheckGPT & 0.750 & 0.750 & \textbf{1.000} & 0.857 & 0.065 & 5,850 \\
+\textbf{ASV} & 0.710 & \textbf{0.838} & 0.760 & 0.797 & \textbf{0.811} & \textbf{77} \\
+GPT-4 Judge & 0.750 & 0.750 & \textbf{1.000} & \textbf{0.857} & 0.500 & 2,965 \\
+SelfCheckGPT & \textbf{0.760} & \textbf{0.964} & 0.707 & 0.815 & 0.772 & 6,862 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \textbf{Key Findings:}
 \begin{enumerate}
-\item \textbf{ASV achieves superior AUROC (0.804 vs. 0.688)}, demonstrating stronger discriminative power than GPT-4 judge for structural degeneracy.
-\item \textbf{37x latency advantage}: ASV p95 latency is 109ms vs. 2,323ms for GPT-4, enabling real-time verification.
-\item \textbf{10,000x cost reduction}: ASV costs \$0.000002 per verification vs. \$0.020 for GPT-4.
-\item \textbf{SelfCheckGPT ineffective on structural degeneracy} (AUROC=0.065), confirming that sampling-based consistency checking does not detect geometric patterns.
+\item \textbf{ASV achieves highest AUROC (0.811 vs. 0.500 vs. 0.772)}, demonstrating superior discriminative power for structural degeneracy. GPT-4 Judge performs at random chance (AUROC=0.500), while SelfCheckGPT shows moderate discrimination (AUROC=0.772).
+\item \textbf{38x-89x latency advantage}: ASV p95 latency is 77ms vs. 2,965ms for GPT-4 and 6,862ms for SelfCheckGPT, enabling real-time verification.
+\item \textbf{306x-1,435x cost reduction}: ASV costs \$0.000002 per verification vs. \$0.00287 for GPT-4 and \$0.000611 for SelfCheckGPT.
+\item \textbf{Real API measurements}: All results based on actual OpenAI API calls (100 samples, total cost: \$0.35), not heuristic proxies. GPT-4 Judge used gpt-4-turbo-preview; SelfCheckGPT used gpt-3.5-turbo with 5 samples + RoBERTa-large-MNLI.
 \end{enumerate}
 
 Figure~\ref{fig:baseline-roc} shows ROC curves for all methods.
@@ -649,7 +649,7 @@ Figure~\ref{fig:baseline-roc} shows ROC curves for all methods.
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.8\textwidth]{figures/baseline_roc_comparison.png}
-\caption{ROC Curves: ASV achieves highest AUC (0.804), outperforming GPT-4 Judge (0.688) and SelfCheckGPT (0.065). Random baseline shown as diagonal.}
+\caption{ROC Curves (real API calls, 100 samples): ASV achieves highest AUC (0.811), outperforming SelfCheckGPT (0.772). GPT-4 Judge performs at random chance (0.500).}
 \label{fig:baseline-roc}
 \end{figure}
 
@@ -658,14 +658,15 @@ Figure~\ref{fig:baseline-cost-performance} illustrates the cost-performance Pare
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.8\textwidth]{figures/baseline_cost_performance.png}
-\caption{Cost-Performance Pareto Frontier: ASV achieves highest AUROC (0.804) at lowest cost (\$0.000002), demonstrating clear Pareto dominance over GPT-4 Judge and SelfCheckGPT.}
+\caption{Cost-Performance Pareto Frontier: ASV achieves highest AUROC (0.811) at lowest cost (\$0.000002/sample), demonstrating clear Pareto dominance. GPT-4 Judge is 1,435x more expensive; SelfCheckGPT is 306x more expensive.}
 \label{fig:baseline-cost-performance}
 \end{figure}
 
 \textbf{Production Implications:}
 \begin{itemize}
-\item ASV's sub-100ms latency at p95 enables \textbf{synchronous verification} in interactive applications.
-\item \textbf{13,303x cost advantage} over GPT-4 makes large-scale deployment economically feasible (e.g., \$0.20/day for 100K verifications vs. \$2,000/day).
+\item ASV's 77ms p95 latency enables \textbf{real-time synchronous verification} in interactive applications, vs. 3-7 seconds for LLM-based methods.
+\item \textbf{306x-1,435x cost advantage}: At 100K verifications/day, ASV costs \$0.20/day vs. GPT-4's \$287/day vs. SelfCheckGPT's \$61/day.
+\item \textbf{Highest discrimination}: ASV's AUROC (0.811) outperforms both GPT-4 (0.500, random chance) and SelfCheckGPT (0.772) on structural degeneracy.
 \item Geometric signals provide \textbf{interpretable failure modes}: low $\hat{D}$ indicates clustering/repetition, high $\text{coh}^\star$ indicates directional drift, low $r$ indicates high redundancy.
 \item No external API dependencies reduce latency variance and eliminate rate-limiting concerns.
 \end{itemize}

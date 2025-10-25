@@ -1,0 +1,47 @@
+{
+  "n_samples": 100,
+  "total_cost_usd": 0.3482644999999989,
+  "methods": [
+    "ASV",
+    "GPT-4 Judge",
+    "SelfCheckGPT"
+  ],
+  "metrics": [
+    {
+      "Method": "ASV",
+      "Accuracy": 0.71,
+      "Precision": 0.8382352941176471,
+      "Recall": 0.76,
+      "F1": 0.7972027972027973,
+      "AUROC": 0.8106666666666666,
+      "Mean Latency (ms)": 51.76321268081665,
+      "P95 Latency (ms)": 77.06325054168701,
+      "Cost per Sample (USD)": 2e-06,
+      "Total Cost (USD)": 0.0002
+    },
+    {
+      "Method": "GPT-4 Judge",
+      "Accuracy": 0.75,
+      "Precision": 0.75,
+      "Recall": 1.0,
+      "F1": 0.8571428571428571,
+      "AUROC": 0.5,
+      "Mean Latency (ms)": 1784.5241379737854,
+      "P95 Latency (ms)": 2964.608943462372,
+      "Cost per Sample (USD)": 0.002871199999999999,
+      "Total Cost (USD)": 0.28711999999999993
+    },
+    {
+      "Method": "SelfCheckGPT",
+      "Accuracy": 0.76,
+      "Precision": 0.9636363636363636,
+      "Recall": 0.7066666666666667,
+      "F1": 0.8153846153846154,
+      "AUROC": 0.7722666666666667,
+      "Mean Latency (ms)": 8982.02208518982,
+      "P95 Latency (ms)": 6861.778700351714,
+      "Cost per Sample (USD)": 0.0006114450000000001,
+      "Total Cost (USD)": 0.061144500000000004
+    }
+  ]
+}
