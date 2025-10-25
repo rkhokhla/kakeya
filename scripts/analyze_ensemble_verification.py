@@ -125,8 +125,15 @@ df_labeled['sentence_repetition'] = df_labeled['text'].apply(compute_sentence_re
 df_labeled['perplexity_proxy'] = df_labeled['text'].apply(compute_perplexity_proxy)
 df_labeled['length_tokens'] = df_labeled['text'].apply(lambda t: len(t.split()))
 
+# Rename columns for clarity
+df_labeled['r_LZ'] = df_labeled['asv_score']
+df_labeled['D_hat'] = df_labeled.get('D_hat', 0)  # Use D_hat from CSV if available
+df_labeled['coh_star'] = df_labeled.get('coh_star', 0)  # Use coh_star from CSV if available
+
 print(f"✓ Computed features:")
-print(f"  - r_LZ (compressibility): mean={df_labeled['asv_score'].mean():.3f}, std={df_labeled['asv_score'].std():.3f}")
+print(f"  - D_hat (fractal dimension): mean={df_labeled['D_hat'].mean():.3f}, std={df_labeled['D_hat'].std():.3f}")
+print(f"  - coh_star (coherence): mean={df_labeled['coh_star'].mean():.3f}, std={df_labeled['coh_star'].std():.3f}")
+print(f"  - r_LZ (compressibility): mean={df_labeled['r_LZ'].mean():.3f}, std={df_labeled['r_LZ'].std():.3f}")
 print(f"  - Lexical diversity: mean={df_labeled['lexical_diversity'].mean():.3f}, std={df_labeled['lexical_diversity'].std():.3f}")
 print(f"  - Sentence repetition: mean={df_labeled['sentence_repetition'].mean():.3f}, std={df_labeled['sentence_repetition'].std():.3f}")
 print(f"  - Perplexity proxy: mean={df_labeled['perplexity_proxy'].mean():.3f}, std={df_labeled['perplexity_proxy'].std():.3f}")
@@ -140,13 +147,18 @@ print(f"✓ Test: {len(test_df)} samples ({test_df['is_hallucination'].sum()} ha
 # Define feature sets
 feature_sets = {
     'Perplexity (baseline)': ['perplexity_proxy'],
-    'r_LZ (compressibility)': ['asv_score'],
-    'Lexical diversity': ['lexical_diversity'],
-    'Perplexity + r_LZ': ['perplexity_proxy', 'asv_score'],
+    'D_hat alone': ['D_hat'],
+    'coh_star alone': ['coh_star'],
+    'r_LZ alone': ['r_LZ'],
+    'Lexical diversity alone': ['lexical_diversity'],
+    'Geometric signals (D_hat + coh_star + r_LZ)': ['D_hat', 'coh_star', 'r_LZ'],
+    'Perplexity + D_hat': ['perplexity_proxy', 'D_hat'],
+    'Perplexity + coh_star': ['perplexity_proxy', 'coh_star'],
+    'Perplexity + r_LZ': ['perplexity_proxy', 'r_LZ'],
+    'Perplexity + Geometric': ['perplexity_proxy', 'D_hat', 'coh_star', 'r_LZ'],
     'Perplexity + Lexical diversity': ['perplexity_proxy', 'lexical_diversity'],
     'Perplexity + Repetition': ['perplexity_proxy', 'sentence_repetition'],
-    'Perplexity + Length': ['perplexity_proxy', 'length_tokens'],
-    'Full ensemble': ['perplexity_proxy', 'asv_score', 'lexical_diversity', 'sentence_repetition', 'length_tokens'],
+    'Full ensemble': ['perplexity_proxy', 'D_hat', 'coh_star', 'r_LZ', 'lexical_diversity', 'sentence_repetition', 'length_tokens'],
 }
 
 # Train models
